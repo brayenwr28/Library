@@ -1,0 +1,47 @@
+<!-- TEST: Peminjaman Form Submission Test -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Peminjaman Form</title>
+</head>
+<body>
+    <h1>Form Submission Test</h1>
+    
+    <form action="http://localhost:8000/peminjaman" method="POST" enctype="multipart/form-data">
+        @csrf
+        
+        <label>Judul Buku:</label>
+        <select name="judul_buku" required>
+            <option value="">-- Pilih --</option>
+            <option value="Teknologi Komputer">Teknologi Komputer</option>
+            <option value="Sejarah Komputer">Sejarah Komputer</option>
+            <option value="Perangkat Lunak Terbaru">Perangkat Lunak Terbaru</option>
+            <option value="Design Komunikasi Visual">Design Komunikasi Visual</option>
+        </select>
+        <br><br>
+        
+        <label>Tgl Pinjam:</label>
+        <input type="date" name="tgl_pinjam" required value="2026-01-31">
+        <br><br>
+        
+        <label>Tgl Kembali:</label>
+        <input type="date" name="tgl_kembali" required value="2026-02-05">
+        <br><br>
+        
+        <label>Bukti:</label>
+        <input type="file" name="bukti_registrasi">
+        <br><br>
+        
+        <button type="submit">Submit Test</button>
+    </form>
+    
+    <hr>
+    <p>Steps:</p>
+    <ol>
+        <li>Login first at http://localhost:8000/login</li>
+        <li>Then go to http://localhost:8000/peminjaman</li>
+        <li>Fill the form and click "Ajukan Peminjaman"</li>
+        <li>Check if redirect to riwayat works</li>
+    </ol>
+</body>
+</html>
