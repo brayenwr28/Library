@@ -12,7 +12,7 @@
         <!-- Header -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-slate-800 mb-2">📚 Form Peminjaman Online</h1>
-            <p class="text-slate-600">Halo, <strong>{{ $member->name }}</strong>! Ajukan peminjaman buku Anda sekarang.</p>
+            <p class="text-slate-600">Halo, <strong>{{ $member->name }} ID: {{ $member->member_id }}</strong>! Ajukan peminjaman buku Anda sekarang.</p>
         </div>
 
         <!-- Form Card -->
@@ -27,27 +27,59 @@
                 </div>
             @endif
 
-            <form action="{{ route('peminjaman.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <form action="{{ route('peminjaman.store') }}" method="POST" class="space-y-6" enctype="multipart/form-data">
                 @csrf
 
-                <!-- Judul Buku (Dropdown) -->
+                @php
+                    $defaultBookId = old('book_id', $selectedBookId ?? null);
+                @endphp
+
+                <!-- Informasi Buku -->
                 <div>
-                    <label for="judul_buku" class="block text-sm font-semibold text-slate-700 mb-2">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">
                         Judul Buku *
                     </label>
-                    <select 
-                        id="judul_buku" 
-                        name="judul_buku" 
-                        class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-700 transition"
-                        required
-                    >
-                        <option value="">-- Pilih Judul Buku --</option>
-                        <option value="Teknologi Komputer" @selected(old('judul_buku') == 'Teknologi Komputer')>Teknologi Komputer</option>
-                        <option value="Sejarah Komputer" @selected(old('judul_buku') == 'Sejarah Komputer')>Sejarah Komputer</option>
-                        <option value="Perangkat Lunak Terbaru" @selected(old('judul_buku') == 'Perangkat Lunak Terbaru')>Perangkat Lunak Terbaru</option>
-                        <option value="Design Komunikasi Visual" @selected(old('judul_buku') == 'Design Komunikasi Visual')>Design Komunikasi Visual</option>
-                    </select>
+
+                    @if(isset($selectedBook) && $selectedBook)
+                        <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+                            <p class="font-semibold text-slate-900">{{ $selectedBook->title }}</p>
+                            <p>{{ $selectedBook->author }} · {{ $selectedBook->publication_year }}</p>
+                            @if($selectedBook->publisher)
+                                <p class="text-xs text-slate-500">Penerbit: {{ $selectedBook->publisher }}</p>
+                            @endif
+                            @if($selectedBook->category)
+                                <p class="text-xs text-slate-500">Kategori: {{ $selectedBook->category }}</p>
+                            @endif
+                            <p class="mt-2 text-xs text-emerald-600">Buku dipilih otomatis dari katalog.</p>
+                        </div>
+
+                        <input type="hidden" name="book_id" value="{{ $selectedBook->id }}">
+                    @else
+                        <select
+                            id="book_id"
+                            name="book_id"
+                            class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-700 transition"
+                            required
+                            @disabled($books->isEmpty())
+                        >
+                            <option value="">-- Pilih Judul Buku --</option>
+                            @forelse($books as $book)
+                                <option value="{{ $book->id }}" @selected($defaultBookId == $book->id)>
+                                    {{ $book->title }} — {{ $book->author }} ({{ $book->publication_year }})
+                                </option>
+                            @empty
+                                <option value="" disabled>Tidak ada buku tersedia</option>
+                            @endforelse
+                        </select>
+                        <p class="text-xs text-slate-500 mt-2">Buku yang dapat dipinjam adalah yang sudah memiliki file PDF dan berstatus tersedia.</p>
+                    @endif
                 </div>
+
+                @if($books->isEmpty())
+                    <div class="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">
+                        Belum ada buku yang tersedia untuk dipinjam. Silakan hubungi petugas perpustakaan untuk menambahkan koleksi.
+                    </div>
+                @endif
 
                 <!-- Tanggal Pinjam -->
                 <div>
@@ -78,22 +110,6 @@
                         required
                     >
                 </div>
-
-                <!-- Upload Bukti Registrasi -->
-                <div>
-                    <label for="bukti_registrasi" class="block text-sm font-semibold text-slate-700 mb-2">
-                        Upload Bukti Screenshot Registrasi (Opsional)
-                    </label>
-                    <input 
-                        type="file" 
-                        id="bukti_registrasi" 
-                        name="bukti_registrasi" 
-                        accept="image/*"
-                        class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-700 transition"
-                    >
-                    <p class="text-xs text-slate-500 mt-2">Format: JPEG, PNG, JPG, GIF. Ukuran maksimal: 2MB</p>
-                </div>
-
                 <!-- Buttons -->
                 <div class="flex gap-4 pt-4">
                     <button 
@@ -102,7 +118,7 @@
                     >
                         📋 Ajukan Peminjaman
                     </button>
-                    <a href="/peminjaman/riwayat" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-3 rounded-lg transition duration-200 text-center">
+                    <a href="{{ route('peminjaman.riwayat') }}" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-3 rounded-lg transition duration-200 text-center">
                         📖 Lihat Riwayat
                     </a>
                 </div>

@@ -18,8 +18,6 @@ class Member extends Model
         'prodi',
         'member_id',
         'tgl_daftar',
-        'signature_path',
-        'stamp_path',
     ];
 
     protected $hidden = [

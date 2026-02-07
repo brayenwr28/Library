@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Peminjaman extends Model
 {
@@ -13,6 +14,7 @@ class Peminjaman extends Model
 
     protected $fillable = [
         'member_id',
+        'book_id',
         'judul_buku',
         'nomor_antrian',
         'tgl_pinjam',
@@ -27,9 +29,14 @@ class Peminjaman extends Model
         'tgl_kembali' => 'date',
     ];
 
-    public function member()
+    public function member(): BelongsTo
     {
         return $this->belongsTo(Member::class);
+    }
+
+    public function book(): BelongsTo
+    {
+        return $this->belongsTo(Book::class);
     }
 
     public static function generateNomorAntrian()
