@@ -45,6 +45,19 @@
                 </p>
             </div>
 
+            <!-- Alerts -->
+            @if (session('status'))
+                <div class="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-600">
+                    {{ session('status') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="mb-5 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
             <!-- Form -->
             <form method="POST" action="{{ route('login.store') }}" class="space-y-5">
                 @csrf
@@ -53,7 +66,7 @@
                     <label class="text-sm font-medium text-slate-600">
                         Email
                     </label>
-                    <input type="email" name="email" required class="w-full mt-1 px-4 py-2.5 rounded-lg
+                    <input type="email" name="email" value="{{ old('email') }}" required class="w-full mt-1 px-4 py-2.5 rounded-lg
                               border border-slate-300
                               focus:outline-none focus:ring-2 focus:ring-slate-400
                               transition">
@@ -84,7 +97,6 @@
                     Daftar Anggota
                 </a>
             </div>
-
             <div class="text-center mt-4">
                 <a href="/" class="text-xs text-slate-500 hover:underline">
                     ← Kembali ke Beranda

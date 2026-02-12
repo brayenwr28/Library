@@ -109,7 +109,7 @@
                     <span class="text-sm font-medium text-slate-500 transition group-hover:text-slate-700">Selengkapnya
                         &rarr;</span>
                 </a>
-                <a href="{{ route('Bukuperpus.index') }}"
+                <a href="{{ route('admin.books.library.index') }}"
                     class="group flex flex-col gap-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-6 shadow-sm transition hover:border-slate-300 hover:bg-white">
                     <div
                         class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-white text-lg text-slate-700 shadow-inner">

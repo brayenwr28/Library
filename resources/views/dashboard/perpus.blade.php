@@ -13,14 +13,14 @@
                 <h1 class="mt-3 text-3xl font-semibold text-slate-900">Daftar Buku Tersedia</h1>
                 <p class="mt-2 max-w-2xl text-sm text-slate-600">Semua buku yang sudah diinput admin ditampilkan dalam kartu berikut lengkap dengan informasi penerbit, kategori, dan stok.</p>
             </div>
-            <form action="{{ route('Bukuperpus.index') }}" method="GET" class="flex w-full max-w-md items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 shadow-sm">
+            <form action="{{ route('admin.books.library.index') }}" method="GET" class="flex w-full max-w-md items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 shadow-sm">
                 <label for="book-search" class="sr-only">Cari buku</label>
                 <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" />
                 </svg>
                 <input id="book-search" type="search" name="q" value="{{ $search }}" placeholder="Cari judul, penulis, ISBN" class="w-full border-0 bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-0" />
                 @if($search !== '')
-                    <a href="{{ route('Bukuperpus.index') }}" class="text-xs font-semibold text-slate-400 transition hover:text-slate-600">Reset</a>
+                    <a href="{{ route('admin.books.library.index') }}" class="text-xs font-semibold text-slate-400 transition hover:text-slate-600">Reset</a>
                 @endif
             </form>
         </div>

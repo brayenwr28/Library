@@ -25,7 +25,7 @@
                 <span class="absolute left-0 -bottom-1 w-0 h-[2px] bg-slate-700 transition-all group-hover:w-full"></span>
             </li>
             <li class="relative group">
-                <a href="{{ route('Bukuperpus.index') }}" class="hover:text-slate-900 transition">
+                <a href="{{ route('admin.books.library.index') }}" class="hover:text-slate-900 transition">
                     Perpustakaan
                 </a>
                 <span class="absolute left-0 -bottom-1 w-0 h-[2px] bg-slate-700 transition-all group-hover:w-full"></span>

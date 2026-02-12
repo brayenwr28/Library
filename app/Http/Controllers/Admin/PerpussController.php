@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Book;
 use App\Models\Perpuss;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -80,7 +81,7 @@ class PerpussController extends Controller
         $record->save();
 
         return redirect()
-            ->route('Bukuperpus.index')
+            ->route('admin.books.library.create')
             ->with('success', 'Buku perpustakaan berhasil ditambahkan.');
     }
 
@@ -97,7 +98,13 @@ class PerpussController extends Controller
         $perpuss->delete();
 
         return redirect()
-            ->route('Bukuperpus.index')
+            ->route('admin.books.library.index')
             ->with('success', 'Buku perpustakaan berhasil dihapus.');
     }
+     public function show()
+    {
+         $perpusses = Perpuss::all();
+        return view('admin.inputBuku.listBuku.ListBukuPerpus', compact('perpusses'));
+    }
+   
 }

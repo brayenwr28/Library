@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'member.auth' => \App\Http\Middleware\MemberAuth::class,
         'role' => \App\Http\Middleware\CheckRole::class,
         'check.status' => \App\Http\Middleware\CheckStatus::class,
+        'admin.account' => \App\Http\Middleware\EnsureAdminAccount::class,
     ];
 }

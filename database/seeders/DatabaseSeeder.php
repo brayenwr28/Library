@@ -72,5 +72,8 @@ class DatabaseSeeder extends Seeder
                 'is_active' => fake()->boolean(90), // 90% aktif
             ]);
         }
+
+        // Tambah data buku fisik
+        $this->call(BookSeeder::class);
     }
 }

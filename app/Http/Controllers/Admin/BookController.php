@@ -65,7 +65,12 @@ class BookController extends Controller
         Book::create($validated);
 
         return redirect()
-            ->route('admin.books.index')
+            ->route('admin.books.create')
             ->with('success', 'Buku berhasil ditambahkan ke katalog.');
+    }
+     public function show()
+    {
+        $books = Book::all();
+        return view('admin.inputBuku.listBuku.ListBukuDigital', compact('books'));
     }
 }

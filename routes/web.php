@@ -1,21 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminRegistrationController;
+use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\PerpussController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PeminjamanController;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
 Route::controller(AuthController::class)->prefix('auth')->group(function () {
     Route::get('/login', 'login')->name('login');
@@ -26,8 +17,26 @@ Route::controller(AuthController::class)->prefix('auth')->group(function () {
     Route::post('/register', 'registerStore')->name('register.store');
     Route::get('logout', 'logout')->name('logout');
 });
+
+Route::controller(AdminRegistrationController::class)->prefix('login')->group(function () {
+    Route::get('/admin','login')->name('admin.login');
+    Route::post('/admin','loginStore')->name('admin.login.store');
+    Route::get('/register-admin', 'create')->name('admin.register');
+    Route::post('/register-admin', 'store')->name('admin.register.store');
+    Route::post('/logout','logout')->name('admin.logout');
+    Route::get('/dashboard', 'index')->name('admin.dashboard');
+});
+Route::controller(BookController::class)->prefix('digital')->group(function () {
+    Route::get('/', 'index')->name('admin.books.index');
+    Route::post('/', 'store')->name('admin.books.store');
+    Route::get('/create', 'create')->name('admin.books.create');
+    Route::delete('/{perpuss}', 'destroy')->name('admin.books.destroy');
+    Route::get('/show', 'show')->name('admin.books.show');
+
+});
+
 Route::controller(DashboardController::class)->group(function () {
-    Route::get('/dashboard', 'index')->name('dashboard');
+    Route::get('/', 'index')->name('dashboard');
     Route::get('katalog', 'katalog')->name('katalog');
     Route::get('sejarah', 'sejarah')->name('sejarah');
     Route::get('tentang', 'tentang')->name('tentang');
@@ -42,8 +51,9 @@ Route::controller(PeminjamanController::class)->prefix('peminjaman')->group(func
 });
 
 Route::controller(PerpussController::class)->prefix('perpuss')->group(function () {
-        Route::get('/', 'index')->name('Bukuperpus.index');
-        Route::post('/', 'store')->name('Bukuperpus.store');
-        Route::get('/create', 'create')->name('Bukuperpus.create');
-        Route::delete('/{perpuss}', 'destroy')->name('Bukuperpus.destroy');
-    });
+    Route::get('/', 'index')->name('admin.books.library.index');
+    Route::post('/', 'store')->name('admin.books.library.store');
+    Route::get('/create', 'create')->name('admin.books.library.create');
+    Route::delete('/{perpuss}', 'destroy')->name('admin.books.library.destroy');
+    Route::get('/show', 'show')->name('admin.books.library.show');
+});

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layout.app')
 
 @section('title', 'Input Koleksi Perpustakaan')
 
@@ -29,7 +29,7 @@
 		@endif
 
 		<div class="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-			<form action="{{ route('Bukuperpus.store') }}" method="POST" class="grid gap-6" enctype="multipart/form-data" novalidate>
+			<form action="{{ route('admin.books.library.store') }}" method="POST" class="grid gap-6" enctype="multipart/form-data" novalidate>
 				@csrf
 
 				<div class="grid gap-6 md:grid-cols-[220px_1fr] md:items-start">
@@ -102,7 +102,7 @@
 
 				<div class="flex flex-wrap items-center gap-3 pt-2">
 					<button type="submit" class="rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-700">Simpan Buku</button>
-					<a href="{{ route('Bukuperpus.index') }}" class="text-sm font-medium text-slate-500 transition hover:text-slate-700">Lihat daftar buku</a>
+					<a href="{{ route('admin.books.library.index') }}" class="text-sm font-medium text-slate-500 transition hover:text-slate-700">Lihat daftar buku</a>
 				</div>
 			</form>
 		</div>

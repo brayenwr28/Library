@@ -69,8 +69,6 @@ class AuthController extends Controller
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'password' => $hashedPassword,
-                'role' => 'user',
-                'is_active' => true,
             ]);
 
             Member::create([
