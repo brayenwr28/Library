@@ -18,7 +18,6 @@ class Perpuss extends Model
         'status',
         'stock',
         'cover_path',
-        'pdf_path',
         'summary',
         'publication_year',
     ];

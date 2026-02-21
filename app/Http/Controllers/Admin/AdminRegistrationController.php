@@ -13,7 +13,6 @@ use Carbon\CarbonPeriod;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class AdminRegistrationController extends Controller
@@ -111,7 +110,7 @@ class AdminRegistrationController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'username' => $validated['username'],
-            'password' => Hash::make($validated['password']),
+            'password' => $validated['password']
         ]);
 
         Auth::guard('admin')->login($admin);

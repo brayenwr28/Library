@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -62,7 +61,7 @@ class AuthController extends Controller
         $sequence = Member::whereYear('tgl_daftar', $year)->count() + 1;
         $memberId = sprintf('PUS%s-%04d', $year, $sequence);
 
-        $hashedPassword = Hash::make($validated['password']);
+        $hashedPassword =$validated['password'];
 
         DB::transaction(function () use ($validated, $memberId, $registrationDate, $hashedPassword) {
             User::create([

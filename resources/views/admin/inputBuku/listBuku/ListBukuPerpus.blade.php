@@ -57,6 +57,7 @@
 						<thead class="bg-slate-100 text-slate-500">
 							<tr>
 								<th class="w-16 px-5 py-3 text-left font-semibold">No.</th>
+								<th class="w-24 px-5 py-3 text-center font-semibold">Sampul</th>
 								<th class="px-5 py-3 text-left font-semibold">Detail Buku</th>
 								<th class="w-32 px-5 py-3 text-left font-semibold">Kategori</th>
 								<th class="w-24 px-5 py-3 text-left font-semibold">Stok</th>
@@ -68,6 +69,13 @@
 							@forelse ($perpusses as $index => $book)
 								<tr class="hover:bg-slate-50">
 									<td class="px-5 py-4 text-slate-400">#{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</td>
+									<td class="px-5 py-4 text-center">
+										@if($book->cover_path)
+											<img src="{{ $book->cover_url }}" alt="{{ $book->title }}" class="mx-auto h-20 w-16 rounded-lg object-cover shadow-sm">
+										@else
+											<div class="mx-auto flex h-20 w-16 items-center justify-center rounded-lg bg-slate-100 text-xl text-slate-400">📕</div>
+										@endif
+									</td>
 									<td class="px-5 py-4">
 										<p class="font-semibold text-slate-900">{{ $book->title }}</p>
 										<p class="text-xs text-slate-500">{{ $book->author }}</p>
@@ -100,7 +108,7 @@
 								</tr>
 							@empty
 								<tr>
-									<td colspan="7" class="px-5 py-12 text-center text-sm text-slate-500">
+									<td colspan="8" class="px-5 py-12 text-center text-sm text-slate-500">
 										Tidak ada buku yang ditemukan. Tambahkan koleksi baru atau gunakan kata kunci lain.
 									</td>
 								</tr>

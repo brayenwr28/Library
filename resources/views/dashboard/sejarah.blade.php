@@ -132,9 +132,6 @@
 <section
     <h2 class="text-3xl font-bold text-white mb-4 animate-fadeUp">Kunjungi Perpustakaan Kami</h2>
     <p class="text-blue-100 mb-8 text-lg animate-fadeUp delay-1">Jelajahi koleksi lengkap dan layanan terbaik</p>
-    <a href="{{ url('/') }}" class="inline-block px-8 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition-all transform hover:scale-105 animate-fadeUp delay-2">
-        Kembali ke Beranda →
-    </a>
 </section>
 </body>
 </html>

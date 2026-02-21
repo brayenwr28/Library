@@ -30,7 +30,9 @@ Route::controller(BookController::class)->prefix('digital')->group(function () {
     Route::get('/', 'index')->name('admin.books.index');
     Route::post('/', 'store')->name('admin.books.store');
     Route::get('/create', 'create')->name('admin.books.create');
-    Route::delete('/{perpuss}', 'destroy')->name('admin.books.destroy');
+    Route::get('/{book}/edit', 'edit')->name('admin.books.edit');
+    Route::put('/{book}', 'update')->name('admin.books.update');
+    Route::delete('/{book}', 'destroy')->name('admin.books.destroy');
     Route::get('/show', 'show')->name('admin.books.show');
 
 });

@@ -7,26 +7,26 @@
 		<div class="mx-auto max-w-6xl px-6 pb-20">
 			<div class="flex flex-col gap-4 pb-10 pt-10 md:flex-row md:items-center md:justify-between">
 				<div>
-					<p class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">Koleksi Perpustakaan</p>
-					<h1 class="mt-3 text-3xl font-semibold text-slate-900">Daftar Buku Perpustakaan</h1>
-					<p class="mt-2 text-sm text-slate-500">Pantau dan kelola buku fisik yang tersedia di perpustakaan.</p>
+					<p class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">📚 Koleksi Digital</p>
+					<h1 class="mt-3 text-3xl font-semibold text-slate-900">Daftar Buku Digital</h1>
+					<p class="mt-2 text-sm text-slate-500">Kelola dan pantau koleksi buku digital (PDF) di perpustakaan online.</p>
 				</div>
 
 				<div class="flex flex-col gap-3 sm:flex-row">
-					<a href="{{ route('admin.books.library.create') }}" class="inline-flex items-center justify-center rounded-lg bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700">
-						Tambah Buku
+					<a href="{{ route('admin.books.create') }}" class="inline-flex items-center justify-center rounded-lg bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700">
+						➕ Tambah Buku
 					</a>
-					<a href="{{ route('admin.dashboard') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 px-5 py-3 text-sm font-medium text-slate-600 transition hover:bg-white">Kembali ke Dashboard</a>
+					<a href="{{ route('admin.dashboard') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 px-5 py-3 text-sm font-medium text-slate-600 transition hover:bg-white">↩️ Kembali ke Dashboard</a>
 				</div>
 			</div>
 
 			@if (session('success'))
 				<div class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm text-emerald-700">
-					{{ session('success') }}
+					✅ {{ session('success') }}
 				</div>
 			@endif
 
-			<form method="GET" action="{{ route('admin.books.library.index') }}" class="mb-8">
+			<form method="GET" action="{{ route('admin.books.show') }}" class="mb-8">
 				<label for="search" class="sr-only">Cari buku</label>
 				<div class="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm sm:flex-row sm:items-center">
 					<div class="flex flex-1 items-center gap-3">
@@ -43,10 +43,10 @@
 						>
 					</div>
 					@if(!empty($search))
-						<a href="{{ route('admin.books.library.index') }}" class="text-xs font-medium text-slate-500 hover:text-slate-700">Reset</a>
+						<a href="{{ route('admin.books.show') }}" class="text-xs font-medium text-slate-500 hover:text-slate-700">🔄 Reset</a>
 					@endif
 					<button type="submit" class="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700">
-						Cari
+						🔍 Cari
 					</button>
 				</div>
 			</form>
@@ -87,13 +87,29 @@
 									</td>
 									<td class="px-5 py-4 text-center">
 										<div class="flex items-center justify-center gap-2">
+											<a href="{{ route('admin.books.edit', $book) }}" class="inline-flex items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-medium text-blue-600 transition hover:bg-blue-100 hover:border-blue-300">
+												<svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5m-1.414-9.414a2 2 0 1 1 2.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+												</svg>
+												Edit
+											</a>
 											@if($book->pdf_path)
-												<a href="{{ asset('storage/' . $book->pdf_path) }}" target="_blank" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-50">Lihat PDF</a>
+												<a href="{{ asset('storage/' . $book->pdf_path) }}" target="_blank" class="inline-flex items-center justify-center rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-50">
+													<svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+													</svg>
+													Lihat PDF
+												</a>
 											@endif
-											<form action="{{ route('admin.books.library.destroy', $book) }}" method="POST" onsubmit="return confirm('Hapus buku ini dari katalog?');">
+											<form action="{{ route('admin.books.destroy', $book) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus buku ini?\n\nTindakan ini tidak dapat dibatalkan!');">
 												@csrf
 												@method('DELETE')
-												<button type="submit" class="rounded-lg bg-rose-500 px-3 py-2 text-xs font-medium text-white transition hover:bg-rose-600">Hapus</button>
+												<button type="submit" class="inline-flex items-center justify-center rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-600 transition hover:bg-rose-100 hover:border-rose-300">
+													<svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+													</svg>
+													Hapus
+												</button>
 											</form>
 										</div>
 									</td>
@@ -156,14 +172,25 @@
 									</div>
 								@endif
 							</dl>
-							<div class="flex items-center gap-3">
+							<div class="flex items-center gap-2">
+								<a href="{{ route('admin.books.edit', $book) }}" class="flex-1 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-medium text-blue-600 transition hover:bg-blue-100 hover:border-blue-300 inline-flex items-center justify-center">
+									<svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5m-1.414-9.414a2 2 0 1 1 2.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+									</svg>
+									Edit
+								</a>
 								@if($book->pdf_path)
 									<a href="{{ asset('storage/' . $book->pdf_path) }}" target="_blank" class="flex-1 rounded-lg border border-slate-200 px-4 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-50">Lihat PDF</a>
 								@endif
-								<form action="{{ route('admin.books.library.destroy', $book) }}" method="POST" class="flex-1" onsubmit="return confirm('Hapus buku ini dari katalog?');">
+								<form action="{{ route('admin.books.destroy', $book) }}" method="POST" class="flex-1" onsubmit="return confirm('Yakin ingin menghapus buku ini?\n\nTindakan ini tidak dapat dibatalkan!');">
 									@csrf
 									@method('DELETE')
-									<button type="submit" class="w-full rounded-lg bg-rose-500 px-4 py-2 text-xs font-medium text-white transition hover:bg-rose-600">Hapus</button>
+									<button type="submit" class="w-full rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-medium text-rose-600 transition hover:bg-rose-100 hover:border-rose-300 inline-flex items-center justify-center">
+										<svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+										</svg>
+										Hapus
+									</button>
 								</form>
 							</div>
 						</article>
