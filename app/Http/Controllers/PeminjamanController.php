@@ -6,10 +6,12 @@ use App\Http\Requests\PeminjamanRequest;
 use App\Models\Book;
 use App\Models\Member;
 use App\Models\Peminjaman;
+use App\Models\Perpuss;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -20,24 +22,36 @@ class PeminjamanController extends Controller
     {
         $member = $this->resolveMember();
 
-        if (!$member instanceof Member) {
+        if (! $member instanceof Member) {
             return $member;
         }
 
-        $books = Book::whereNotNull('pdf_path')
+        // Query dari tabel books
+        $digitalBooks = Book::whereNotNull('pdf_path')
             ->where('status', 'available')
             ->orderBy('title')
             ->get();
 
+        // Query dari tabel perpusses (dengan pdf_path)
+        $perpussBooks = Perpuss::where('status', 'available')
+            ->whereNotNull('pdf_path')
+            ->orderBy('title')
+            ->get();
+
+        // Gabungkan hasil dari kedua tabel
+        $books = collect();
+        $books = $books->concat($digitalBooks)->concat($perpussBooks)->sortBy('title');
+
         $selectedBookId = $request->query('book_id');
+        $selectedBook = null;
 
-        if ($selectedBookId && !$books->contains('id', (int) $selectedBookId)) {
-            $selectedBookId = null;
+        // Jika ada parameter book_id, cari buku dari kedua tabel
+        if ($selectedBookId) {
+            $selectedBook = Book::find((int) $selectedBookId);
+            if (!$selectedBook) {
+                $selectedBook = Perpuss::find((int) $selectedBookId);
+            }
         }
-
-        $selectedBook = $selectedBookId
-            ? $books->firstWhere('id', (int) $selectedBookId)
-            : null;
 
         return view('peminjaman.form', [
             'member' => $member,
@@ -51,13 +65,42 @@ class PeminjamanController extends Controller
     {
         $member = $this->resolveMember();
 
-        if (!$member instanceof Member) {
+        if (! $member instanceof Member) {
             return $member;
         }
 
         $validated = $request->validated();
 
-        $book = Book::findOrFail($validated['book_id']);
+        // Cari buku dari tabel books atau perpusses
+        $book = Book::find($validated['book_id']);
+        $perpussBook = null;
+        
+        // Jika buku dari perpusses, check atau copy ke books table dulu
+        if (!$book) {
+            $perpussBook = Perpuss::findOrFail($validated['book_id']);
+            
+            // Check apakah buku dengan ISBN yang sama sudah ada di books
+            if ($perpussBook->isbn) {
+                $book = Book::where('isbn', $perpussBook->isbn)->first();
+            }
+            
+            // Jika belum ada, buat buku baru di books table
+            if (!$book) {
+                $book = Book::create([
+                    'title' => $perpussBook->title,
+                    'author' => $perpussBook->author,
+                    'publisher' => $perpussBook->publisher,
+                    'publication_year' => $perpussBook->publication_year,
+                    'category' => $perpussBook->category,
+                    'isbn' => $perpussBook->isbn,
+                    'status' => $perpussBook->status,
+                    'stock' => $perpussBook->stock,
+                    'cover_url' => $perpussBook->cover_path,
+                    'pdf_path' => $perpussBook->pdf_path,
+                    'summary' => $perpussBook->summary,
+                ]);
+            }
+        }
 
         try {
             $tgl_pinjam = Carbon::createFromFormat('Y-m-d', $validated['tgl_pinjam'])->startOfDay();
@@ -68,7 +111,7 @@ class PeminjamanController extends Controller
                 return back()->withErrors(['tgl_pinjam' => 'Tanggal pinjam harus hari ini atau lebih lambat.'])->withInput();
             }
 
-            if (!$tgl_kembali->greaterThan($tgl_pinjam)) {
+            if (! $tgl_kembali->greaterThan($tgl_pinjam)) {
                 return back()->withErrors(['tgl_kembali' => 'Tanggal kembali harus lebih lambat dari tanggal pinjam.'])->withInput();
             }
         } catch (\Exception $e) {
@@ -93,7 +136,7 @@ class PeminjamanController extends Controller
 
         $nomor_antrian = Peminjaman::generateNomorAntrian();
 
-        Peminjaman::create([
+        $peminjaman = Peminjaman::create([
             'member_id' => $member->id,
             'book_id' => $book->id,
             'judul_buku' => $book->title,
@@ -104,9 +147,21 @@ class PeminjamanController extends Controller
             'status' => 'diambil',
         ]);
 
+        // Kurangi stok buku jika tersedia
+        if ($book->stock > 0) {
+            $book->stock -= 1;
+            $book->save();
+        }
+
+        // Kurangi stok perpusses juga jika buku asalnya dari perpusses
+        if ($perpussBook && $perpussBook->stock > 0) {
+            $perpussBook->stock -= 1;
+            $perpussBook->save();
+        }
+
         return redirect()->route('peminjaman.riwayat')->with([
-            'success' => 'Peminjaman berhasil! Nomor antrian: ' . $nomor_antrian,
-            'alert' => 'Silakan ambil buku di perpustakaan dengan nomor antrian: ' . $nomor_antrian,
+            'success' => 'Peminjaman berhasil! Nomor antrian: '.$nomor_antrian,
+            'alert' => 'Silakan ambil buku di perpustakaan dengan nomor antrian: '.$nomor_antrian,
         ]);
     }
 
@@ -114,14 +169,38 @@ class PeminjamanController extends Controller
     {
         $member = $this->resolveMember();
 
-        if (!$member instanceof Member) {
+        if (! $member instanceof Member) {
             return $member;
         }
 
-        Peminjaman::where('member_id', $member->id)
+        // Cari peminjaman yang sudah lewat waktu dan belum dikembalikan
+        $expiredLoans = Peminjaman::where('member_id', $member->id)
             ->where('status', '!=', 'dikembalikan')
             ->whereDate('tgl_kembali', '<=', now()->toDateString())
-            ->update(['status' => 'dikembalikan']);
+            ->get();
+
+        // Process setiap peminjaman yang sudah expired
+        foreach ($expiredLoans as $loan) {
+            // Kembalikan stok buku di tabel books
+            $book = Book::find($loan->book_id);
+            if ($book) {
+                $book->stock += 1;
+                $book->save();
+            }
+
+            // Kembalikan stok di tabel perpusses jika ada buku dengan ISBN yang sama
+            if ($book && $book->isbn) {
+                $perpussBook = Perpuss::where('isbn', $book->isbn)->first();
+                if ($perpussBook) {
+                    $perpussBook->stock += 1;
+                    $perpussBook->save();
+                }
+            }
+
+            // Update status menjadi dikembalikan
+            $loan->status = 'dikembalikan';
+            $loan->save();
+        }
 
         $peminjamans = Peminjaman::where('member_id', $member->id)
             ->orderByDesc('created_at')
@@ -137,7 +216,7 @@ class PeminjamanController extends Controller
     {
         $member = $this->resolveMember();
 
-        if (!$member instanceof Member) {
+        if (! $member instanceof Member) {
             return $member;
         }
 
@@ -146,13 +225,13 @@ class PeminjamanController extends Controller
             ->where('status', 'diambil')
             ->exists();
 
-        if (!$hasBorrowed) {
+        if (! $hasBorrowed) {
             return redirect()
                 ->route('katalog')
                 ->withErrors(['access' => 'Silakan ajukan peminjaman untuk membaca buku ini.']);
         }
 
-        if (!$book->pdf_path || !Storage::disk('public')->exists($book->pdf_path)) {
+        if (! $book->pdf_path || ! Storage::disk('public')->exists($book->pdf_path)) {
             return redirect()
                 ->route('katalog')
                 ->withErrors(['pdf' => 'File PDF buku tidak ditemukan.']);
@@ -171,7 +250,7 @@ class PeminjamanController extends Controller
     {
         $member = $this->resolveMember();
 
-        if (!$member instanceof Member) {
+        if (! $member instanceof Member) {
             return $member;
         }
 
@@ -180,15 +259,15 @@ class PeminjamanController extends Controller
             ->where('status', 'diambil')
             ->exists();
 
-        if (!$hasBorrowed) {
+        if (! $hasBorrowed) {
             abort(403, 'Akses ditolak. Silakan pinjam buku terlebih dahulu.');
         }
 
-        if (!$book->pdf_path || !Storage::disk('public')->exists($book->pdf_path)) {
+        if (! $book->pdf_path || ! Storage::disk('public')->exists($book->pdf_path)) {
             abort(404, 'File PDF tidak ditemukan.');
         }
 
-        $downloadName = Str::slug($book->title) . '.pdf';
+        $downloadName = Str::slug($book->title).'.pdf';
 
         return Storage::disk('public')->response(
             $book->pdf_path,
@@ -196,7 +275,7 @@ class PeminjamanController extends Controller
             [
                 'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
                 'Pragma' => 'no-cache',
-                'Content-Disposition' => 'inline; filename="' . $downloadName . '"',
+                'Content-Disposition' => 'inline; filename="'.$downloadName.'"',
             ]
         );
     }
@@ -205,7 +284,7 @@ class PeminjamanController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('login')->withErrors([
                 'auth' => 'Silakan masuk terlebih dahulu untuk mengakses peminjaman.',
             ]);
@@ -213,7 +292,7 @@ class PeminjamanController extends Controller
 
         $member = Member::where('email', $user->email)->first();
 
-        if (!$member) {
+        if (! $member) {
             return redirect()->route('dashboard')->withErrors([
                 'member' => 'Data anggota tidak ditemukan. Hubungi petugas untuk registrasi.',
             ]);

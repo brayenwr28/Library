@@ -30,17 +30,13 @@
             <form action="{{ route('peminjaman.store') }}" method="POST" class="space-y-6" enctype="multipart/form-data">
                 @csrf
 
-                @php
-                    $defaultBookId = old('book_id', $selectedBookId ?? null);
-                @endphp
-
                 <!-- Informasi Buku -->
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">
                         Judul Buku *
                     </label>
 
-                    @if(isset($selectedBook) && $selectedBook)
+                    @if($selectedBook)
                         <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
                             <p class="font-semibold text-slate-900">{{ $selectedBook->title }}</p>
                             <p>{{ $selectedBook->author }} · {{ $selectedBook->publication_year }}</p>
@@ -64,7 +60,7 @@
                         >
                             <option value="">-- Pilih Judul Buku --</option>
                             @forelse($books as $book)
-                                <option value="{{ $book->id }}" @selected($defaultBookId == $book->id)>
+                                <option value="{{ $book->id }}" @selected(old('book_id') == $book->id)>
                                     {{ $book->title }} — {{ $book->author }} ({{ $book->publication_year }})
                                 </option>
                             @empty

@@ -185,7 +185,7 @@
             </a>
 
             <!-- Card 3 -->
-            <a href=""
+            <a href="{{ route('ktm.index') }}"
                 class="group relative overflow-hidden rounded-2xl border border-purple-200/50 bg-gradient-to-br from-purple-50 to-indigo-50 p-8 shadow-lg transition hover:shadow-2xl hover:border-purple-400">
                 <div
                     class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-purple-500/10 to-indigo-500/10">
@@ -195,7 +195,7 @@
                         class="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 text-2xl shadow-md">
                         👥
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900">Manajemen Anggota</h3>
+                    <h3 class="text-xl font-bold text-slate-900">Kartu Anggota</h3>
                     <p class="mt-3 leading-relaxed text-slate-600">Member ID otomatis, status keanggotaan digital, dan
                         tracking keterlibatan untuk setiap pengguna.</p>
                 </div>

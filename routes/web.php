@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\PerpussController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KartuAnggotaController;
 use App\Http\Controllers\PeminjamanController;
 use Illuminate\Support\Facades\Route;
 
@@ -59,3 +60,11 @@ Route::controller(PerpussController::class)->prefix('perpuss')->group(function (
     Route::delete('/{perpuss}', 'destroy')->name('admin.books.library.destroy');
     Route::get('/show', 'show')->name('admin.books.library.show');
 });
+
+// KTM Routes
+Route::middleware('auth')->controller(KartuAnggotaController::class)->prefix('ktm')->group(function () {
+    Route::get('/', 'index')->name('ktm.index');
+    Route::get('/download', 'downloadPDF')->name('ktm.download');
+    Route::get('/{member_id}', 'show')->name('ktm.show');
+});
+

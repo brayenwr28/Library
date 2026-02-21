@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Perpuss;
+use App\Models\Peminjaman;
+use App\Models\Member;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

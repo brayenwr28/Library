@@ -18,6 +18,7 @@ class Member extends Model implements AuthenticatableContract
         'password',
         'nim',
         'prodi',
+        'photo',
         'member_id',
         'tgl_daftar',
     ];
