@@ -23,9 +23,13 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
         
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
+        $member = Member::where('email', $credentials['email'])
+            ->where('password', $credentials['password'])
+            ->first();
 
+        if ($member) {
+            Auth::login($member, $request->boolean('remember'));
+            $request->session()->regenerate();
             return redirect()->route('dashboard');
         }
 
@@ -47,7 +51,7 @@ class AuthController extends Controller
             'username' => ['required', 'string', 'max:255', 'unique:members,username'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:members,email', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'confirmed'],
             'nim' => ['required', 'string', 'max:20', 'unique:members,nim'],
             'prodi' => ['required', 'string', 'max:100'],
             'tgl_daftar' => ['nullable', 'date'],
@@ -61,20 +65,12 @@ class AuthController extends Controller
         $sequence = Member::whereYear('tgl_daftar', $year)->count() + 1;
         $memberId = sprintf('PUS%s-%04d', $year, $sequence);
 
-        $hashedPassword =$validated['password'];
-
-        DB::transaction(function () use ($validated, $memberId, $registrationDate, $hashedPassword) {
-            User::create([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'password' => $hashedPassword,
-            ]);
-
+        DB::transaction(function () use ($validated, $memberId, $registrationDate) {
             Member::create([
                 'username' => $validated['username'],
                 'name' => $validated['name'],
                 'email' => $validated['email'],
-                'password' => $hashedPassword,
+                'password' => $validated['password'],
                 'nim' => $validated['nim'] ?? null,
                 'prodi' => $validated['prodi'] ?? null,
                 'member_id' => $memberId,
@@ -86,13 +82,12 @@ class AuthController extends Controller
             ->route('login')
             ->with('status', 'Registrasi berhasil, silakan login.');
     }
+    
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
         return redirect()->route('dashboard');
     }
 }

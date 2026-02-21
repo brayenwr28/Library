@@ -74,17 +74,22 @@ class AdminRegistrationController extends Controller
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
-            'password' => ['required', 'string'],
+            'password' => ['required'],
         ]);
 
         $remember = $request->boolean('remember');
 
-        if (! Auth::guard('admin')->attempt($credentials, $remember)) {
+        $admin = Admin::where('email', $credentials['email'])
+            ->where('password', $credentials['password'])
+            ->first();
+
+        if (!$admin) {
             return back()
                 ->withErrors(['email' => 'Email atau kata sandi tidak valid.'])
                 ->onlyInput('email');
         }
 
+        Auth::guard('admin')->login($admin, $remember);
         $request->session()->regenerate();
 
         return redirect()->intended(route('admin.dashboard'));
