@@ -146,6 +146,110 @@ class PerpussController extends Controller
     }
 
     /**
+     * Show form to edit perpustakaan book
+     * @param Perpuss $perpuss
+     * @return View
+     */
+    public function edit(Perpuss $perpuss): View
+    {
+        return view('admin.inputBuku.editBukuPerpus', compact('perpuss'));
+    }
+
+    /**
+     * Update perpustakaan book in storage
+     * @param Request $request
+     * @param Perpuss $perpuss
+     * @return RedirectResponse
+     */
+    public function update(Request $request, Perpuss $perpuss): RedirectResponse
+    {
+        try {
+            // Validate input with custom messages
+            $validated = $request->validate([
+                'title' => ['required', 'string', 'max:255', 'min:3'],
+                'author' => ['required', 'string', 'max:255', 'min:3'],
+                'publisher' => ['required', 'string', 'max:255', 'min:3'],
+                'publication_year' => ['nullable', 'integer', 'between:1900,2100'],
+                'category' => ['nullable', 'string', 'max:100'],
+                'summary' => ['nullable', 'string', 'max:5000'],
+                'isbn' => ['nullable', 'string', 'max:100', 'unique:perpusses,isbn,' . $perpuss->id],
+                'stock' => ['nullable', 'integer', 'min:0', 'max:9999'],
+                'status' => ['required', 'in:available,unavailable'],
+                'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            ], [
+                'title.required' => 'Judul buku tidak boleh kosong',
+                'title.min' => 'Judul buku minimal 3 karakter',
+                'author.required' => 'Pengarang tidak boleh kosong',
+                'author.min' => 'Nama pengarang minimal 3 karakter',
+                'publisher.required' => 'Penerbit tidak boleh kosong',
+                'publisher.min' => 'Nama penerbit minimal 3 karakter',
+                'isbn.unique' => 'ISBN ini sudah terdaftar dalam sistem',
+                'stock.max' => 'Stok tidak boleh lebih dari 9999',
+                'cover_image.max' => 'Ukuran gambar terlalu besar (maksimal 2MB)',
+                'cover_image.mimes' => 'File sampul harus berformat JPG atau PNG',
+                'cover_image.image' => 'File sampul harus berupa gambar',
+                'publication_year.between' => 'Tahun publikasi harus antara 1900 dan 2100',
+            ]);
+
+            // Update book data
+            $perpuss->update([
+                'title' => $validated['title'],
+                'author' => $validated['author'],
+                'publisher' => $validated['publisher'],
+                'publication_year' => $validated['publication_year'] ?? (int) now()->format('Y'),
+                'category' => $validated['category'] ?? null,
+                'summary' => $validated['summary'] ?? null,
+                'isbn' => $validated['isbn'] ?? null,
+                'stock' => $validated['stock'] ?? 1,
+                'status' => $validated['status'],
+            ]);
+
+            // Handle cover image update
+            if ($request->hasFile('cover_image')) {
+                $file = $request->file('cover_image');
+                
+                if ($file->getSize() > 2097152) { // 2MB = 2097152 bytes
+                    return back()
+                        ->withInput()
+                        ->withErrors(['cover_image' => 'Ukuran file gambar melebihi batas maksimal 2MB']);
+                }
+
+                // Delete old cover if exists
+                if ($perpuss->cover_path && Storage::disk('public')->exists($perpuss->cover_path)) {
+                    Storage::disk('public')->delete($perpuss->cover_path);
+                }
+
+                // Upload new cover
+                $perpuss->cover_path = $file->store('perpuss/covers', 'public');
+                $perpuss->save();
+            }
+
+            Log::info('Perpustakaan book updated successfully', [
+                'book_id' => $perpuss->id,
+                'title' => $perpuss->title,
+                'user_id' => auth()->id(),
+                'timestamp' => now(),
+            ]);
+
+            return redirect()
+                ->route('admin.books.library.show')
+                ->with('success', "✅ Buku perpustakaan '{$validated['title']}' berhasil diperbarui.");
+        } catch (Exception $e) {
+            Log::error('Error updating perpustakaan book', [
+                'book_id' => $perpuss->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'user_id' => auth()->id(),
+                'timestamp' => now(),
+            ]);
+
+            return back()
+                ->withInput()
+                ->withErrors(['general' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
      * Delete perpustakaan book from storage including associated files
      * @param Perpuss $perpuss
      * @return RedirectResponse

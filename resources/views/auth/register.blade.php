@@ -42,7 +42,7 @@
         </div>
 
         <!-- Form -->
-        <form method="POST" action="{{ route('register.store') }}" class="space-y-5">
+        <form method="POST" action="{{ route('register.store') }}" class="space-y-5" enctype="multipart/form-data">
             @csrf
 
             <!-- Username -->
@@ -128,6 +128,18 @@
                 <label class="text-sm font-medium text-slate-600">Konfirmasi Password</label>
                 <input type="password" name="password_confirmation" class="w-full mt-1 px-4 py-2 border rounded-lg
                           focus:outline-none focus:ring-2 focus:ring-slate-400">
+            </div>
+
+            <!-- Foto -->
+            <div>
+                <label class="text-sm font-medium text-slate-600">Foto Profil (Opsional)</label>
+                <p class="text-xs text-slate-500 mb-2">Format: JPG, PNG. Max: 2MB</p>
+                <input type="file" name="photo" accept="image/jpeg,image/png"
+                    class="w-full mt-1 px-4 py-2 border rounded-lg
+                          focus:outline-none focus:ring-2 focus:ring-slate-400 @error('photo') border-red-500 @enderror">
+                @error('photo')
+                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                @enderror
             </div>
 
             <!-- Button -->

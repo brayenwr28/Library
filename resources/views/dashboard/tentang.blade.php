@@ -18,7 +18,7 @@
         </div>
 
     </div>
-</section>
+</section>  
 </body>
 </html>
 @extends('layouts.app')

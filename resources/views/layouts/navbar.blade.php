@@ -85,6 +85,9 @@
                         <a href="{{ route('peminjaman.riwayat') }}" class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900">
                             <span>Riwayat Peminjaman</span>
                         </a>
+                        <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900">
+                            <span>Edit Profil</span>
+                        </a>
                         <form action="{{ route('logout') }}" method="POST" class="mt-1">
                             @csrf
                             <button type="submit" class="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900">

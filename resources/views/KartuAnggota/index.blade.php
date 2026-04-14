@@ -268,8 +268,11 @@
                 <div class="alert alert-info mt-4" role="alert">
                     <h5 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Informasi Penting</h5>
                     <ul class="mb-0">
-                        <li>Download KTM Anda dan cetak dengan ukuran kertas A4</li>
-                        <li>Gunakan foto dengan latar belakang biru untuk hasil optimal</li>
+                        <li>Klik tombol <strong>"Download PDF"</strong> untuk mengunduh Kartu Tanda Member Anda</li>
+                        <li>File akan diunduh dengan nama: <strong>KTM-{Nomor Member}-{Tanggal}.pdf</strong></li>
+                        <li>Simpan file PDF dengan aman di folder Anda</li>
+                        <li>Anda dapat mencetak file PDF kapan saja sesuai kebutuhan</li>
+                        <li>Gunakan kertas <strong>A4</strong> untuk hasil optimal</li>
                         <li>Tunjukkan KTM setiap kali mengakses layanan perpustakaan</li>
                         <li>Kartu berlaku selama masih terdaftar sebagai anggota</li>
                     </ul>

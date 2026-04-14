@@ -9,7 +9,7 @@
 				<div>
 					<p class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">Koleksi Perpustakaan</p>
 					<h1 class="mt-3 text-3xl font-semibold text-slate-900">Daftar Buku Perpustakaan</h1>
-					<p class="mt-2 text-sm text-slate-500">Pantau dan kelola buku fisik yang tersedia di perpustakaan.</p>
+					<p class="mt-2 text-sm text-slate-500">Pantau dan kelola buku fisik yang tersedia di perpustakaan metamedia.</p>
 				</div>
 
 				<div class="flex flex-col gap-3 sm:flex-row">
@@ -62,7 +62,7 @@
 								<th class="w-32 px-5 py-3 text-left font-semibold">Kategori</th>
 								<th class="w-24 px-5 py-3 text-left font-semibold">Stok</th>
 								<th class="w-32 px-5 py-3 text-left font-semibold">Status</th>
-								<th class="w-40 px-5 py-3 text-center font-semibold">Aksi</th>
+								<th class="w-48 px-5 py-3 text-center font-semibold">Aksi</th>
 							</tr>
 						</thead>
 						<tbody class="divide-y divide-slate-100">
@@ -95,13 +95,20 @@
 									</td>
 									<td class="px-5 py-4 text-center">
 										<div class="flex items-center justify-center gap-2">
+											<a href="{{ route('admin.books.library.edit', $book) }}" class="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-medium text-blue-600 transition hover:bg-blue-100 hover:border-blue-300">
+												<i class="fas fa-edit"></i> Edit
+											</a>
 											@if($book->pdf_path)
-												<a href="{{ asset('storage/' . $book->pdf_path) }}" target="_blank" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-50">Lihat PDF</a>
+												<a href="{{ asset('storage/' . $book->pdf_path) }}" target="_blank" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-50">
+													<i class="fas fa-file-pdf"></i> PDF
+												</a>
 											@endif
-											<form action="{{ route('admin.books.library.destroy', $book) }}" method="POST" onsubmit="return confirm('Hapus buku ini dari katalog?');">
+											<form action="{{ route('admin.books.library.destroy', $book) }}" method="POST" onsubmit="return confirm('Hapus buku ini dari katalog?');" class="inline">
 												@csrf
 												@method('DELETE')
-												<button type="submit" class="rounded-lg bg-rose-500 px-3 py-2 text-xs font-medium text-white transition hover:bg-rose-600">Hapus</button>
+												<button type="submit" class="rounded-lg bg-rose-500 px-3 py-2 text-xs font-medium text-white transition hover:bg-rose-600">
+													<i class="fas fa-trash"></i> Hapus
+												</button>
 											</form>
 										</div>
 									</td>

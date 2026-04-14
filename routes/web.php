@@ -16,7 +16,6 @@ Route::controller(AuthController::class)->prefix('auth')->group(function () {
 
     Route::get('/register', 'register')->name('register');
     Route::post('/register', 'registerStore')->name('register.store');
-    Route::get('logout', 'logout')->name('logout');
 });
 
 Route::controller(AdminRegistrationController::class)->prefix('login')->group(function () {
@@ -57,8 +56,10 @@ Route::controller(PerpussController::class)->prefix('perpuss')->group(function (
     Route::get('/', 'index')->name('admin.books.library.index');
     Route::post('/', 'store')->name('admin.books.library.store');
     Route::get('/create', 'create')->name('admin.books.library.create');
-    Route::delete('/{perpuss}', 'destroy')->name('admin.books.library.destroy');
     Route::get('/show', 'show')->name('admin.books.library.show');
+    Route::get('/{perpuss}/edit', 'edit')->name('admin.books.library.edit');
+    Route::put('/{perpuss}', 'update')->name('admin.books.library.update');
+    Route::delete('/{perpuss}', 'destroy')->name('admin.books.library.destroy');
 });
 
 // KTM Routes
@@ -66,5 +67,11 @@ Route::middleware('auth')->controller(KartuAnggotaController::class)->prefix('kt
     Route::get('/', 'index')->name('ktm.index');
     Route::get('/download', 'downloadPDF')->name('ktm.download');
     Route::get('/{member_id}', 'show')->name('ktm.show');
+});
+
+// Profile Routes
+Route::middleware('auth')->controller(KartuAnggotaController::class)->prefix('profile')->group(function () {
+    Route::get('/edit', 'edit')->name('profile.edit');
+    Route::put('/update', 'update')->name('profile.update');
 });
 

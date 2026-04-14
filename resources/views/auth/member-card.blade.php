@@ -52,7 +52,9 @@
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div>
                             <p class="text-xs font-semibold text-slate-500 uppercase mb-1">Nomor Anggota</p>
-                            <p class="text-lg font-bold text-slate-800 tracking-wider">{{ $member->member_id }}</p>
+                            <p class="text-lg font-bold text-slate-800 tracking-wider"> required
+                            {{ $member->member_id }}
+                        </p>
                         </div>
                         <div>
                             <p class="text-xs font-semibold text-slate-500 uppercase mb-1">Tanggal Daftar</p>
