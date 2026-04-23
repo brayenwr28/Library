@@ -150,7 +150,7 @@
                         <!-- Primary Action -->
                         <div class="flex gap-2">
                             @if(!$canRead)
-                                <a href="{{ route('peminjaman.show', ['book_id' => $book->id]) }}" 
+                                <a href="{{ route('peminjaman.perpus', ['book_id' => $book->id]) }}" 
                                    class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2.5 text-sm font-bold text-white shadow-md transition hover:shadow-lg hover:from-blue-700 hover:to-blue-800 active:scale-95">
                                     📌 Pinjam Buku
                                 </a>

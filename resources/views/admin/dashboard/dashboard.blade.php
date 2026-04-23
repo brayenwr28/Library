@@ -125,6 +125,72 @@
         </div>
     </div>
 
+    <!-- Confirmation Pending Alerts -->
+    <div class="row g-3 mb-4">
+        <!-- Pending Peminjaman -->
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm overflow-hidden animate-fade-in-up delay-500" style="border-left: 4px solid #3b82f6;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <p class="text-muted small fw-semibold text-uppercase tracking-wider mb-2">⏳ Peminjaman Menunggu</p>
+                            <h2 class="fw-bold stat-number mb-2" style="color: #3b82f6;">{{ $pendingPeminjaman ?? 0 }}</h2>
+                            <small class="text-muted">Perlu dikonfirmasi</small>
+                        </div>
+                        <div class="stat-icon bg-blue-100 text-primary ms-3">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <a href="{{ route('admin.peminjaman.menunggu') }}" class="btn btn-sm btn-primary fw-semibold" style="border-radius: 6px;">
+                        Lihat Detail <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Pengembalian -->
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm overflow-hidden animate-fade-in-up delay-600" style="border-left: 4px solid #10b981;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <p class="text-muted small fw-semibold text-uppercase tracking-wider mb-2">📦 Pengembalian Menunggu</p>
+                            <h2 class="fw-bold stat-number mb-2" style="color: #10b981;">{{ $pendingPengembalian ?? 0 }}</h2>
+                            <small class="text-muted">Perlu dikonfirmasi</small>
+                        </div>
+                        <div class="stat-icon bg-green-100 text-success ms-3">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                    </div>
+                    <a href="{{ route('admin.pengembalian.menunggu') }}" class="btn btn-sm btn-success fw-semibold" style="border-radius: 6px;">
+                        Lihat Detail <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Denda Hari Ini -->
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm overflow-hidden animate-fade-in-up delay-700" style="border-left: 4px solid #ef4444;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <p class="text-muted small fw-semibold text-uppercase tracking-wider mb-2">💰 Denda Hari Ini</p>
+                            <h2 class="fw-bold stat-number mb-2" style="color: #ef4444;">Rp {{ number_format($totalDendaHariIni ?? 0, 0, ',', '.') }}</h2>
+                            <small class="text-muted">Total dari pengembalian</small>
+                        </div>
+                        <div class="stat-icon bg-red-100 text-danger ms-3">
+                            <i class="fas fa-money-bill"></i>
+                        </div>
+                    </div>
+                    <span class="badge bg-light text-muted fw-normal small">
+                        <i class="fas fa-calendar-today"></i> {{ today()->translatedFormat('d F Y') }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Charts & Activities -->
     <div class="row g-3">
         <!-- Chart -->
@@ -134,7 +200,6 @@
                     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
                         <div>
                             <h5 class="card-title fw-bold mb-1">📈 Tren Peminjaman</h5>
-                            <p class="text-muted small mb-0">Grafik aktivitas peminjaman buku 30 hari terakhir</p>
                         </div>
                         <div class="btn-group btn-group-sm" role="group">
                             <button type="button" class="btn btn-outline-primary active fw-semibold">30H</button>
@@ -156,7 +221,6 @@
             <div class="card border-0 shadow-sm h-100 d-flex flex-column animate-slide-in-right delay-100">
                 <div class="card-header bg-white border-bottom-0 p-4">
                     <h5 class="card-title fw-bold mb-1">⚡ Aktivitas Terbaru</h5>
-                    <p class="text-muted small mb-0">5 aktivitas terbaru di sistem</p>
                 </div>
                 <div class="card-body p-0 flex-grow-1 overflow-auto" style="max-height: 420px; scrollbar-width: thin;">
                     @php
@@ -188,9 +252,6 @@
                             <p class="mb-0 text-center small fw-semibold">Belum ada aktivitas baru</p>
                         </div>
                     @endif
-                </div>
-                <div class=\"card-footer bg-light border-top-0 p-3 text-center\">
-                    <a href=\"#\" class=\"btn btn-sm btn-link text-primary fw-semibold\">Lihat semua aktivitas →</a>
                 </div>
             </div>
         </div>

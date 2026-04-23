@@ -8,6 +8,7 @@ use App\Models\Book;
 use App\Models\Perpuss;
 use App\Models\Member;
 use App\Models\Peminjaman;
+use App\Models\Pengembalian;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\RedirectResponse;
@@ -23,6 +24,13 @@ class AdminRegistrationController extends Controller
         $totalDigitalBooks = Perpuss::whereNotNull('cover_path')->count();
         $totalLibraryBooks = Book::whereNull('pdf_path')->count();
         $totalRegisteredUsers = Member::count();
+
+        // Pending Confirmations
+        $pendingPeminjaman = Peminjaman::where('status', 'menunggu_konfirmasi')->count();
+        $pendingPengembalian = Pengembalian::where('status', 'menunggu_konfirmasi')->count();
+        $totalDendaHariIni = Pengembalian::whereDate('created_at', today())
+            ->where('status', 'diterima')
+            ->sum('denda');
 
         $period = CarbonPeriod::create(Carbon::now()->subDays(29), Carbon::now());
         $borrowTotals = Peminjaman::selectRaw('DATE(COALESCE(tgl_pinjam, created_at)) as tanggal, COUNT(*) as total')
@@ -62,7 +70,10 @@ class AdminRegistrationController extends Controller
             'totalRegisteredUsers',
             'borrowChartLabels',
             'borrowChartData',
-            'recentActivities'
+            'recentActivities',
+            'pendingPeminjaman',
+            'pendingPengembalian',
+            'totalDendaHariIni'
         ));
     }
     public function login(): View

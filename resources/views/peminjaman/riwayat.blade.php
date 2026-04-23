@@ -18,9 +18,17 @@
                         <span class="text-slate-400">({{ $member->username }})</span>
                     </p>
                 </div>
-                <div class="rounded-xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm">
-                    <p class="text-xs uppercase tracking-widest text-slate-400">Terakhir diperbarui</p>
-                    <p class="mt-1 font-semibold text-slate-700">{{ now()->translatedFormat('d F Y, H:i') }}</p>
+                <div class="flex flex-col gap-3">
+                    <div class="rounded-xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm">
+                        <p class="text-xs uppercase tracking-widest text-slate-400">Terakhir diperbarui</p>
+                        <p class="mt-1 font-semibold text-slate-700">{{ now()->translatedFormat('d F Y, H:i') }}</p>
+                    </div>
+                    <a href="{{ route('peminjaman.riwayat.download') }}" class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:border-slate-400">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Unduh PDF
+                    </a>
                 </div>
             </div>
         </header>

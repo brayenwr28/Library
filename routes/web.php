@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\Admin\AdminRegistrationController;
 use App\Http\Controllers\Admin\BookController;
+use App\Http\Controllers\Admin\PengunjungController;
 use App\Http\Controllers\Admin\PerpussController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KartuAnggotaController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PengembalianController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(AuthController::class)->prefix('auth')->group(function () {
@@ -43,11 +45,17 @@ Route::controller(DashboardController::class)->group(function () {
     Route::get('sejarah', 'sejarah')->name('sejarah');
     Route::get('tentang', 'tentang')->name('tentang');
     Route::get('contact', 'contact')->name('contact');
+    Route::get('laporan', function () {
+        return redirect()->route('admin.report.index');
+    })->name('laporan');
 });
 Route::controller(PeminjamanController::class)->prefix('peminjaman')->group(function () {
     Route::get('/', 'index')->name('peminjaman.show');
     Route::post('/', 'store')->name('peminjaman.store');
+    Route::get('/katalog', 'katalogForm')->name('peminjaman.katalog');
+    Route::get('/perpus', 'perpusForm')->name('peminjaman.perpus');
     Route::get('/riwayat', 'riwayat')->name('peminjaman.riwayat');
+    Route::get('/riwayat/download-pdf', 'downloadRiwayatPdf')->name('peminjaman.riwayat.download');
     Route::get('/baca/{book}', 'read')->name('peminjaman.read');
     Route::get('/baca/{book}/stream', 'stream')->name('peminjaman.read.stream');
 });
@@ -73,5 +81,45 @@ Route::middleware('auth')->controller(KartuAnggotaController::class)->prefix('kt
 Route::middleware('auth')->controller(KartuAnggotaController::class)->prefix('profile')->group(function () {
     Route::get('/edit', 'edit')->name('profile.edit');
     Route::put('/update', 'update')->name('profile.update');
+});
+
+// Pengunjung Routes
+Route::controller(PengunjungController::class)->prefix('pengunjung')->group(function () {
+    Route::get('/form', 'show')->name('pengunjung.form');
+    Route::post('/', 'store')->name('pengunjung.store');
+    Route::get('/', 'index')->name('pengunjung.index');
+    Route::delete('/{pengunjung}', 'destroy')->name('pengunjung.destroy');
+});
+
+// Admin Confirmation Routes - Peminjaman
+Route::middleware('auth:admin')->controller(PeminjamanController::class)->prefix('admin/peminjaman')->group(function () {
+    Route::get('/menunggu', 'indexMenungguKonfirmasi')->name('admin.peminjaman.menunggu');
+    Route::put('/{peminjaman}/konfirmasi', 'konfirmasiPeminjaman')->name('admin.peminjaman.konfirmasi');
+    Route::put('/{peminjaman}/tolak', 'tolakPeminjaman')->name('admin.peminjaman.tolak');
+});
+
+// Admin Confirmation Routes - Pengembalian
+Route::middleware('auth:admin')->controller(PengembalianController::class)->prefix('admin/pengembalian')->group(function () {
+    Route::get('/menunggu', 'indexMenunggu')->name('admin.pengembalian.menunggu');
+    Route::get('/{pengembalian}', 'show')->name('admin.pengembalian.show');
+    Route::put('/{pengembalian}/terima', 'terima')->name('admin.pengembalian.terima');
+    Route::put('/{pengembalian}/tolak', 'tolak')->name('admin.pengembalian.tolak');
+});
+
+// Admin Report Routes
+Route::middleware('auth:admin')->controller(\App\Http\Controllers\Admin\AdminReportController::class)->prefix('admin/reports')->group(function () {
+    Route::get('/', 'index')->name('admin.report.index');
+    
+    Route::get('/peminjaman', 'laporanPeminjaman')->name('admin.report.peminjaman');
+    Route::get('/peminjaman/export-pdf', 'exportPeminjamanPdf')->name('admin.report.peminjaman.export');
+    
+    Route::get('/pengembalian', 'laporanPengembalian')->name('admin.report.pengembalian');
+    Route::get('/pengembalian/export-pdf', 'exportPengembalianPdf')->name('admin.report.pengembalian.export');
+    
+    Route::get('/pengunjung', 'laporanPengunjung')->name('admin.report.pengunjung');
+    Route::get('/pengunjung/export-pdf', 'exportPengunjungPdf')->name('admin.report.pengunjung.export');
+    
+    Route::get('/anggota', 'laporanAnggota')->name('admin.report.anggota');
+    Route::get('/anggota/export-pdf', 'exportAnggotaPdf')->name('admin.report.anggota.export');
 });
 

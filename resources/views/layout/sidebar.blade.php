@@ -113,15 +113,27 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="{{ url('admin/reports/borrowers') }}" class="nav-link {{ request()->is('admin/reports/borrowers*') ? 'active' : '' }}">
+              <a href="{{ route('admin.report.peminjaman') }}" class="nav-link {{ request()->routeIs('admin.report.peminjaman') ? 'active' : '' }}">
                 <i class="nav-icon bi bi-circle"></i>
-                <p>Grafik Peminjaman</p>
+                <p> Laporan Peminjaman</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{ url('admin/reports/books') }}" class="nav-link {{ request()->is('admin/reports/books*') ? 'active' : '' }}">
+              <a href="{{ route('admin.report.pengembalian') }}" class="nav-link {{ request()->routeIs('admin.report.pengembalian') ? 'active' : '' }}">
                 <i class="nav-icon bi bi-circle"></i>
-                <p>Statistik Buku</p>
+                <p> Laporan Pengembalian</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('admin.report.pengunjung') }}" class="nav-link {{ request()->routeIs('admin.report.pengunjung') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p> Laporan Pengunjung</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('admin.report.anggota') }}" class="nav-link {{ request()->routeIs('admin.report.anggota') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p> Laporan Anggota</p>
               </a>
             </li>
           </ul>

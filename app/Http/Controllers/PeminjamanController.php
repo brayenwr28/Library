@@ -68,6 +68,86 @@ class PeminjamanController extends Controller
         ]);
     }
 
+    /**
+     * Tampilkan form peminjaman untuk katalog (buku digital)
+     */
+    public function katalogForm(Request $request): View|RedirectResponse
+    {
+        $member = $this->resolveMember();
+
+        if (! $member instanceof Member) {
+            return $member;
+        }
+
+        // Query hanya dari tabel books (katalog digital)
+        $books = Book::whereNotNull('pdf_path')
+            ->where('status', 'available')
+            ->where('stock', '>', 0)
+            ->orderBy('title')
+            ->get();
+
+        $selectedBookId = $request->query('book_id');
+        $selectedBook = null;
+
+        // Jika ada parameter book_id, cari buku dari tabel books saja
+        if ($selectedBookId) {
+            $selectedBook = Book::find((int) $selectedBookId);
+            
+            // Cek apakah buku masih memiliki stok
+            if ($selectedBook && $selectedBook->stock <= 0) {
+                return back()->withErrors(['book_id' => 'Buku yang dipilih sudah tidak tersedia. Stok habis.'])->withInput();
+            }
+        }
+
+        return view('peminjaman.formKatalog', [
+            'member' => $member,
+            'books' => $books,
+            'selectedBookId' => $selectedBookId,
+            'selectedBook' => $selectedBook,
+            'source' => 'katalog',
+        ]);
+    }
+
+    /**
+     * Tampilkan form peminjaman untuk perpustakaan fisik
+     */
+    public function perpusForm(Request $request): View|RedirectResponse
+    {
+        $member = $this->resolveMember();
+
+        if (! $member instanceof Member) {
+            return $member;
+        }
+
+        // Query hanya dari tabel perpusses (perpustakaan fisik)
+        $books = Perpuss::where('status', 'available')
+            ->where('stock', '>', 0)
+            ->whereNotNull('pdf_path')
+            ->orderBy('title')
+            ->get();
+
+        $selectedBookId = $request->query('book_id');
+        $selectedBook = null;
+
+        // Jika ada parameter book_id, cari buku dari tabel perpusses saja
+        if ($selectedBookId) {
+            $selectedBook = Perpuss::find((int) $selectedBookId);
+            
+            // Cek apakah buku masih memiliki stok
+            if ($selectedBook && $selectedBook->stock <= 0) {
+                return back()->withErrors(['book_id' => 'Buku yang dipilih sudah tidak tersedia. Stok habis.'])->withInput();
+            }
+        }
+
+        return view('peminjaman.formPerpus', [
+            'member' => $member,
+            'books' => $books,
+            'selectedBookId' => $selectedBookId,
+            'selectedBook' => $selectedBook,
+            'source' => 'perpus',
+        ]);
+    }
+
     public function store(PeminjamanRequest $request): RedirectResponse
     {
         $member = $this->resolveMember();
@@ -158,24 +238,12 @@ class PeminjamanController extends Controller
             'tgl_pinjam' => $validated['tgl_pinjam'],
             'tgl_kembali' => $validated['tgl_kembali'],
             'bukti_registrasi' => $bukti_path,
-            'status' => 'diambil',
+            'status' => 'menunggu_konfirmasi',
         ]);
 
-        // Kurangi stok buku jika tersedia
-        if ($book->stock > 0) {
-            $book->stock -= 1;
-            $book->save();
-        }
-
-        // Kurangi stok perpusses juga jika buku asalnya dari perpusses
-        if ($perpussBook && $perpussBook->stock > 0) {
-            $perpussBook->stock -= 1;
-            $perpussBook->save();
-        }
-
         return redirect()->route('peminjaman.riwayat')->with([
-            'success' => 'Peminjaman berhasil! Nomor antrian: '.$nomor_antrian,
-            'alert' => 'Silakan ambil buku di perpustakaan dengan nomor antrian: '.$nomor_antrian,
+            'success' => 'Permintaan peminjaman berhasil! Nomor antrian: '.$nomor_antrian,
+            'alert' => 'Silakan tunggu konfirmasi dari admin. Anda akan menerima notifikasi saat permintaan diterima.',
         ]);
     }
 
@@ -292,6 +360,144 @@ class PeminjamanController extends Controller
                 'Content-Disposition' => 'inline; filename="'.$downloadName.'"',
             ]
         );
+    }
+
+    public function downloadRiwayatPdf()
+    {
+        $member = $this->resolveMember();
+
+        if (! $member instanceof Member) {
+            return $member;
+        }
+
+        // Process expired loans
+        $expiredLoans = Peminjaman::where('member_id', $member->id)
+            ->where('status', '!=', 'dikembalikan')
+            ->whereDate('tgl_kembali', '<=', now()->toDateString())
+            ->get();
+
+        foreach ($expiredLoans as $loan) {
+            $book = Book::find($loan->book_id);
+            if ($book) {
+                $book->stock += 1;
+                $book->save();
+            }
+
+            if ($book && $book->isbn) {
+                $perpussBook = Perpuss::where('isbn', $book->isbn)->first();
+                if ($perpussBook) {
+                    $perpussBook->stock += 1;
+                    $perpussBook->save();
+                }
+            }
+
+            $loan->status = 'dikembalikan';
+            $loan->save();
+        }
+
+        $peminjamans = Peminjaman::where('member_id', $member->id)
+            ->orderByDesc('created_at')
+            ->get();
+
+        $pdf = \PDF::loadView('peminjaman.riwayat-pdf', [
+            'member' => $member,
+            'peminjamans' => $peminjamans,
+            'generatedAt' => now()->translatedFormat('d F Y H:i'),
+        ]);
+
+        return $pdf->download('Riwayat_Peminjaman_'.$member->name.'_'.now()->format('Y-m-d').'.pdf');
+    }
+
+    /**
+     * LIST - Peminjaman yang menunggu konfirmasi admin
+     */
+    public function indexMenungguKonfirmasi(): View
+    {
+        $peminjamans = Peminjaman::with(['member', 'book'])
+            ->where('status', 'menunggu_konfirmasi')
+            ->orderByDesc('created_at')
+            ->paginate(15);
+
+        return view('admin.peminjaman.menunggu-konfirmasi', [
+            'peminjamans' => $peminjamans,
+        ]);
+    }
+
+    /**
+     * DETAIL - Peminjaman untuk konfirmasi
+     */
+    public function showKonfirmasi(Peminjaman $peminjaman): View
+    {
+        $peminjaman->load(['member', 'book']);
+
+        return view('admin.peminjaman.detail-konfirmasi', [
+            'peminjaman' => $peminjaman,
+        ]);
+    }
+
+    /**
+     * ACTION - Konfirmasi peminjaman (Admin Approve)
+     */
+    public function konfirmasiPeminjaman(Peminjaman $peminjaman): RedirectResponse
+    {
+        if ($peminjaman->status !== 'menunggu_konfirmasi') {
+            return back()->withErrors(['error' => 'Peminjaman sudah diproses sebelumnya.']);
+        }
+
+        try {
+            // Update status menjadi DIAMBIL
+            $peminjaman->update([
+                'status' => 'diambil',
+            ]);
+
+            // Kurangi stok buku
+            $book = $peminjaman->book;
+            if ($book && $book->stock > 0) {
+                $book->decrement('stock');
+            }
+
+            // Kurangi stok perpusses jika ada
+            if ($book && $book->isbn) {
+                $perpussBook = Perpuss::where('isbn', $book->isbn)->first();
+                if ($perpussBook && $perpussBook->stock > 0) {
+                    $perpussBook->decrement('stock');
+                }
+            }
+
+            return redirect()
+                ->route('admin.peminjaman.menunggu')
+                ->with('success', 'Peminjaman diterima! Member dapat mengambil buku dengan nomor antrian: ' . $peminjaman->nomor_antrian);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * ACTION - Tolak peminjaman
+     */
+    public function tolakPeminjaman(Peminjaman $peminjaman, Request $request): RedirectResponse
+    {
+        $request->validate([
+            'alasan' => 'required|string|min:5|max:255',
+        ]);
+
+        if ($peminjaman->status !== 'menunggu_konfirmasi') {
+            return back()->withErrors(['error' => 'Peminjaman sudah diproses sebelumnya.']);
+        }
+
+        try {
+            // Update status menjadi DITOLAK dengan catatan alasan
+            $peminjaman->update([
+                'status' => 'ditolak',
+                'catatan' => 'Alasan Penolakan: ' . $request->alasan,
+            ]);
+
+            return redirect()
+                ->route('admin.peminjaman.menunggu')
+                ->with('warning', 'Peminjaman ditolak. Member akan menerima notifikasi penolakan.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        }
     }
 
     private function resolveMember(): Member|RedirectResponse

@@ -428,6 +428,35 @@
                     </span>
                 </div>
             </a>
+
+            <!-- Card 5 -->
+            <a href="{{ route('pengunjung.form') }}"
+                class="group relative h-full overflow-hidden rounded-2xl border border-green-200/60 bg-gradient-to-br from-green-50 via-white to-emerald-50 p-8 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 animate-fade-in-up delay-500">
+                
+                <!-- Badge -->
+                <div class="absolute top-0 right-0 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold rounded-bl-lg">
+                    Pro
+                </div>
+                
+                <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-green-500/5 to-emerald-500/5"></div>
+                
+                <div class="relative space-y-4">
+                    <div class="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 text-3xl shadow-lg group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
+                        📋
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 leading-tight">Isi Pengunjung</h3>
+                    <p class="leading-relaxed text-slate-600">Catat Kunjungan Anda ke Perpustakaan Universitas Metamedia.</p>
+                </div>
+                
+                <div class="relative mt-8 pt-6 border-t border-green-200/50">
+                    <span class="inline-flex items-center gap-2 text-sm font-semibold text-green-600 group-hover:text-green-700 transition">
+                        Isi data pengunjung
+                        <svg class="w-4 h-4 group-hover:translate-x-2 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </span>
+                </div>
+            </a>
         </div>
     </div>
 </section>
