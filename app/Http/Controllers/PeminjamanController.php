@@ -26,14 +26,16 @@ class PeminjamanController extends Controller
             return $member;
         }
 
-        // Query dari tabel books
+        // Query dari tabel books (yang memiliki stok > 0)
         $digitalBooks = Book::whereNotNull('pdf_path')
             ->where('status', 'available')
+            ->where('stock', '>', 0)
             ->orderBy('title')
             ->get();
 
-        // Query dari tabel perpusses (dengan pdf_path)
+        // Query dari tabel perpusses (yang memiliki stok > 0)
         $perpussBooks = Perpuss::where('status', 'available')
+            ->where('stock', '>', 0)
             ->whereNotNull('pdf_path')
             ->orderBy('title')
             ->get();
@@ -50,6 +52,11 @@ class PeminjamanController extends Controller
             $selectedBook = Book::find((int) $selectedBookId);
             if (!$selectedBook) {
                 $selectedBook = Perpuss::find((int) $selectedBookId);
+            }
+            
+            // Cek apakah buku masih memiliki stok
+            if ($selectedBook && $selectedBook->stock <= 0) {
+                return back()->withErrors(['book_id' => 'Buku yang dipilih sudah tidak tersedia. Stok habis.'])->withInput();
             }
         }
 
@@ -131,6 +138,13 @@ class PeminjamanController extends Controller
         if ($duplicateLoan) {
             return back()->withErrors([
                 'book_id' => 'Anda masih memiliki peminjaman aktif untuk buku ini. Selesaikan terlebih dahulu sebelum meminjam kembali.',
+            ])->withInput();
+        }
+
+        // Safety check: Verifikasi stok buku masih tersedia sebelum membuat peminjaman
+        if ($book->stock <= 0) {
+            return back()->withErrors([
+                'book_id' => 'Stok buku sudah habis. Buku tidak dapat dipinjam saat ini. Hubungi petugas perpustakaan untuk informasi lebih lanjut.',
             ])->withInput();
         }
 

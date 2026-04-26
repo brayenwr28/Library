@@ -20,9 +20,22 @@ class PeminjamanRequest extends FormRequest
             'book_id' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    $bookExists = Book::find($value) || Perpuss::find($value);
-                    if (!$bookExists) {
+                    $book = Book::find($value);
+                    $perpussBook = null;
+                    
+                    if (!$book) {
+                        $perpussBook = Perpuss::find($value);
+                    }
+                    
+                    if (!$book && !$perpussBook) {
                         $fail('Buku yang dipilih tidak ditemukan.');
+                        return;
+                    }
+                    
+                    // Check stok buku
+                    $stock = $book ? $book->stock : $perpussBook->stock;
+                    if ($stock <= 0) {
+                        $fail('Stok buku sudah habis. Buku tidak dapat dipinjam saat ini.');
                     }
                 }
             ],

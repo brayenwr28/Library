@@ -37,17 +37,31 @@
                     </label>
 
                     @if($selectedBook)
-                        <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-                            <p class="font-semibold text-slate-900">{{ $selectedBook->title }}</p>
+                        <div class="rounded-lg border @if($selectedBook->stock > 0) border-slate-200 bg-slate-50 @else border-red-300 bg-red-50 @endif p-4 text-sm @if($selectedBook->stock > 0) text-slate-700 @else text-red-700 @endif">
+                            <p class="font-semibold @if($selectedBook->stock > 0) text-slate-900 @else text-red-900 @endif">{{ $selectedBook->title }}</p>
                             <p>{{ $selectedBook->author }} · {{ $selectedBook->publication_year }}</p>
                             @if($selectedBook->publisher)
-                                <p class="text-xs text-slate-500">Penerbit: {{ $selectedBook->publisher }}</p>
+                                <p class="text-xs @if($selectedBook->stock > 0) text-slate-500 @else text-red-600 @endif">Penerbit: {{ $selectedBook->publisher }}</p>
                             @endif
                             @if($selectedBook->category)
-                                <p class="text-xs text-slate-500">Kategori: {{ $selectedBook->category }}</p>
+                                <p class="text-xs @if($selectedBook->stock > 0) text-slate-500 @else text-red-600 @endif">Kategori: {{ $selectedBook->category }}</p>
                             @endif
-                            <p class="mt-2 text-xs text-emerald-600">Buku dipilih otomatis dari katalog.</p>
+                            <p class="mt-2 text-xs @if($selectedBook->stock > 0) text-emerald-600 @else text-red-600 font-semibold @endif">
+                                @if($selectedBook->stock > 0)
+                                    ✅ Buku dipilih otomatis dari katalog. | Stok: <span class="font-semibold">{{ $selectedBook->stock }}</span> tersedia
+                                @else
+                                    ⚠️ Stok buku sudah habis! Tidak dapat dipinjam.
+                                @endif
+                            </p>
                         </div>
+
+                        @if($selectedBook->stock <= 0)
+                            <div class="mt-4 rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-700">
+                                <p class="font-semibold mb-2">❌ Buku Tidak Tersedia untuk Dipinjam</p>
+                                <p>Maaf, stok buku <strong>{{ $selectedBook->title }}</strong> sudah habis. Semua copy sedang dipinjam oleh anggota lain.</p>
+                                <p class="text-xs mt-2">Silakan hubungi petugas perpustakaan untuk informasi lebih lanjut atau kembali lagi di waktu yang akan datang.</p>
+                            </div>
+                        @endif
 
                         <input type="hidden" name="book_id" value="{{ $selectedBook->id }}">
                     @else
@@ -61,13 +75,13 @@
                             <option value="">-- Pilih Judul Buku --</option>
                             @forelse($books as $book)
                                 <option value="{{ $book->id }}" @selected(old('book_id') == $book->id)>
-                                    {{ $book->title }} — {{ $book->author }} ({{ $book->publication_year }})
+                                    {{ $book->title }} — {{ $book->author }} ({{ $book->publication_year }}) | Stok: {{ $book->stock }}
                                 </option>
                             @empty
                                 <option value="" disabled>Tidak ada buku tersedia</option>
                             @endforelse
                         </select>
-                        <p class="text-xs text-slate-500 mt-2">Buku yang dapat dipinjam adalah yang sudah memiliki file PDF dan berstatus tersedia.</p>
+                        <p class="text-xs text-slate-500 mt-2">Buku yang ditampilkan adalah yang sudah memiliki file PDF, berstatus tersedia, dan memiliki stok > 0.</p>
                     @endif
                 </div>
 
@@ -108,12 +122,23 @@
                 </div>
                 <!-- Buttons -->
                 <div class="flex gap-4 pt-4">
-                    <button 
-                        type="submit"
-                        class="flex-1 bg-slate-700 hover:bg-slate-800 text-white font-semibold py-3 rounded-lg transition duration-200"
-                    >
-                        📋 Ajukan Peminjaman
-                    </button>
+                    @if($selectedBook && $selectedBook->stock <= 0)
+                        <button 
+                            type="button"
+                            disabled
+                            class="flex-1 bg-gray-400 cursor-not-allowed text-white font-semibold py-3 rounded-lg transition duration-200"
+                        >
+                            🚫 Buku Belum Bisa Dipinjam (Stok Habis)
+                        </button>
+                    @else
+                        <button 
+                            type="submit"
+                            @if(!$selectedBook || $books->isEmpty()) disabled @endif
+                            class="flex-1 @if($selectedBook && $books->isNotEmpty()) bg-slate-700 hover:bg-slate-800 @else bg-gray-400 cursor-not-allowed @endif text-white font-semibold py-3 rounded-lg transition duration-200"
+                        >
+                            📋 Ajukan Peminjaman
+                        </button>
+                    @endif
                     <a href="{{ route('peminjaman.riwayat') }}" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-3 rounded-lg transition duration-200 text-center">
                         📖 Lihat Riwayat
                     </a>

@@ -129,7 +129,7 @@ class PerpussController extends Controller
             ]);
 
             return redirect()
-                ->route('admin.books.library.index')
+                ->route('admin.books.library.show')
                 ->with('success', "✅ Buku perpustakaan '{$validated['title']}' berhasil ditambahkan. Koleksi fisik telah terupdate.");
         } catch (Exception $e) {
             Log::error('Error creating perpustakaan book', [
