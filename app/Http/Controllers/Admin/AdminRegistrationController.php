@@ -13,28 +13,54 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Validation\Rule;
 
 class AdminRegistrationController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $totalBooks = Book::count();
-        $totalDigitalBooks = Perpuss::whereNotNull('cover_path')->count();
-        $totalLibraryBooks = Book::whereNull('pdf_path')->count();
+        $selectedPeriod = (int) $request->query('period', 30);
+        $allowedPeriods = [1, 7, 30, 365];
+
+        if (! in_array($selectedPeriod, $allowedPeriods, true)) {
+            $selectedPeriod = 30;
+        }
+
+        $startDate = $selectedPeriod === 365
+            ? Carbon::now()->startOfYear()
+            : Carbon::now()->subDays(max($selectedPeriod - 1, 0))->startOfDay();
+        $endDate = Carbon::now()->endOfDay();
+
+        $periodLabel = match ($selectedPeriod) {
+            1 => 'Hari Ini',
+            7 => '7 Hari Terakhir',
+            365 => 'Tahun Berjalan',
+            default => '30 Hari Terakhir',
+        };
+
+        $totalDigitalBooks = Book::sum('stock');
+        $totalLibraryBooks = Perpuss::sum('stock');
+        $totalBooks = $totalDigitalBooks + $totalLibraryBooks;
         $totalRegisteredUsers = Member::count();
 
         // Pending Confirmations
         $pendingPeminjaman = Peminjaman::where('status', 'menunggu_konfirmasi')->count();
+        $pendingPeminjamanItems = Peminjaman::with(['member:id,name,email'])
+            ->where('status', 'menunggu_konfirmasi')
+            ->latest('created_at')
+            ->take(5)
+            ->get();
         $pendingPengembalian = Pengembalian::where('status', 'menunggu_konfirmasi')->count();
         $totalDendaHariIni = Pengembalian::whereDate('created_at', today())
             ->where('status', 'diterima')
             ->sum('denda');
 
-        $period = CarbonPeriod::create(Carbon::now()->subDays(29), Carbon::now());
+        $period = CarbonPeriod::create($startDate, $endDate);
         $borrowTotals = Peminjaman::selectRaw('DATE(COALESCE(tgl_pinjam, created_at)) as tanggal, COUNT(*) as total')
-            ->whereDate('created_at', '>=', Carbon::now()->subDays(29))
+            ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('tanggal')
             ->orderBy('tanggal')
             ->pluck('total', 'tanggal');
@@ -72,12 +98,19 @@ class AdminRegistrationController extends Controller
             'borrowChartData',
             'recentActivities',
             'pendingPeminjaman',
+            'pendingPeminjamanItems',
             'pendingPengembalian',
-            'totalDendaHariIni'
+            'totalDendaHariIni',
+            'selectedPeriod',
+            'periodLabel'
         ));
     }
-    public function login(): View
+    public function login(Request $request): View
     {
+        if (Auth::guard('admin')->check()) {
+            Auth::guard('admin')->logout();
+        }
+
         return view('auth.loginAdm');
     }
 
@@ -90,14 +123,23 @@ class AdminRegistrationController extends Controller
 
         $remember = $request->boolean('remember');
 
-        $admin = Admin::where('email', $credentials['email'])
-            ->where('password', $credentials['password'])
-            ->first();
+        $admin = Admin::where('email', $credentials['email'])->first();
 
-        if (!$admin) {
+        $passwordMatches = $admin && (
+            Hash::check($credentials['password'], $admin->password) ||
+            hash_equals((string) $admin->password, (string) $credentials['password'])
+        );
+
+        if (! $passwordMatches) {
             return back()
                 ->withErrors(['email' => 'Email atau kata sandi tidak valid.'])
                 ->onlyInput('email');
+        }
+
+        if ($admin && ! Hash::check($credentials['password'], $admin->password)) {
+            $admin->forceFill([
+                'password' => Hash::make($credentials['password']),
+            ])->save();
         }
 
         Auth::guard('admin')->login($admin, $remember);
@@ -126,7 +168,7 @@ class AdminRegistrationController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'username' => $validated['username'],
-            'password' => $validated['password']
+            'password' => Hash::make($validated['password'])
         ]);
 
         Auth::guard('admin')->login($admin);
@@ -144,5 +186,79 @@ class AdminRegistrationController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('admin.login');
+    }
+
+    /**
+     * Return chart data for a given period as JSON (AJAX).
+     */
+    public function chartData(Request $request)
+    {
+        $selectedPeriod = (int) $request->query('period', 30);
+        $allowedPeriods = [1, 7, 30, 365];
+
+        if (! in_array($selectedPeriod, $allowedPeriods, true)) {
+            $selectedPeriod = 30;
+        }
+
+        $startDate = $selectedPeriod === 365
+            ? Carbon::now()->startOfYear()
+            : Carbon::now()->subDays(max($selectedPeriod - 1, 0))->startOfDay();
+        $endDate = Carbon::now()->endOfDay();
+
+        $period = CarbonPeriod::create($startDate, $endDate);
+
+        $borrowTotals = Peminjaman::selectRaw('DATE(COALESCE(tgl_pinjam, created_at)) as tanggal, COUNT(*) as total')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('tanggal')
+            ->orderBy('tanggal')
+            ->pluck('total', 'tanggal');
+
+        $borrowChartLabels = [];
+        $borrowChartData = [];
+
+        foreach ($period as $date) {
+            $label = $date->translatedFormat('d M');
+            $borrowChartLabels[] = $label;
+            $borrowChartData[] = $borrowTotals[$date->toDateString()] ?? 0;
+        }
+
+        return response()->json([
+            'labels' => $borrowChartLabels,
+            'totals' => $borrowChartData,
+        ]);
+    }
+
+    public function profileEdit(Request $request): View
+    {
+        $admin = Auth::guard('admin')->user();
+
+        return view('admin.profile.edit', [
+            'admin' => $admin,
+        ]);
+    }
+
+    public function profileUpdate(Request $request): RedirectResponse
+    {
+        $admin = Auth::guard('admin')->user();
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'username' => [
+                'required', 'string', 'max:255',
+                Rule::unique('admins', 'username')->ignore($admin->id),
+            ],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $admin->name = $validated['name'];
+        $admin->username = $validated['username'];
+
+        if (! empty($validated['password'])) {
+            $admin->password = Hash::make($validated['password']);
+        }
+
+        $admin->save();
+
+        return redirect()->route('admin.profile.edit')->with('status', 'Profil admin berhasil diperbarui.');
     }
 }

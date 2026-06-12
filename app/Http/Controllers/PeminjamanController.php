@@ -7,6 +7,7 @@ use App\Models\Book;
 use App\Models\Member;
 use App\Models\Peminjaman;
 use App\Models\Perpuss;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,6 +19,11 @@ use Illuminate\View\View;
 
 class PeminjamanController extends Controller
 {
+    private function calculateLoanDurationDays(Member $member): int
+    {
+        return $member->durasi_pinjam_hari ?? 7;
+    }
+
     public function index(Request $request): View|RedirectResponse
     {
         $member = $this->resolveMember();
@@ -120,9 +126,9 @@ class PeminjamanController extends Controller
         }
 
         // Query hanya dari tabel perpusses (perpustakaan fisik)
+        // Catatan: Perpus adalah buku fisik, jadi tidak perlu pdf_path
         $books = Perpuss::where('status', 'available')
             ->where('stock', '>', 0)
-            ->whereNotNull('pdf_path')
             ->orderBy('title')
             ->get();
 
@@ -157,53 +163,30 @@ class PeminjamanController extends Controller
         }
 
         $validated = $request->validated();
+        $bookType = $request->input('book_type', 'digital'); // Default to digital
 
-        // Cari buku dari tabel books atau perpusses
-        $book = Book::find($validated['book_id']);
-        $perpussBook = null;
-        
-        // Jika buku dari perpusses, check atau copy ke books table dulu
-        if (!$book) {
-            $perpussBook = Perpuss::findOrFail($validated['book_id']);
-            
-            // Check apakah buku dengan ISBN yang sama sudah ada di books
-            if ($perpussBook->isbn) {
-                $book = Book::where('isbn', $perpussBook->isbn)->first();
-            }
-            
-            // Jika belum ada, buat buku baru di books table
-            if (!$book) {
-                $book = Book::create([
-                    'title' => $perpussBook->title,
-                    'author' => $perpussBook->author,
-                    'publisher' => $perpussBook->publisher,
-                    'publication_year' => $perpussBook->publication_year,
-                    'category' => $perpussBook->category,
-                    'isbn' => $perpussBook->isbn,
-                    'status' => $perpussBook->status,
-                    'stock' => $perpussBook->stock,
-                    'cover_url' => $perpussBook->cover_path,
-                    'pdf_path' => $perpussBook->pdf_path,
-                    'summary' => $perpussBook->summary,
-                ]);
-            }
+        // Determine book source based on type
+        if ($bookType === 'fisik') {
+            // Buku fisik dari Perpuss table
+            $book = Perpuss::findOrFail($validated['book_id']);
+        } else {
+            // Buku digital dari Books table
+            $book = Book::findOrFail($validated['book_id']);
         }
 
         try {
             $tgl_pinjam = Carbon::createFromFormat('Y-m-d', $validated['tgl_pinjam'])->startOfDay();
-            $tgl_kembali = Carbon::createFromFormat('Y-m-d', $validated['tgl_kembali'])->startOfDay();
             $today = now()->startOfDay();
 
             if ($tgl_pinjam->lessThan($today)) {
                 return back()->withErrors(['tgl_pinjam' => 'Tanggal pinjam harus hari ini atau lebih lambat.'])->withInput();
             }
-
-            if (! $tgl_kembali->greaterThan($tgl_pinjam)) {
-                return back()->withErrors(['tgl_kembali' => 'Tanggal kembali harus lebih lambat dari tanggal pinjam.'])->withInput();
-            }
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Terjadi kesalahan dalam pemrosesan tanggal.'])->withInput();
         }
+
+        $durasiPinjam = $this->calculateLoanDurationDays($member);
+        $tgl_kembali = $tgl_pinjam->copy()->addDays($durasiPinjam);
 
         $bukti_path = null;
         if ($request->hasFile('bukti_registrasi')) {
@@ -212,6 +195,7 @@ class PeminjamanController extends Controller
 
         $duplicateLoan = Peminjaman::where('member_id', $member->id)
             ->where('book_id', $book->id)
+            ->where('book_type', $bookType)
             ->where('status', 'diambil')
             ->exists();
 
@@ -230,16 +214,25 @@ class PeminjamanController extends Controller
 
         $nomor_antrian = Peminjaman::generateNomorAntrian();
 
-        $peminjaman = Peminjaman::create([
+        $peminjamanData = [
             'member_id' => $member->id,
-            'book_id' => $book->id,
+            'book_type' => $bookType,
             'judul_buku' => $book->title,
             'nomor_antrian' => $nomor_antrian,
             'tgl_pinjam' => $validated['tgl_pinjam'],
-            'tgl_kembali' => $validated['tgl_kembali'],
+            'tgl_kembali' => $tgl_kembali->toDateString(),
             'bukti_registrasi' => $bukti_path,
             'status' => 'menunggu_konfirmasi',
-        ]);
+        ];
+
+        // Simpan ke kolom yang sesuai berdasarkan tipe buku
+        if ($bookType === 'fisik') {
+            $peminjamanData['perpuss_id'] = $book->id;
+        } else {
+            $peminjamanData['book_id'] = $book->id;
+        }
+
+        $peminjaman = Peminjaman::create($peminjamanData);
 
         return redirect()->route('peminjaman.riwayat')->with([
             'success' => 'Permintaan peminjaman berhasil! Nomor antrian: '.$nomor_antrian,
@@ -253,35 +246,6 @@ class PeminjamanController extends Controller
 
         if (! $member instanceof Member) {
             return $member;
-        }
-
-        // Cari peminjaman yang sudah lewat waktu dan belum dikembalikan
-        $expiredLoans = Peminjaman::where('member_id', $member->id)
-            ->where('status', '!=', 'dikembalikan')
-            ->whereDate('tgl_kembali', '<=', now()->toDateString())
-            ->get();
-
-        // Process setiap peminjaman yang sudah expired
-        foreach ($expiredLoans as $loan) {
-            // Kembalikan stok buku di tabel books
-            $book = Book::find($loan->book_id);
-            if ($book) {
-                $book->stock += 1;
-                $book->save();
-            }
-
-            // Kembalikan stok di tabel perpusses jika ada buku dengan ISBN yang sama
-            if ($book && $book->isbn) {
-                $perpussBook = Perpuss::where('isbn', $book->isbn)->first();
-                if ($perpussBook) {
-                    $perpussBook->stock += 1;
-                    $perpussBook->save();
-                }
-            }
-
-            // Update status menjadi dikembalikan
-            $loan->status = 'dikembalikan';
-            $loan->save();
         }
 
         $peminjamans = Peminjaman::where('member_id', $member->id)
@@ -302,12 +266,14 @@ class PeminjamanController extends Controller
             return $member;
         }
 
-        $hasBorrowed = Peminjaman::where('member_id', $member->id)
+        $requiresBorrow = ! $book->pdf_path;
+
+        $hasBorrowed = $requiresBorrow && Peminjaman::where('member_id', $member->id)
             ->where('book_id', $book->id)
             ->where('status', 'diambil')
             ->exists();
 
-        if (! $hasBorrowed) {
+        if ($requiresBorrow && ! $hasBorrowed) {
             return redirect()
                 ->route('katalog')
                 ->withErrors(['access' => 'Silakan ajukan peminjaman untuk membaca buku ini.']);
@@ -336,12 +302,14 @@ class PeminjamanController extends Controller
             return $member;
         }
 
-        $hasBorrowed = Peminjaman::where('member_id', $member->id)
+        $requiresBorrow = ! $book->pdf_path;
+
+        $hasBorrowed = $requiresBorrow && Peminjaman::where('member_id', $member->id)
             ->where('book_id', $book->id)
             ->where('status', 'diambil')
             ->exists();
 
-        if (! $hasBorrowed) {
+        if ($requiresBorrow && ! $hasBorrowed) {
             abort(403, 'Akses ditolak. Silakan pinjam buku terlebih dahulu.');
         }
 
@@ -350,11 +318,23 @@ class PeminjamanController extends Controller
         }
 
         $downloadName = Str::slug($book->title).'.pdf';
+        $stream = Storage::disk('public')->readStream($book->pdf_path);
 
-        return Storage::disk('public')->response(
-            $book->pdf_path,
-            $downloadName,
+        if ($stream === false) {
+            abort(404, 'File PDF tidak ditemukan.');
+        }
+
+        return response()->stream(
+            function () use ($stream) {
+                fpassthru($stream);
+
+                if (is_resource($stream)) {
+                    fclose($stream);
+                }
+            },
+            200,
             [
+                'Content-Type' => 'application/pdf',
                 'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
                 'Pragma' => 'no-cache',
                 'Content-Disposition' => 'inline; filename="'.$downloadName.'"',
@@ -370,36 +350,11 @@ class PeminjamanController extends Controller
             return $member;
         }
 
-        // Process expired loans
-        $expiredLoans = Peminjaman::where('member_id', $member->id)
-            ->where('status', '!=', 'dikembalikan')
-            ->whereDate('tgl_kembali', '<=', now()->toDateString())
-            ->get();
-
-        foreach ($expiredLoans as $loan) {
-            $book = Book::find($loan->book_id);
-            if ($book) {
-                $book->stock += 1;
-                $book->save();
-            }
-
-            if ($book && $book->isbn) {
-                $perpussBook = Perpuss::where('isbn', $book->isbn)->first();
-                if ($perpussBook) {
-                    $perpussBook->stock += 1;
-                    $perpussBook->save();
-                }
-            }
-
-            $loan->status = 'dikembalikan';
-            $loan->save();
-        }
-
         $peminjamans = Peminjaman::where('member_id', $member->id)
             ->orderByDesc('created_at')
             ->get();
 
-        $pdf = \PDF::loadView('peminjaman.riwayat-pdf', [
+        $pdf = Pdf::loadView('peminjaman.riwayat-pdf', [
             'member' => $member,
             'peminjamans' => $peminjamans,
             'generatedAt' => now()->translatedFormat('d F Y H:i'),
@@ -450,17 +405,18 @@ class PeminjamanController extends Controller
                 'status' => 'diambil',
             ]);
 
-            // Kurangi stok buku
-            $book = $peminjaman->book;
-            if ($book && $book->stock > 0) {
-                $book->decrement('stock');
-            }
-
-            // Kurangi stok perpusses jika ada
-            if ($book && $book->isbn) {
-                $perpussBook = Perpuss::where('isbn', $book->isbn)->first();
-                if ($perpussBook && $perpussBook->stock > 0) {
-                    $perpussBook->decrement('stock');
+            // Kurangi stok buku berdasarkan tipe
+            if ($peminjaman->book_type === 'fisik') {
+                // Buku fisik dari Perpuss table
+                $book = Perpuss::find($peminjaman->perpuss_id);
+                if ($book && $book->stock > 0) {
+                    $book->decrement('stock');
+                }
+            } else {
+                // Buku digital dari Books table
+                $book = Book::find($peminjaman->book_id);
+                if ($book && $book->stock > 0) {
+                    $book->decrement('stock');
                 }
             }
 

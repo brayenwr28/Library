@@ -17,30 +17,34 @@ class PeminjamanRequest extends FormRequest
     public function rules()
     {
         return [
+            'book_type' => 'required|in:digital,fisik',
             'book_id' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    $book = Book::find($value);
-                    $perpussBook = null;
+                    $bookType = $this->input('book_type', 'digital');
                     
-                    if (!$book) {
-                        $perpussBook = Perpuss::find($value);
-                    }
-                    
-                    if (!$book && !$perpussBook) {
-                        $fail('Buku yang dipilih tidak ditemukan.');
-                        return;
+                    // Validate based on book type
+                    if ($bookType === 'fisik') {
+                        $book = Perpuss::find($value);
+                        if (!$book) {
+                            $fail('Buku fisik yang dipilih tidak ditemukan.');
+                            return;
+                        }
+                    } else {
+                        $book = Book::find($value);
+                        if (!$book) {
+                            $fail('Buku digital yang dipilih tidak ditemukan.');
+                            return;
+                        }
                     }
                     
                     // Check stok buku
-                    $stock = $book ? $book->stock : $perpussBook->stock;
-                    if ($stock <= 0) {
+                    if ($book->stock <= 0) {
                         $fail('Stok buku sudah habis. Buku tidak dapat dipinjam saat ini.');
                     }
                 }
             ],
             'tgl_pinjam' => 'required|date_format:Y-m-d',
-            'tgl_kembali' => 'required|date_format:Y-m-d|after:tgl_pinjam',
             'bukti_registrasi' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
@@ -51,9 +55,6 @@ class PeminjamanRequest extends FormRequest
             'book_id.required' => 'Judul buku harus dipilih.',
             'tgl_pinjam.required' => 'Tanggal pinjam harus diisi.',
             'tgl_pinjam.date_format' => 'Format tanggal pinjam tidak valid (Y-m-d).',
-            'tgl_kembali.required' => 'Tanggal kembali harus diisi.',
-            'tgl_kembali.date_format' => 'Format tanggal kembali tidak valid (Y-m-d).',
-            'tgl_kembali.after' => 'Tanggal kembali harus lebih lambat dari tanggal pinjam.',
             'bukti_registrasi.image' => 'Bukti registrasi harus berupa gambar.',
             'bukti_registrasi.mimes' => 'Format gambar harus JPEG, PNG, JPG, atau GIF.',
             'bukti_registrasi.max' => 'Ukuran gambar tidak boleh lebih dari 2MB.',

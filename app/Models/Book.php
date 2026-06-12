@@ -19,6 +19,7 @@ class Book extends Model
         'stock',
         'cover_url',
         'pdf_path',
+        'reference_url',
         'status',
         'summary',
     ];

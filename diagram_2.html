@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Diagram 2</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body style="margin:0;padding:20px;background:#f5f5f5;">
+    <div style="background:white;padding:30px;border-radius:8px;width:100%;">
+        <h2 style="text-align:center;margin-top:0;">Activity Diagram - Pengembalian Buku</h2>
+        <div class="mermaid">
+graph TD
+    A([Member]) -->|Membawa Buku| B[Datang ke Perpustakaan]
+    B --> C[Petugas: Buka Form<br/>Pengembalian Buku]
+    C --> D[Cari Peminjaman Member]
+    D --> E{Peminjaman<br/>Ditemukan?}
+    
+    E -->|Tidak| F[Tampil Error:<br/>Data Tidak Ditemukan]
+    F --> D
+    
+    E -->|Ya| G{Status Peminjaman<br/>= DIAMBIL?}
+    G -->|Tidak| H[Tampil Error:<br/>Status Harus DIAMBIL]
+    H --> D
+    
+    G -->|Ya| I{Sudah Ada<br/>Pengembalian<br/>Pending?}
+    I -->|Ya| J[Tampil Error:<br/>Pengembalian Sudah<br/>dalam Proses]
+    J --> D
+    
+    I -->|Tidak| K[Input Tanggal<br/>Kembali Aktual]
+    K --> L[Cek Kondisi Buku]
+    L --> M{Ada Kerusakan?}
+    
+    M -->|Ya| N[Input Deskripsi Kerusakan]
+    N --> O[Upload Foto Kerusakan]
+    O --> P[Simpan Data Pengembalian]
+    
+    M -->|Tidak| P
+    
+    P --> Q[Update Status:<br/>MENUNGGU_KONFIRMASI]
+    Q --> R[Buku Disimpan<br/>Sementara]
+    
+    R --> S([Petugas Menunggu<br/>Konfirmasi Admin])
+    
+    S -.->|Admin Review| T[Admin: Buka Halaman<br/>Pengembalian]
+    T --> U[Review Detail Pengembalian]
+    U --> V{Terima atau<br/>Tolak?}
+    
+    V -->|Terima| W[Update Status:<br/>DITERIMA]
+    W --> X[Update Peminjaman:<br/>DIKEMBALIKAN]
+    X --> Y[Increment Stok Buku]
+    Y --> Z[Tampil Sukses]
+    Z --> AA([Pengembalian Selesai])
+    
+    V -->|Tolak| AB[Input Alasan Penolakan]
+    AB --> AC[Update Status:<br/>DITOLAK]
+    AC --> AD[Catat Alasan Penolakan]
+    AD --> AE([Hubungi Member<br/>untuk Penyelesaian])
+        </div>
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+        mermaid.contentLoaded();
+    </script>
+</body>
+</html>

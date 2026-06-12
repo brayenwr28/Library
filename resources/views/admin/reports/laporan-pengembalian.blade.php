@@ -55,43 +55,45 @@
                 <!-- Filter Section -->
                 <div class="card-header bg-light border-bottom p-4">
                     <h5 class="card-title fw-bold mb-3">🔍 Filter & Export</h5>
-                    <form method="GET" class="row g-3">
-                        <div class="col-12 col-md-3">
-                            <label class="form-label small fw-semibold">Status</label>
-                            <select class="form-select form-select-sm" name="status">
-                                <option value="">-- Semua Status --</option>
-                                <option value="menunggu_konfirmasi" {{ request('status') === 'menunggu_konfirmasi' ? 'selected' : '' }}>Menunggu Konfirmasi</option>
-                                <option value="diterima" {{ request('status') === 'diterima' ? 'selected' : '' }}>Diterima</option>
-                                <option value="ditolak" {{ request('status') === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label class="form-label small fw-semibold">Dari Tanggal</label>
-                            <input type="date" class="form-control form-control-sm" name="dari_tanggal" value="{{ request('dari_tanggal') }}">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label class="form-label small fw-semibold">Sampai Tanggal</label>
-                            <input type="date" class="form-control form-control-sm" name="sampai_tanggal" value="{{ request('sampai_tanggal') }}">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label class="form-label small fw-semibold">&nbsp;</label>
-                            <button type="submit" class="btn btn-primary btn-sm w-100">
-                                <i class="fas fa-search"></i> Filter
+                    <div class="row g-3">
+                        <form method="GET" class="col-12">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label small fw-semibold">Status</label>
+                                    <select class="form-select form-select-sm" name="status">
+                                        <option value="">-- Semua Status --</option>
+                                        <option value="menunggu_konfirmasi" {{ request('status') === 'menunggu_konfirmasi' ? 'selected' : '' }}>Menunggu Konfirmasi</option>
+                                        <option value="diterima" {{ request('status') === 'diterima' ? 'selected' : '' }}>Diterima</option>
+                                        <option value="ditolak" {{ request('status') === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label small fw-semibold">Dari Tanggal</label>
+                                    <input type="date" class="form-control form-control-sm" name="dari_tanggal" value="{{ request('dari_tanggal') }}">
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label small fw-semibold">Sampai Tanggal</label>
+                                    <input type="date" class="form-control form-control-sm" name="sampai_tanggal" value="{{ request('sampai_tanggal') }}">
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label small fw-semibold">&nbsp;</label>
+                                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                                        <i class="fas fa-search"></i> Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <form action="{{ route('admin.report.pengembalian.export') }}" method="GET" class="col-12">
+                            @foreach(request()->query() as $key => $value)
+                                @if($key !== '_token')
+                                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                                @endif
+                            @endforeach
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fas fa-file-pdf"></i> Export PDF
                             </button>
-                        </div>
-                        <div class="col-12">
-                            <form action="{{ route('admin.report.pengembalian.export') }}" method="GET" style="display: inline;">
-                                @foreach(request()->query() as $key => $value)
-                                    @if($key !== '_token')
-                                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                                    @endif
-                                @endforeach
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    <i class="fas fa-file-pdf"></i> Export PDF
-                                </button>
-                            </form>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- Table -->

@@ -5,8 +5,8 @@
     <div class="row align-items-center gy-3">
         <div class="col">
             <div class="section-header">
-                <h1 class="h2 mb-2 fw-bold">👤 Laporan Anggota</h1>
-                <p class="text-muted mb-0">Laporan lengkap data member perpustakaan dengan statistik peminjaman</p>
+                <h1 class="h2 mb-2 fw-bold">Laporan Registrasi Anggota</h1>
+                <p class="text-muted mb-0">Laporan Data Member Perpustakaan</p>
             </div>
         </div>
     </div>
@@ -15,7 +15,7 @@
 @section('content')
     <!-- Statistics -->
     <div class="row g-3 mb-4">
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-12 col-sm-6 col-lg-4">
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
                     <p class="text-muted small fw-semibold mb-2">👥 Total Anggota</p>
@@ -23,27 +23,19 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body p-4">
-                    <p class="text-muted small fw-semibold mb-2">✅ Aktif</p>
-                    <h2 class="fw-bold text-success">{{ number_format($stats['aktif'] ?? 0) }}</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body p-4">
-                    <p class="text-muted small fw-semibold mb-2">❌ Nonaktif</p>
-                    <h2 class="fw-bold text-danger">{{ number_format($stats['nonaktif'] ?? 0) }}</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-12 col-sm-6 col-lg-4">
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
                     <p class="text-muted small fw-semibold mb-2">📚 Total Peminjaman</p>
                     <h2 class="fw-bold text-info">{{ number_format($stats['total_peminjaman'] ?? 0) }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <p class="text-muted small fw-semibold mb-2">📊 Rata-rata Peminjaman/Anggota</p>
+                    <h2 class="fw-bold text-warning">{{ number_format(($stats['total_peminjaman'] ?? 0) / max(($stats['total'] ?? 1), 1), 2) }}</h2>
                 </div>
             </div>
         </div>
@@ -52,41 +44,55 @@
     <div class="row">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
+                <!-- Error Alert -->
+                @if ($errors->any())
+                    <div class="alert alert-danger border-0 m-4 mb-0" role="alert">
+                        <h5 class="alert-heading">❌ Error Export PDF</h5>
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <!-- Filter Section -->
                 <div class="card-header bg-light border-bottom p-4">
                     <h5 class="card-title fw-bold mb-3">🔍 Filter & Export</h5>
-                    <form method="GET" class="row g-3">
-                        <div class="col-12 col-md-3">
-                            <label class="form-label small fw-semibold">Cari (Nama/Email/ID)</label>
-                            <input type="text" class="form-control form-control-sm" name="search" placeholder="Cari anggota..." value="{{ request('search') }}">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label class="form-label small fw-semibold">Dari Tanggal</label>
-                            <input type="date" class="form-control form-control-sm" name="dari_tanggal" value="{{ request('dari_tanggal') }}">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label class="form-label small fw-semibold">Sampai Tanggal</label>
-                            <input type="date" class="form-control form-control-sm" name="sampai_tanggal" value="{{ request('sampai_tanggal') }}">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label class="form-label small fw-semibold">&nbsp;</label>
-                            <button type="submit" class="btn btn-primary btn-sm w-100">
-                                <i class="fas fa-search"></i> Filter
+                    <div class="row g-3">
+                        <form method="GET" class="col-12">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label small fw-semibold">Cari (Nama/Email/ID)</label>
+                                    <input type="text" class="form-control form-control-sm" name="search" placeholder="Cari anggota..." value="{{ request('search') }}">
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label small fw-semibold">Dari Tanggal</label>
+                                    <input type="date" class="form-control form-control-sm" name="dari_tanggal" value="{{ request('dari_tanggal') }}">
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label small fw-semibold">Sampai Tanggal</label>
+                                    <input type="date" class="form-control form-control-sm" name="sampai_tanggal" value="{{ request('sampai_tanggal') }}">
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label small fw-semibold">&nbsp;</label>
+                                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                                        <i class="fas fa-search"></i> Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <form action="{{ route('admin.report.anggota.export') }}" method="GET" class="col-12">
+                            @foreach(request()->query() as $key => $value)
+                                @if($key !== '_token')
+                                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                                @endif
+                            @endforeach
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fas fa-file-pdf"></i> Export PDF
                             </button>
-                        </div>
-                        <div class="col-12">
-                            <form action="{{ route('admin.report.anggota.export') }}" method="GET" style="display: inline;">
-                                @foreach(request()->query() as $key => $value)
-                                    @if($key !== '_token')
-                                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                                    @endif
-                                @endforeach
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    <i class="fas fa-file-pdf"></i> Export PDF
-                                </button>
-                            </form>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- Table -->
@@ -98,11 +104,9 @@
                                     <tr>
                                         <th class="ps-4">Nama Anggota</th>
                                         <th>Email</th>
-                                        <th>No. Identitas</th>
-                                        <th>Tipe</th>
+                                        <th>NIM / ID Anggota</th>
                                         <th>Jumlah Peminjaman</th>
-                                        <th>Tgl Daftar</th>
-                                        <th>Status</th>
+                                        <th>Tanggal Daftar</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -113,26 +117,13 @@
                                                 <small>{{ $member->email }}</small>
                                             </td>
                                             <td>
-                                                <small class="text-muted">{{ $member->no_identitas ?? '-' }}</small>
-                                            </td>
-                                            <td>
-                                                <small class="badge bg-light text-dark">{{ $member->tipe_member ?? 'Regular' }}</small>
+                                                <small class="text-muted">{{ $member->nim ?? $member->member_id ?? '-' }}</small>
                                             </td>
                                             <td>
                                                 <strong class="text-info">{{ number_format($member->peminjamans_count ?? 0) }}</strong>
                                             </td>
                                             <td>
-                                                <small class="text-muted">{{ $member->created_at->translatedFormat('d F Y') }}</small>
-                                            </td>
-                                            <td>
-                                                @php
-                                                    $statusClass = match($member->status) {
-                                                        'aktif' => 'success',
-                                                        'nonaktif' => 'danger',
-                                                        default => 'secondary'
-                                                    };
-                                                @endphp
-                                                <span class="badge bg-{{ $statusClass }}">{{ ucfirst($member->status ?? 'aktif') }}</span>
+                                                <small class="text-muted">{{ \Carbon\Carbon::parse($member->created_at)->translatedFormat('d F Y') }}</small>
                                             </td>
                                         </tr>
                                     @endforeach

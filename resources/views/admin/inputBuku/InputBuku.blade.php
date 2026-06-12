@@ -219,6 +219,18 @@
 						</div>
 					</div>
 
+					<!-- Reference URL -->
+					<div class="mt-6">
+						<label for="reference_url" class="block text-sm font-semibold text-slate-700 mb-2">🔗 Link Referensi / Sumber <span class="text-slate-400 font-normal">(opsional)</span></label>
+						<input type="url" name="reference_url" id="reference_url" value="{{ old('reference_url') }}"
+							   class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm transition placeholder:text-slate-400 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-200"
+							   placeholder="https://example.com/buku atau sumber eksternal lainnya">
+						@error('reference_url')
+							<p class="mt-2 text-xs text-rose-600">{{ $message }}</p>
+						@enderror
+						<p class="mt-2 text-xs text-slate-500">Link ke sumber asli, publisher, atau referensi eksternal. User dapat mengklik link ini saat membaca PDF di katalog.</p>
+					</div>
+
 					<!-- Summary Textarea -->
 					<div class="mt-6">
 						<label for="summary" class="block text-sm font-semibold text-slate-700 mb-3">📝 Ringkasan / Sinopsis <span class="text-slate-400 font-normal">(opsional)</span></label>

@@ -15,6 +15,21 @@ use Illuminate\View\View;
 class PengembalianController extends Controller
 {
     /**
+     * Daftar peminjaman aktif yang bisa diproses menjadi pengembalian
+     */
+    public function index(): View
+    {
+        $peminjamans = Peminjaman::with(['member', 'book', 'perpuss'])
+            ->where('status', 'diambil')
+            ->orderByDesc('created_at')
+            ->paginate(15);
+
+        return view('admin.pengembalian.index', [
+            'peminjamans' => $peminjamans,
+        ]);
+    }
+
+    /**
      * List pengembalian yang menunggu konfirmasi admin
      */
     public function indexMenunggu(): View
@@ -50,7 +65,13 @@ class PengembalianController extends Controller
             return back()->withErrors(['error' => 'Pengembalian sudah diproses sebelumnya.']);
         }
 
-        $admin = Auth::user();
+        $admin = Auth::guard('admin')->user();
+
+        if (! $admin) {
+            return redirect()->route('admin.login')->withErrors([
+                'auth' => 'Sesi admin tidak valid. Silakan login kembali.',
+            ]);
+        }
 
         try {
             // Update status pengembalian menjadi DITERIMA
@@ -100,12 +121,20 @@ class PengembalianController extends Controller
             return back()->withErrors(['error' => 'Pengembalian sudah diproses sebelumnya.']);
         }
 
+        $admin = Auth::guard('admin')->user();
+
+        if (! $admin) {
+            return redirect()->route('admin.login')->withErrors([
+                'auth' => 'Sesi admin tidak valid. Silakan login kembali.',
+            ]);
+        }
+
         try {
             // Update status pengembalian menjadi DITOLAK dengan catatan alasan
             $pengembalian->update([
                 'status' => 'ditolak',
                 'catatan' => 'Alasan Penolakan: ' . $request->alasan,
-                'admin_id' => Auth::user()->id,
+                'admin_id' => $admin->id,
             ]);
 
             return redirect()
@@ -136,7 +165,7 @@ class PengembalianController extends Controller
         }
 
         return view('admin.pengembalian.form', [
-            'peminjaman' => $peminjaman->load('member', 'book'),
+            'peminjaman' => $peminjaman->load('member', 'book', 'perpuss'),
         ]);
     }
 

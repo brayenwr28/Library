@@ -93,6 +93,37 @@
             <p>Buku ditampilkan dalam mode baca-only. Unduh, cetak, klik kanan, dan sorotan teks dinonaktifkan.</p>
         </div>
 
+        @if($book->reference_url)
+            <div class="mb-4 rounded-2xl border border-blue-300 bg-gradient-to-r from-blue-50 to-cyan-50 p-5 shadow-md">
+                <div class="flex items-center gap-3">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs font-semibold text-blue-700 uppercase tracking-wide">Referensi Eksternal</p>
+                        <p class="text-sm text-slate-600 mt-1">
+                            Klik tombol di bawah untuk mengakses sumber asli atau referensi buku:
+                        </p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="{{ $book->reference_url }}" target="_blank" rel="noopener noreferrer" 
+                       class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:shadow-lg hover:from-blue-700 hover:to-blue-800 active:scale-95">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        Buka Referensi Eksternal
+                    </a>
+                    <p class="mt-3 text-xs text-slate-500">
+                        Link akan membuka di tab baru. URL: 
+                        <code class="text-slate-600 font-mono truncate inline-block max-w-xs">{{ $book->reference_url }}</code>
+                    </p>
+                </div>
+            </div>
+        @endif
+
         <div class="rounded-2xl border border-slate-300 bg-white shadow-lg" id="viewer-frame">
             <div class="flex items-center justify-between gap-4 border-b border-slate-200 px-5 py-3 text-sm text-slate-600">
                 <div class="flex items-center gap-3">

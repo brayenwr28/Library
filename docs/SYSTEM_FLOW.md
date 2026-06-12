@@ -97,19 +97,25 @@ Sistem Perpustakaan Digital memiliki 3 main flows:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│ MEMBER/PERPUSTAKAAN SIDE                                        │
+│ PETUGAS / ADMIN INPUT                                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│ 1. Member datang ke perpustakaan dengan buku                    │
+│ 1. Member menyerahkan buku fisik ke perpustakaan               │
 │    ↓                                                            │
-│ 2. Petugas perpustakaan menerima buku                           │
-│    - Cek kondisi: "baik", "rusak_ringan", "rusak_berat"       │
-│    - Input form pengembalian (tgl kembali aktual, kondisi)     │
+│ 2. Petugas membuka menu "Transaksi Pengembalian"              │
 │    ↓                                                            │
-│ 3. Sistem membuat Pengembalian dengan status: "menunggu_konfirmasi" │
+│ 3. Pilih "Input Pengembalian" lalu buka form buku aktif        │
+│    - Daftar berasal dari peminjaman berstatus "diambil"        │
+│    ↓                                                            │
+│ 4. Input data pengembalian:                                     │
+│    - Tanggal kembali aktual                                     │
+│    - Kondisi buku: baik / rusak_ringan / rusak_berat           │
+│    - Catatan petugas (opsional)                                 │
+│    ↓                                                            │
+│ 5. Sistem membuat Pengembalian dengan status: "menunggu_konfirmasi" │
 │    - Hitung denda otomatis: Rp.5000/minggu jika terlambat      │
 │    ↓                                                            │
-│ 4. Petugas kasih bukti pengembalian ke member                   │
+│ 6. Petugas menyimpan data dan memberi bukti proses ke member    │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 
@@ -128,7 +134,7 @@ Sistem Perpustakaan Digital memiliki 3 main flows:
 │    - No Antrian, Member, Buku, Tgl Kembali Rencana/Aktual     │
 │    - Kondisi, Denda, Status                                   │
 │    ↓                                                            │
-│ 4. Per row ada 2 buttons: "Terima" & "Tolak"                   │
+│ 4. Per row ada 2 buttons: "Terima" & "Tolak"                  │
 │    ↓                                                            │
 │ ┌─ OPSI A: TERIMA PENGEMBALIAN ───────────────────────────┐   │
 │ │                                                          │   │
@@ -316,6 +322,7 @@ MEMBER PAGES (middleware: auth):
 ADMIN PAGES (middleware: auth:admin):
 - /login/admin/dashboard (dashboard)
 - /admin/peminjaman/menunggu (confirmation)
+- /admin/pengembalian (input pengembalian)
 - /admin/pengembalian/menunggu (confirmation)
 - /admin/reports/* (semua laporan)
 ```
@@ -339,6 +346,8 @@ resources/views/
 ├── admin/
 │   ├── dashboard/dashboard.blade.php (updated - widgets)
 │   ├── peminjaman/menunggu-konfirmasi.blade.php (NEW)
+│   ├── pengembalian/index.blade.php (NEW - daftar peminjaman aktif)
+│   ├── pengembalian/form.blade.php (NEW - input pengembalian)
 │   ├── pengembalian/menunggu-konfirmasi.blade.php (NEW)
 │   └── reports/
 │       ├── laporan-peminjaman.blade.php (NEW)
@@ -368,7 +377,9 @@ PEMINJAMAN FLOW:
 □ Admin click "Tolak" + alasan → status = ditolak, stok utuh
 
 PENGEMBALIAN FLOW:
-□ Pengembalian dibuat dengan denda otomatis
+□ Petugas buka /admin/pengembalian
+□ Petugas pilih peminjaman aktif lalu isi form pengembalian
+□ Pengembalian dibuat dengan denda otomatis dan status menunggu_konfirmasi
 □ Admin lihat /admin/pengembalian/menunggu
 □ Admin click "Terima" → status = diterima, stok +1
 □ Denda ditampilkan dengan benar

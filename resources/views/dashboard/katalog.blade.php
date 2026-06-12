@@ -24,7 +24,8 @@
         <!-- Books Grid or Empty State -->
         @forelse ($books as $book)
             @php
-                $canRead = auth()->check() && in_array($book->id, $borrowedBookIds ?? [], true);
+                $isDigital = (bool) $book->pdf_path;
+                $canRead = $isDigital || (auth()->check() && in_array($book->id, $borrowedBookIds ?? [], true));
             @endphp
             @if($loop->first)
                 <div class="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
@@ -99,15 +100,15 @@
                     <div class="mt-auto pt-4 border-t border-slate-100 space-y-3">
                         <!-- Primary Action -->
                         <div class="flex gap-2">
-                            @if(!$canRead)
-                                <a href="{{ route('peminjaman.katalog', ['book_id' => $book->id]) }}" 
-                                   class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2.5 text-sm font-bold text-white shadow-md transition hover:shadow-lg hover:from-blue-700 hover:to-blue-800 active:scale-95">
-                                    📌 Pinjam Buku
-                                </a>
-                            @else
+                            @if($isDigital)
                                 <a href="{{ route('peminjaman.read', ['book' => $book->id]) }}" 
                                    class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-700 px-4 py-2.5 text-sm font-bold text-white shadow-md transition hover:shadow-lg hover:from-emerald-700 hover:to-emerald-800 active:scale-95">
                                     👁️ Baca Buku
+                                </a>
+                            @else
+                                <a href="{{ route('peminjaman.katalog', ['book_id' => $book->id]) }}" 
+                                   class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2.5 text-sm font-bold text-white shadow-md transition hover:shadow-lg hover:from-blue-700 hover:to-blue-800 active:scale-95">
+                                    📌 Pinjam Buku
                                 </a>
                             @endif
                         </div>
@@ -119,14 +120,22 @@
                                     <div class="rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-2.5">
                                         <p class="text-xs font-semibold text-emerald-700 flex items-center gap-2">
                                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                                            Buku ini sedang kamu pinjam
+                                            @if($isDigital)
+                                                Klik baca untuk membuka PDF
+                                            @else
+                                                Buku ini sedang kamu pinjam
+                                            @endif
                                         </p>
                                     </div>
                                 @else
                                     <div class="rounded-lg bg-blue-50 border border-blue-200 px-4 py-2.5">
                                         <p class="text-xs font-semibold text-blue-700 flex items-center gap-2">
                                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
-                                            Pinjam buku untuk membaca PDF
+                                            @if($isDigital)
+                                                Buku digital siap dibaca
+                                            @else
+                                                Pinjam buku untuk membaca PDF
+                                            @endif
                                         </p>
                                     </div>
                                 @endif

@@ -11,20 +11,28 @@ use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PengembalianController;
 use Illuminate\Support\Facades\Route;
 
-Route::controller(AuthController::class)->prefix('auth')->group(function () {
+Route::controller(AuthController::class)->prefix('auth')->middleware('guest')->group(function () {
     Route::get('/login', 'login')->name('login');
     Route::post('/login', 'loginStore')->name('login.store');
-    Route::post('/logout', 'logout')->name('logout');
 
     Route::get('/register', 'register')->name('register');
     Route::post('/register', 'registerStore')->name('register.store');
 });
 
+Route::post('/auth/logout', [AuthController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
+
+// Admin Login and Register Routes - show login page directly
 Route::controller(AdminRegistrationController::class)->prefix('login')->group(function () {
     Route::get('/admin','login')->name('admin.login');
     Route::post('/admin','loginStore')->name('admin.login.store');
     Route::get('/register-admin', 'create')->name('admin.register');
     Route::post('/register-admin', 'store')->name('admin.register.store');
+});
+
+// Admin Protected Routes - requires authentication
+Route::controller(AdminRegistrationController::class)->prefix('login')->middleware('auth:admin')->group(function () {
     Route::post('/logout','logout')->name('admin.logout');
     Route::get('/dashboard', 'index')->name('admin.dashboard');
 });
@@ -41,6 +49,7 @@ Route::controller(BookController::class)->prefix('digital')->group(function () {
 
 Route::controller(DashboardController::class)->group(function () {
     Route::get('/', 'index')->name('dashboard');
+    Route::get('/dashboard', 'index')->name('dashboard.alias');
     Route::get('katalog', 'katalog')->name('katalog');
     Route::get('sejarah', 'sejarah')->name('sejarah');
     Route::get('tentang', 'tentang')->name('tentang');
@@ -65,6 +74,8 @@ Route::controller(PerpussController::class)->prefix('perpuss')->group(function (
     Route::post('/', 'store')->name('admin.books.library.store');
     Route::get('/create', 'create')->name('admin.books.library.create');
     Route::get('/show', 'show')->name('admin.books.library.show');
+    Route::get('/import', 'importForm')->name('admin.books.library.import.form');
+    Route::post('/import', 'importProcess')->name('admin.books.library.import.process');
     Route::get('/{perpuss}/edit', 'edit')->name('admin.books.library.edit');
     Route::put('/{perpuss}', 'update')->name('admin.books.library.update');
     Route::delete('/{perpuss}', 'destroy')->name('admin.books.library.destroy');
@@ -100,6 +111,9 @@ Route::middleware('auth:admin')->controller(PeminjamanController::class)->prefix
 
 // Admin Confirmation Routes - Pengembalian
 Route::middleware('auth:admin')->controller(PengembalianController::class)->prefix('admin/pengembalian')->group(function () {
+    Route::get('/', 'index')->name('admin.pengembalian.index');
+    Route::get('/{peminjaman}/create', 'createForm')->name('admin.pengembalian.create');
+    Route::post('/', 'store')->name('admin.pengembalian.store');
     Route::get('/menunggu', 'indexMenunggu')->name('admin.pengembalian.menunggu');
     Route::get('/{pengembalian}', 'show')->name('admin.pengembalian.show');
     Route::put('/{pengembalian}/terima', 'terima')->name('admin.pengembalian.terima');
@@ -121,5 +135,25 @@ Route::middleware('auth:admin')->controller(\App\Http\Controllers\Admin\AdminRep
     
     Route::get('/anggota', 'laporanAnggota')->name('admin.report.anggota');
     Route::get('/anggota/export-pdf', 'exportAnggotaPdf')->name('admin.report.anggota.export');
+});
+
+// Admin Import Routes (Books & Members)
+Route::middleware('auth:admin')->prefix('admin')->group(function () {
+    // Books import
+    Route::get('books/import', [\App\Http\Controllers\Admin\BookController::class, 'importForm'])->name('admin.books.import.form');
+    Route::post('books/import', [\App\Http\Controllers\Admin\BookController::class, 'importProcess'])->name('admin.books.import.process');
+
+    // Members import
+    Route::get('members/import', [\App\Http\Controllers\Admin\MemberController::class, 'importForm'])->name('admin.members.import.form');
+    Route::post('members/import', [\App\Http\Controllers\Admin\MemberController::class, 'importProcess'])->name('admin.members.import.process');
+});
+
+// AJAX chart data for admin dashboard
+Route::middleware('auth:admin')->get('admin/dashboard/chart-data', [\App\Http\Controllers\Admin\AdminRegistrationController::class, 'chartData'])->name('admin.dashboard.chart');
+
+// Admin profile (short) - view & update
+Route::middleware('auth:admin')->controller(\App\Http\Controllers\Admin\AdminRegistrationController::class)->prefix('admin')->group(function () {
+    Route::get('/profile', 'profileEdit')->name('admin.profile.edit');
+    Route::put('/profile', 'profileUpdate')->name('admin.profile.update');
 });
 

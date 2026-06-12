@@ -52,9 +52,9 @@
                 </div>
             </div>
         @else
-            <div class="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div class="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-stretch">
                 @foreach($books as $book)
-                    <article class="group h-full flex flex-col overflow-hidden rounded-2xl border-2 border-slate-200 bg-white shadow-md transition duration-300 hover:shadow-2xl hover:border-emerald-300 hover:-translate-y-2">
+                    <article class="group h-full min-h-[34rem] flex flex-col overflow-hidden rounded-2xl border-2 border-slate-200 bg-white shadow-md transition duration-300 hover:shadow-2xl hover:border-emerald-300 hover:-translate-y-2">
                         <!-- Cover Image Section -->
                         <div class="relative h-56 w-full overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
                             @if($book->cover_url)
@@ -124,8 +124,12 @@
 
                             <!-- Summary -->
                             @if($book->summary)
-                                <div class="bg-slate-50 rounded-lg p-3 border border-slate-100">
+                                <div class="bg-slate-50 rounded-lg p-3 border border-slate-100 min-h-[5.5rem]">
                                     <p class="text-xs text-slate-600 line-clamp-3">{{ $book->summary }}</p>
+                                </div>
+                            @else
+                                <div class="bg-slate-50 rounded-lg p-3 border border-dashed border-slate-200 min-h-[5.5rem] flex items-center">
+                                    <p class="text-xs text-slate-500 italic">Ringkasan belum tersedia</p>
                                 </div>
                             @endif
 

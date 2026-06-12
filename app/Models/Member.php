@@ -19,6 +19,7 @@ class Member extends Model implements AuthenticatableContract
         'password',
         'nim',
         'prodi',
+        'jenis_anggota',
         'photo',
         'member_id',
         'tgl_daftar',
@@ -31,6 +32,23 @@ class Member extends Model implements AuthenticatableContract
     protected $casts = [
         'tgl_daftar' => 'date',
     ];
+
+    public function getJenisAnggotaLabelAttribute(): string
+    {
+        return match ($this->jenis_anggota ?? 'mahasiswa') {
+            'mahasiswa' => 'Mahasiswa',
+            'dosen' => 'Dosen',
+            default => 'Mahasiswa',
+        };
+    }
+
+    public function getDurasiPinjamHariAttribute(): int
+    {
+        return match ($this->jenis_anggota ?? 'mahasiswa') {
+            'dosen' => 80,
+            default => 7,
+        };
+    }
 
     /**
      * Relationship: Member memiliki banyak peminjaman

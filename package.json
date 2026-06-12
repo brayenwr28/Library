@@ -12,6 +12,7 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
-        "admin-lte": "^4.0.0-rc4"
+        "admin-lte": "^4.0.0-rc4",
+        "jimp": "^1.6.1"
     }
 }

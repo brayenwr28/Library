@@ -92,8 +92,9 @@
 
             <!-- Footer -->
             <div class="text-center mt-6 text-sm text-slate-500">
-                <a href="{{ route('admin.register') }}" class="text-slate-700 font-medium hover:underline">
-                    Petugas baru? 
+                Belum punya akun admin?
+                <a href="{{ route('admin.register') }}" class="text-slate-700 font-semibold hover:underline">
+                    Registrasi admin di sini
                 </a>
             </div>
 

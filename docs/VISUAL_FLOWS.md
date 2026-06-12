@@ -45,42 +45,33 @@ MEMBER                          SYSTEM                          ADMIN
 ## 2. PENGEMBALIAN FLOW (Sequence Diagram)
 
 ```
-MEMBER          PERPUSTAKAAN          SYSTEM                    ADMIN
-  │               (Petugas)             │                         │
-  ├──DatangDgn───────────>│             │                         │
-  │   Buku                │             │                         │
-  │                       │             │                         │
-  │                       ├─ Cek Kondisi│                         │
-  │                       │  Input Form ├────────────>│           │
-  │                       │  (tanggal,  │ Create Pengembalian     │
-  │                       │   kondisi)  │ Status: menunggu        │
-  │                       │             │ Denda: Calculated!      │
-  │                       │<────────────┤ (Rp 5K per minggu)      │
-  │                       │             │ Notify Admin            │
-  │                       │             ├─────────────────>│      │
-  │<──Bukti Pengembalian──┤             │         Check Dashboard │
-  │   dari Petugas        │             │         New return!     │
-  │                       │             │<────────┤              │
-  │                       │             │         Click link:    │
-  │                       │             │         /admin/        │
-  │                       │             │         pengembalian/  │
-  │                       │             │         menunggu       │
-  │                       │             │                         │
-  │                       │             │         ┌───────────┬──┤
-  │                       │             │         │           │  │
-  │                       │             │    OPSI A      OPSI B
-  │                       │             │    TERIMA      TOLAK
-  │                       │             │         │           │  │
-  │                       │             │    Status=diterima   │
-  │                       │             │    Stock += 1        │
-  │                       │             │    Denda dicatat ────>│
-  │                       │             │    Notif sent        │
-  │                       │             │         │            │
-  │                       │             │    Status=ditolak    │
-  │                       │             │    Stock=NO CHANGE   │
-  │                       │             │    Member masih utang│
-  │                       │             │<──────┤              │
-  │<───────────Selesai─────────────────┤
+MEMBER          PETUGAS/ADMIN INPUT      SYSTEM                    ADMIN
+ │               (Front Office)          │                         │
+ ├──Datang + buku──────────────>│        │                         │
+ │                              │        │                         │
+ │                              ├─ Buka /admin/pengembalian      │
+ │                              ├─ Pilih peminjaman aktif        │
+ │                              ├─ Isi form: tgl, kondisi, catat │
+ │                              │        ├───────────────> Create Pengembalian
+ │                              │        │                  Status: menunggu_konfirmasi
+ │                              │        │                  Denda: dihitung otomatis
+ │                              │<───────┤                  Simpan record
+ │<──Bukti input pengembalian───┤        │                         │
+ │                              │        ├───────────────────────>│ Dashboard widget update
+ │                              │        │                        │
+ │                              │        │        Admin buka /admin/pengembalian/menunggu
+ │                              │        │<───────────────────────┤
+ │                              │        │                        │
+ │                              │        │          ┌───────────┬───────────┐
+ │                              │        │          │           │           │
+ │                              │        │       TERIMA      TOLAK        │
+ │                              │        │          │           │           │
+ │                              │        │  status=diterima  status=ditolak
+ │                              │        │  peminjaman=      catatan alasan
+ │                              │        │  dikembalikan     admin_id tercatat
+ │                              │        │  stok += 1        stok tetap
+ │                              │        │<─────────────────────────────────┘
+ │<──────────── Selesai ────────┤        │
 ```
 
 ---

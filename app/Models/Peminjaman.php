@@ -16,6 +16,8 @@ class Peminjaman extends Model
     protected $fillable = [
         'member_id',
         'book_id',
+        'perpuss_id',
+        'book_type',
         'judul_buku',
         'nomor_antrian',
         'tgl_pinjam',
@@ -38,6 +40,11 @@ class Peminjaman extends Model
     public function book(): BelongsTo
     {
         return $this->belongsTo(Book::class);
+    }
+
+    public function perpuss(): BelongsTo
+    {
+        return $this->belongsTo(Perpuss::class);
     }
 
     /**

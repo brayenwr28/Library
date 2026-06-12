@@ -165,8 +165,8 @@
         <div class="absolute bottom-32 right-32 w-40 h-40 rounded-full border border-cyan-400/20 animate-rotate-slow" style="animation-direction: reverse;"></div>
     </div>
 
-    <div class="relative mx-auto flex max-w-6xl flex-col gap-12 px-6 py-20 md:flex-row md:items-center">
-        <div class="flex-1 space-y-8">
+    <div class="relative mx-auto max-w-4xl px-6 py-20">
+        <div class="space-y-8">
             <div class="inline-flex items-center gap-2 rounded-full border border-blue-500/50 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 px-4 py-2.5 backdrop-blur-sm animate-fade-in-up hover:border-blue-400/80 transition-all">
                 <span class="h-2.5 w-2.5 rounded-full bg-blue-400 animate-pulse-glow"></span>
                 <span class="text-xs font-semibold uppercase tracking-widest text-blue-100">
@@ -199,92 +199,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                     </svg>
                 </a>
-                <a href="{{ url('/laporan') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-blue-400/50 bg-blue-500/10 backdrop-blur text-blue-100 font-semibold hover:bg-blue-500/20 hover:border-blue-300 transition-all hover:-translate-y-0.5">
-                    <span>📊 Lihat Statistik</span>
+                <a href="{{ route('peminjaman.riwayat') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-blue-400/50 bg-blue-500/10 backdrop-blur text-blue-100 font-semibold hover:bg-blue-500/20 hover:border-blue-300 transition-all hover:-translate-y-0.5">
+                    <span>📊 Lihat Riwayat</span>
                 </a>
-            </div>
-        </div>
-        <div class="flex-1">
-            <div class="relative overflow-hidden rounded-2xl shadow-2xl animate-slide-in-right group" data-slider>
-                <!-- Premium gradient backdrop -->
-                <div class="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900"></div>
-                
-                <!-- Slider content -->
-                <div class="relative h-96 md:h-full">
-                    <article
-                        class="absolute inset-0 flex h-full flex-col justify-between bg-gradient-to-br from-blue-600/95 via-blue-700/90 to-cyan-600/95 p-10 transition-all duration-700 ease-in-out"
-                        data-slide>
-                        <div class="space-y-4">
-                            <div class="inline-block rounded-lg bg-white/20 px-3 py-1 text-sm font-semibold text-white backdrop-blur">
-                                📊 Dashboard
-                            </div>
-                            <h2 class="text-3xl font-bold text-white leading-snug">Dashboard Koleksi</h2>
-                            <p class="text-base leading-relaxed text-blue-50">Visualisasi statistik koleksi, buku terbaru, dan ringkasan kegiatan perpustakaan dalam satu layar yang informatif dan elegan.</p>
-                        </div>
-                        <div class="rounded-lg bg-white/15 backdrop-blur-md border border-white/30 p-5 text-sm text-blue-50 hover:bg-white/25 transition-all">
-                            <p class="font-semibold text-white">✨ Fitur Utama</p>
-                            <p class="mt-2">Statistik real-time, buku favorit, dan agenda layanan untuk pengambilan keputusan cepat.</p>
-                        </div>
-                    </article>
-                    
-                    <article
-                        class="absolute inset-0 flex h-full flex-col justify-between bg-gradient-to-br from-indigo-600/95 via-indigo-700/90 to-blue-600/95 p-10 opacity-0 transition-all duration-700 ease-in-out"
-                        data-slide>
-                        <div class="space-y-4">
-                            <div class="inline-block rounded-lg bg-white/20 px-3 py-1 text-sm font-semibold text-white backdrop-blur">
-                                📚 Peminjaman
-                            </div>
-                            <h2 class="text-3xl font-bold text-white leading-snug">Sirkulasi Peminjaman</h2>
-                            <p class="text-base leading-relaxed text-indigo-50">Kelola perpanjangan, pengingat pengembalian, dan antrian peminjaman dengan antarmuka yang intuitif dan responsif.</p>
-                        </div>
-                        <div class="rounded-lg bg-white/15 backdrop-blur-md border border-white/30 p-5 text-sm text-indigo-50 hover:bg-white/25 transition-all">
-                            <p class="font-semibold text-white">⚡ Otomasi</p>
-                            <p class="mt-2">Pengingat otomatis dan notifikasi real-time untuk kemudahan pengelolaan.</p>
-                        </div>
-                    </article>
-                    
-                    <article
-                        class="absolute inset-0 flex h-full flex-col justify-between bg-gradient-to-br from-purple-600/95 via-purple-700/90 to-indigo-600/95 p-10 opacity-0 transition-all duration-700 ease-in-out"
-                        data-slide>
-                        <div class="space-y-4">
-                            <div class="inline-block rounded-lg bg-white/20 px-3 py-1 text-sm font-semibold text-white backdrop-blur">
-                                👤 Profil
-                            </div>
-                            <h2 class="text-3xl font-bold text-white leading-snug">Profil Anggota</h2>
-                            <p class="text-base leading-relaxed text-purple-50">Riwayat peminjaman lengkap, kartu anggota digital, dan rekomendasi literatur khusus untuk setiap pengguna.</p>
-                        </div>
-                        <div class="rounded-lg bg-white/15 backdrop-blur-md border border-white/30 p-5 text-sm text-purple-50 hover:bg-white/25 transition-all">
-                            <p class="font-semibold text-white">🔒 Keamanan</p>
-                            <p class="mt-2">Autentikasi modern dan manajemen akses berbasis peran pengguna.</p>
-                        </div>
-                    </article>
-                </div>
-
-                <!-- Navigation buttons -->
-                <div class="absolute inset-0 z-10 flex items-center justify-between px-4 pointer-events-none">
-                    <button type="button" aria-label="Slide sebelumnya" data-prev
-                        class="pointer-events-auto rounded-full border border-white/40 bg-white/15 backdrop-blur-md p-3 text-white transition-all hover:bg-white/30 hover:border-white/70 hover:scale-125 duration-200 shadow-lg">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                    </button>
-                    <button type="button" aria-label="Slide berikutnya" data-next
-                        class="pointer-events-auto rounded-full border border-white/40 bg-white/15 backdrop-blur-md p-3 text-white transition-all hover:bg-white/30 hover:border-white/70 hover:scale-125 duration-200 shadow-lg">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Dots navigation -->
-                <div class="absolute bottom-6 left-0 right-0 z-10 flex justify-center gap-3">
-                    <button type="button" aria-label="Pilih slide 1" data-dot
-                        class="h-2.5 w-2.5 rounded-full bg-white shadow-lg transition-all duration-300 hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent"></button>
-                    <button type="button" aria-label="Pilih slide 2" data-dot
-                        class="h-2.5 w-2.5 rounded-full bg-white/50 shadow-md transition-all duration-300 hover:bg-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent"></button>
-                    <button type="button" aria-label="Pilih slide 3" data-dot
-                        class="h-2.5 w-2.5 rounded-full bg-white/50 shadow-md transition-all duration-300 hover:bg-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent"></button>
-                </div>
             </div>
         </div>
     </div>
@@ -307,7 +224,7 @@
                 Layanan Unggulan Kami
             </h2>
             <p class="max-w-2xl mx-auto text-lg text-slate-600">
-                Fitur-fitur inovatif yang dirancang khusus untuk memberikan pengalaman perpustakaan digital terbaik
+                Fitur-fitur inovatif yang dirancang khusus untuk memberikan Kemudahan Dalam Mengakses Perpustakaan Digital 
             </p>
         </div>
         
@@ -401,12 +318,12 @@
             </a>
 
             <!-- Card 4 -->
-            <a href="{{ url('/laporan') }}"
+            <a href="{{ route('peminjaman.riwayat') }}"
                 class="group relative h-full overflow-hidden rounded-2xl border border-orange-200/60 bg-gradient-to-br from-orange-50 via-white to-red-50 p-8 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 animate-fade-in-up delay-400">
                 
                 <!-- Badge -->
-                <div class="absolute top-0 right-0 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold rounded-bl-lg">
-                    Insight
+                <div class="absolute top-0 right-0 px-4 py-2 text-xs font-bold rounded-bl-lg {{ $fineStatusClass ?? 'bg-emerald-100 text-emerald-700' }}">
+                    {{ $fineStatusLabel ?? 'Aman' }}
                 </div>
                 
                 <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-orange-500/5 to-red-500/5"></div>
@@ -415,13 +332,53 @@
                     <div class="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-red-500 text-3xl shadow-lg group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
                         📈
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-900 leading-tight">Analitik Ringkas</h3>
-                    <p class="leading-relaxed text-slate-600">Laporan perpustakaan, tren peminjaman, dan insight performa dalam visualisasi yang mudah dipahami.</p>
+                    <h3 class="text-2xl font-bold text-slate-900 leading-tight">Ringkasan Peminjaman</h3>
+                    <p class="leading-relaxed text-slate-600">
+                        @if($member)
+                            {{ $activeLoans->count() }} pinjaman aktif, {{ $dueSoonLoans->count() }} buku mendekati jatuh tempo, dan estimasi denda {{ $estimatedFine > 0 ? 'Rp ' . number_format($estimatedFine, 0, ',', '.') : '0' }}.
+                        @else
+                            Lihat riwayat peminjaman dan status akun Anda dalam tampilan ringkas yang mudah dipahami.
+                        @endif
+                    </p>
+
+                    @if($member && $nearestLoan)
+                        <div class="rounded-xl border border-orange-200 bg-white/80 p-4 text-sm text-slate-700 space-y-2">
+                            <p class="font-semibold text-slate-900">Buku terdekat jatuh tempo</p>
+                            <p class="text-slate-800">{{ $nearestLoan->judul_buku }}</p>
+                            <p>
+                                @if(($nearestLoanDaysRemaining ?? 0) > 0)
+                                    Sisa {{ $nearestLoanDaysRemaining }} hari lagi sampai jatuh tempo.
+                                @elseif(($nearestLoanDaysRemaining ?? 0) === 0)
+                                    Jatuh tempo hari ini.
+                                @else
+                                    Telat {{ abs($nearestLoanDaysRemaining) }} hari.
+                                @endif
+                            </p>
+                            <p class="text-xs text-slate-500">
+                                Batas kembali: {{ optional($nearestLoan->tgl_kembali)->format('d M Y') }}
+                            </p>
+                        </div>
+                    @endif
+
+                    @if($member && $dueSoonLoans->isNotEmpty())
+                        <div class="rounded-xl border border-orange-200 bg-white/80 p-4 text-sm text-slate-700">
+                            <p class="font-semibold text-slate-900 mb-2">Mendekati jatuh tempo</p>
+                            <ul class="space-y-1">
+                                @foreach($dueSoonLoans->take(2) as $loan)
+                                    <li>• {{ $loan->judul_buku }} - {{ optional($loan->tgl_kembali)->format('d M Y') }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @elseif($member)
+                        <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+                            Tidak ada pinjaman yang mendekati jatuh tempo saat ini.
+                        </div>
+                    @endif
                 </div>
                 
                 <div class="relative mt-8 pt-6 border-t border-orange-200/50">
                     <span class="inline-flex items-center gap-2 text-sm font-semibold text-orange-600 group-hover:text-orange-700 transition">
-                        Lihat analitik
+                        Lihat riwayat
                         <svg class="w-4 h-4 group-hover:translate-x-2 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>

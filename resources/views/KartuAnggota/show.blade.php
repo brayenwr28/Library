@@ -86,9 +86,16 @@
             <!-- Action Buttons -->
             <div class="row mt-4 g-2">
                 <div class="col-md-6">
-                    <a href="{{ route('ktm.download') }}" class="btn btn-primary btn-lg w-100">
-                        <i class="fas fa-download me-2"></i> Download PDF
-                    </a>
+                    <form action="{{ route('ktm.download') }}" method="GET">
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-download me-2"></i> Download PDF
+                        </button>
+                    </form>
+                    <div class="mt-2">
+                        <small>
+                            Jika tombol tidak merespon, klik <a href="{{ route('ktm.download') }}" target="_blank">di sini</a>.
+                        </small>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary btn-lg w-100">

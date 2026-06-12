@@ -100,14 +100,28 @@
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         @if($pinjam->status === 'diambil')
-                                            <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">Terpinjam</span>
+                                            <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">Disetujui</span>
                                         @elseif($pinjam->status === 'dikembalikan')
                                             <span class="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">Dikembalikan</span>
+                                        @elseif($pinjam->status === 'menunggu_konfirmasi')
+                                            <span class="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700">Menunggu Konfirmasi</span>
+                                        @elseif($pinjam->status === 'ditolak')
+                                            <span class="inline-flex items-center rounded-full bg-rose-100 px-3 py-1 text-xs font-medium text-rose-700">Ditolak</span>
                                         @else
                                             <span class="inline-flex items-center rounded-full bg-slate-200 px-3 py-1 text-xs font-medium text-slate-600">Status tidak dikenal</span>
                                         @endif
                                     </td>
                                 </tr>
+                                @if($pinjam->status === 'ditolak' && $pinjam->catatan)
+                                    <tr class="bg-rose-50/60">
+                                        <td colspan="6" class="px-6 pb-4 pt-0">
+                                            <div class="rounded-xl border border-rose-200 bg-white px-4 py-3 text-sm text-rose-700">
+                                                <p class="font-semibold">Catatan penolakan admin</p>
+                                                <p class="mt-1 text-rose-600">{{ $pinjam->catatan }}</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
                             @endforeach
                         </tbody>
                     </table>
@@ -122,9 +136,13 @@
                                     <h3 class="mt-1 text-base font-semibold text-slate-900">{{ $pinjam->judul_buku }}</h3>
                                 </div>
                                 @if($pinjam->status === 'diambil')
-                                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">Terpinjam</span>
+                                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">Disetujui</span>
                                 @elseif($pinjam->status === 'dikembalikan')
                                     <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">Dikembalikan</span>
+                                @elseif($pinjam->status === 'menunggu_konfirmasi')
+                                    <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700">Menunggu Konfirmasi</span>
+                                @elseif($pinjam->status === 'ditolak')
+                                    <span class="rounded-full bg-rose-100 px-3 py-1 text-xs font-medium text-rose-700">Ditolak</span>
                                 @else
                                     <span class="rounded-full bg-slate-200 px-3 py-1 text-xs font-medium text-slate-600">Status tidak dikenal</span>
                                 @endif
@@ -143,6 +161,12 @@
                                     <dd class="font-medium text-slate-800">{{ $pinjam->nomor_antrian }}</dd>
                                 </div>
                             </dl>
+                            @if($pinjam->status === 'ditolak' && $pinjam->catatan)
+                                <div class="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                                    <p class="font-semibold">Catatan penolakan admin</p>
+                                    <p class="mt-1 text-rose-600">{{ $pinjam->catatan }}</p>
+                                </div>
+                            @endif
                         </article>
                     @endforeach
                 </div>
@@ -172,7 +196,7 @@
 
         <aside class="mt-6 rounded-xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-600">
             <p>
-                <span class="font-semibold text-slate-800">Catatan:</span> Simpan nomor antrian ketika mengambil buku fisik. Status peminjaman akan diperbarui setelah petugas memverifikasi pengembalian Anda.
+                <span class="font-semibold text-slate-800">Catatan:</span> Simpan nomor antrian ketika mengambil buku fisik. Jika peminjaman ditolak, alasan penolakan dari admin akan tampil di riwayat ini.
             </p>
         </aside>
     </div>

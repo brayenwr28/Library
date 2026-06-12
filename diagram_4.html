@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Diagram 4</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body style="margin:0;padding:20px;background:#f5f5f5;">
+    <div style="background:white;padding:30px;border-radius:8px;width:100%;">
+        <h2 style="text-align:center;margin-top:0;">Activity Diagram - Kartu Tanda Member KTM</h2>
+        <div class="mermaid">
+graph TD
+    A([Member]) -->|Login| B[Buka Menu KTM]
+    B --> C{Pilih Opsi?}
+    C -->|Lihat KTM| D[Akses Halaman KTM]
+    D --> E{Member Ada?}
+    E -->|Tidak| F[Error: Data Tidak Ada]
+    E -->|Ya| G[Tampil Data KTM]
+    F --> B
+    G --> H[Lihat Informasi Lengkap]
+    H --> I{Download PDF?}
+    I -->|Tidak| J([Selesai])
+    I -->|Ya| K[Klik Download KTM]
+    K --> L[Baca Foto dan Logo]
+    L --> M[Convert ke Base64]
+    M --> N[Generate Template PDF]
+    N --> O[Render PDF]
+    O --> P{Sukses?}
+    P -->|Tidak| Q[Error: Gagal Generate]
+    P -->|Ya| R[Download KTM PDF]
+    Q --> I
+    R --> W([Download Selesai])
+    C -->|Edit Profil| X[Buka Edit Profil]
+    X --> Y[Update Data Member]
+    Y --> Z[Simpan ke Database]
+    Z --> AB[Pesan Sukses]
+    AB --> B
+        </div>
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+        mermaid.contentLoaded();
+    </script>
+</body>
+</html>

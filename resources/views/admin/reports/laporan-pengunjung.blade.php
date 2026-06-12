@@ -2,11 +2,15 @@
 @section('title', 'Laporan Pengunjung')
 
 @section('content-header')
-    <div class="row align-items-center gy-3">
+    <div class="row align-items-center mb-4">
         <div class="col">
             <div class="section-header">
-                <h1 class="h2 mb-2 fw-bold">👥 Laporan Pengunjung</h1>
-                <p class="text-muted mb-0">Laporan statistik pengunjung perpustakaan</p>
+                <h1 class="h3 fw-bold text-dark mb-1">
+                    Laporan Pengunjung Universitas Metamedia
+                </h1>
+                <p class="text-muted mb-0">
+                    Analisis Laporan Ini Untuk Award Kampus
+                </p>
             </div>
         </div>
     </div>
@@ -61,46 +65,60 @@
     <div class="row">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
+                <!-- Error Alert -->
+                @if ($errors->any())
+                    <div class="alert alert-danger border-0 m-4 mb-0" role="alert">
+                        <h5 class="alert-heading">❌ Error Export PDF</h5>
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <!-- Filter Section -->
                 <div class="card-header bg-light border-bottom p-4">
                     <h5 class="card-title fw-bold mb-3">🔍 Filter & Export</h5>
-                    <form method="GET" class="row g-3">
-                        <div class="col-12 col-md-3">
-                            <label class="form-label small fw-semibold">Tipe Pengunjung</label>
-                            <select class="form-select form-select-sm" name="tipe_pengunjung">
-                                <option value="">-- Semua Tipe --</option>
-                                <option value="mahasiswa" {{ request('tipe_pengunjung') === 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
-                                <option value="dosen" {{ request('tipe_pengunjung') === 'dosen' ? 'selected' : '' }}>Dosen</option>
-                                <option value="umum" {{ request('tipe_pengunjung') === 'umum' ? 'selected' : '' }}>Umum</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label class="form-label small fw-semibold">Dari Tanggal</label>
-                            <input type="date" class="form-control form-control-sm" name="dari_tanggal" value="{{ request('dari_tanggal') }}">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label class="form-label small fw-semibold">Sampai Tanggal</label>
-                            <input type="date" class="form-control form-control-sm" name="sampai_tanggal" value="{{ request('sampai_tanggal') }}">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label class="form-label small fw-semibold">&nbsp;</label>
-                            <button type="submit" class="btn btn-primary btn-sm w-100">
-                                <i class="fas fa-search"></i> Filter
+                    <div class="row g-3">
+                        <form method="GET" class="col-12">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label small fw-semibold">Tipe Pengunjung</label>
+                                    <select class="form-select form-select-sm" name="tipe_pengunjung">
+                                        <option value="">-- Semua Tipe --</option>
+                                        <option value="mahasiswa" {{ request('tipe_pengunjung') === 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
+                                        <option value="dosen" {{ request('tipe_pengunjung') === 'dosen' ? 'selected' : '' }}>Dosen</option>
+                                        <option value="umum" {{ request('tipe_pengunjung') === 'umum' ? 'selected' : '' }}>Umum</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label small fw-semibold">Dari Tanggal</label>
+                                    <input type="date" class="form-control form-control-sm" name="dari_tanggal" value="{{ request('dari_tanggal') }}">
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label small fw-semibold">Sampai Tanggal</label>
+                                    <input type="date" class="form-control form-control-sm" name="sampai_tanggal" value="{{ request('sampai_tanggal') }}">
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label small fw-semibold">&nbsp;</label>
+                                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                                        <i class="fas fa-search"></i> Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <form action="{{ route('admin.report.pengunjung.export') }}" method="GET" class="col-12">
+                            @foreach(request()->query() as $key => $value)
+                                @if($key !== '_token')
+                                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                                @endif
+                            @endforeach
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fas fa-file-pdf"></i> Export PDF
                             </button>
-                        </div>
-                        <div class="col-12">
-                            <form action="{{ route('admin.report.pengunjung.export') }}" method="GET" style="display: inline;">
-                                @foreach(request()->query() as $key => $value)
-                                    @if($key !== '_token')
-                                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                                    @endif
-                                @endforeach
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    <i class="fas fa-file-pdf"></i> Export PDF
-                                </button>
-                            </form>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- Table -->

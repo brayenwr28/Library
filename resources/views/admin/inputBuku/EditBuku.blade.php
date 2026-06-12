@@ -142,6 +142,17 @@
 				</div>
 
 				<div>
+					<label for="reference_url" class="text-sm font-medium text-slate-600">Link Referensi / Sumber (opsional)</label>
+					<input type="url" name="reference_url" id="reference_url" value="{{ old('reference_url', $book->reference_url) }}"
+						   class="mt-2 w-full rounded-lg border border-slate-300 px-4 py-3 text-sm focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
+						   placeholder="https://example.com/buku">
+					<p class="mt-2 text-xs text-slate-500">Link ke sumber asli, publisher, atau referensi eksternal yang dapat diakses user.</p>
+					@error('reference_url')
+						<p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+					@enderror
+				</div>
+
+				<div>
 					<label for="summary" class="text-sm font-medium text-slate-600">Ringkasan</label>
 					<textarea name="summary" id="summary" rows="4"
 							  class="mt-2 w-full rounded-lg border border-slate-300 px-4 py-3 text-sm focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">{{ old('summary', $book->summary) }}</textarea>

@@ -16,90 +16,103 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Warna background abu-abu ultra-light modern */
         }
 
         .edit-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 16px; /* Sudut sedikit lebih melengkung agar modern */
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 20px 40px rgba(15, 23, 42, 0.08); /* Soft layered shadow */
         }
 
         .edit-header {
-            background: linear-gradient(to right, #003d7a 0%, #0052a3 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); /* Gradasi biru safir kontemporer */
             color: white;
-            padding: 30px;
+            padding: 35px 40px;
         }
 
         .edit-header h2 {
             margin: 0;
             font-weight: 700;
-            font-size: 1.8em;
+            font-size: 1.65em;
+            letter-spacing: -0.025em;
         }
 
         .edit-header p {
-            margin: 5px 0 0 0;
-            opacity: 0.9;
-            font-size: 0.95em;
+            margin: 6px 0 0 0;
+            opacity: 0.85;
+            font-size: 0.92em;
+            font-weight: 400;
         }
 
         .edit-body {
             padding: 40px;
+            background-color: #ffffff;
         }
 
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 24px;
         }
 
         .form-label {
             font-weight: 600;
-            color: #333;
+            color: #1e293b; /* Warna abu-abu gelap slate, lebih ramah di mata */
             margin-bottom: 8px;
-            font-size: 0.95em;
+            font-size: 0.88em;
             display: block;
+            letter-spacing: 0.01em;
         }
 
         .form-control {
-            border: 1.5px solid #e0e0e0;
+            border: 1.5px solid #e2e8f0;
             border-radius: 8px;
-            padding: 12px 15px;
+            padding: 11px 16px;
             font-size: 0.95em;
-            transition: all 0.3s ease;
+            color: #334155;
+            transition: all 0.2s ease-in-out;
         }
 
         .form-control:focus {
-            border-color: #003d7a;
-            box-shadow: 0 0 0 3px rgba(0, 61, 122, 0.1);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
             outline: none;
+            color: #0f172a;
+        }
+
+        .form-control::placeholder {
+            color: #cbd5e1;
         }
 
         .form-help {
             font-size: 0.8em;
-            color: #888;
-            margin-top: 5px;
+            color: #64748b;
+            margin-top: 6px;
+            font-weight: 400;
         }
 
         .error-message {
-            color: #dc3545;
+            color: #ef4444;
             font-size: 0.8em;
-            margin-top: 5px;
+            margin-top: 6px;
+            font-weight: 500;
             display: block;
         }
 
         .photo-preview {
-            width: 150px;
-            height: 180px;
-            border-radius: 8px;
+            width: 140px;
+            height: 175px;
+            border-radius: 12px;
             overflow: hidden;
-            background: #f0f0f0;
+            background: #f1f5f9;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid #e0e0e0;
+            border: 2px dashed #cbd5e1; /* Gaya border dashed agar khas upload area */
             margin-bottom: 15px;
+            transition: all 0.2s ease;
         }
 
         .photo-preview img {
@@ -109,38 +122,46 @@
         }
 
         .photo-placeholder {
-            color: #999;
-            font-size: 3em;
+            color: #94a3b8;
+            font-size: 2.5em;
             text-align: center;
         }
 
         .btn-submit {
-            background: linear-gradient(to right, #003d7a 0%, #0052a3 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 13px 30px;
             border-radius: 8px;
             font-weight: 600;
-            transition: all 0.3s ease;
+            font-size: 0.95em;
+            transition: all 0.25s ease;
             width: 100%;
             cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
 
         .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 61, 122, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
             color: white;
             text-decoration: none;
         }
 
+        .btn-submit:active {
+            transform: translateY(1px);
+        }
+
         .btn-cancel {
-            background: #f0f0f0;
-            color: #333;
-            border: 1px solid #ddd;
-            padding: 12px 30px;
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            padding: 13px 30px;
             border-radius: 8px;
             font-weight: 600;
-            transition: all 0.3s ease;
+            font-size: 0.95em;
+            transition: all 0.2s ease;
             width: 100%;
             cursor: pointer;
             text-decoration: none;
@@ -149,8 +170,8 @@
         }
 
         .btn-cancel:hover {
-            background: #e0e0e0;
-            color: #333;
+            background: #e2e8f0;
+            color: #334155;
             text-decoration: none;
         }
 
@@ -163,33 +184,38 @@
         @media (max-width: 768px) {
             .row-2col {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
 
             .edit-body {
-                padding: 25px;
+                padding: 28px 20px;
             }
 
             .edit-header {
-                padding: 20px;
+                padding: 25px 20px;
             }
         }
 
         .success-message {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
             border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            font-size: 0.9em;
+            font-weight: 500;
         }
 
         .alert-danger {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
             border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            font-size: 0.9em;
+            font-weight: 500;
         }
     </style>
 </head>

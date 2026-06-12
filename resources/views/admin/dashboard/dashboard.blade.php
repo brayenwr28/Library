@@ -2,27 +2,55 @@
 @section('title', 'Dashboard Admin')
 
 @section('content-header')
-    <div class="row align-items-center gy-3">
+<div class="container-fluid px-0">
+    <div class="row align-items-center gy-3 mb-4">
         <div class="col">
-            <div class="section-header">
-                <h1 class="h2 mb-2 fw-bold">📊 Dashboard Admin</h1>
-                <p class="text-muted mb-0">Selamat datang kembali! Berikut ringkasan sistem perpustakaan digital Anda</p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-2 small fw-medium">
+                    <li class="breadcrumb-item text-muted"><a href="#" class="text-decoration-none">Sistem</a></li>
+                    <li class="breadcrumb-item active text-primary" aria-current="page">Dashboard</li>
+                </ol>
+            </nav>
+            
+            <div class="section-header d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 p-3 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
+                    <i class="fas fa-chart-line fa-2x text-primary"></i>
+                </div>
+                <div>
+                    <h1 class="h3 mb-1 fw-extrabold tracking-tight text-dark">Dashboard Admin</h1>
+                    <p class="text-muted mb-0 small-90">
+                        Selamat datang kembali! Pantau aktivitas perpustakaan digital dalam satu panel.
+                    </p>
+                </div>
             </div>
         </div>
+
         <div class="col-auto">
-            <div class="d-flex gap-2 align-items-center">
-                <span class="badge bg-primary-subtle text-primary fw-semibold">
-                    <i class="fas fa-calendar"></i> Filter
-                </span>
-                <select class="form-select form-select-sm period-filter-select" id="period-filter">
-                    <option value="30">30 hari terakhir</option>
-                    <option value="7">7 hari terakhir</option>
-                    <option value="1">Hari ini</option>+
-                    <option value="365">Tahun berjalan</option>
+            <div class="d-flex gap-2 align-items-center p-2 bg-white rounded-pill shadow-sm border px-3">
+                <div class="d-flex align-items-center me-2">
+                    <span class="p-1 px-2 rounded-circle bg-light me-2">
+                        <i class="fas fa-calendar-alt text-primary small"></i>
+                    </span>
+                    <span class="text-muted small fw-bold text-uppercase" style="font-size: 10px;">Rentang Waktu</span>
+                </div>
+                <select class="form-select form-select-sm border-0 bg-transparent fw-semibold text-dark shadow-none cursor-pointer" id="period-filter" style="width: 150px;">
+                    <option value="30" {{ (isset($selectedPeriod) ? $selectedPeriod : 30) == 30 ? 'selected' : '' }}>30 Hari Terakhir</option>
+                    <option value="7" {{ (isset($selectedPeriod) ? $selectedPeriod : 30) == 7 ? 'selected' : '' }}>7 Hari Terakhir</option>
+                    <option value="1" {{ (isset($selectedPeriod) ? $selectedPeriod : 30) == 1 ? 'selected' : '' }}>Hari Ini</option>
+                    <option value="365" {{ (isset($selectedPeriod) ? $selectedPeriod : 30) == 365 ? 'selected' : '' }}>Tahun Berjalan</option>
                 </select>
             </div>
         </div>
     </div>
+</div>
+
+<style>
+    /* Sedikit custom CSS untuk memperhalus tampilan */
+    .fw-extrabold { font-weight: 800; }
+    .small-90 { font-size: 0.9rem; }
+    .cursor-pointer { cursor: pointer; }
+    .breadcrumb-item + .breadcrumb-item::before { content: "›"; }
+</style>
 @endsection
 
 @section('content')
@@ -191,6 +219,98 @@
         </div>
     </div>
 
+    <!-- Pending Borrow Requests -->
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm animate-fade-in-up delay-800">
+                <div class="card-header bg-white border-bottom-0 p-4 pb-0">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                        <div>
+                            <h5 class="card-title fw-bold mb-1">📝 Peminjaman Menunggu Tindakan</h5>
+                            <p class="text-muted small mb-0">Terima langsung atau tolak dengan catatan alasan dari dashboard.</p>
+                        </div>
+                        <a href="{{ route('admin.peminjaman.menunggu') }}" class="btn btn-outline-primary btn-sm fw-semibold">
+                            Lihat Semua <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    @php
+                        $pendingBorrowItems = $pendingPeminjamanItems ?? collect();
+                    @endphp
+
+                    @if($pendingBorrowItems->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>No. Antrian</th>
+                                        <th>Member</th>
+                                        <th>Judul Buku</th>
+                                        <th>Tgl Pinjam</th>
+                                        <th class="text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($pendingBorrowItems as $peminjaman)
+                                        <tr>
+                                            <td class="fw-semibold">{{ $peminjaman->nomor_antrian }}</td>
+                                            <td>
+                                                <div class="fw-semibold">{{ $peminjaman->member?->name ?? '-' }}</div>
+                                                <small class="text-muted">{{ $peminjaman->member?->email }}</small>
+                                            </td>
+                                            <td>{{ $peminjaman->judul_buku }}</td>
+                                            <td class="text-muted small">{{ $peminjaman->created_at->translatedFormat('d F Y H:i') }}</td>
+                                            <td class="text-center">
+                                                <div class="d-flex flex-wrap justify-content-center gap-2">
+                                                    <form action="{{ route('admin.peminjaman.konfirmasi', $peminjaman->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <button type="submit" class="btn btn-success btn-sm fw-semibold" onclick="return confirm('Terima peminjaman ini?')">
+                                                            <i class="fas fa-check me-1"></i> Terima
+                                                        </button>
+                                                    </form>
+
+                                                    <button type="button" class="btn btn-danger btn-sm fw-semibold" onclick="toggleRejectForm('{{ $peminjaman->id }}')">
+                                                        <i class="fas fa-times me-1"></i> Tolak
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr id="rejectForm{{ $peminjaman->id }}" class="d-none">
+                                            <td colspan="5" class="p-0 border-0 bg-light">
+                                                <div class="p-4">
+                                                    <form action="{{ route('admin.peminjaman.tolak', $peminjaman->id) }}" method="POST" class="rounded-3 border border-danger-subtle bg-white p-4 shadow-sm">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="mb-3">
+                                                            <label for="alasan-{{ $peminjaman->id }}" class="form-label fw-semibold">Alasan Penolakan</label>
+                                                            <textarea id="alasan-{{ $peminjaman->id }}" name="alasan" class="form-control" rows="4" placeholder="Contoh: stok buku sedang tidak tersedia..." required></textarea>
+                                                        </div>
+                                                        <div class="d-flex flex-wrap gap-2">
+                                                            <button type="submit" class="btn btn-danger fw-semibold">Kirim Penolakan</button>
+                                                            <button type="button" class="btn btn-outline-secondary" onclick="toggleRejectForm('{{ $peminjaman->id }}')">Batal</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="d-flex flex-column align-items-center justify-content-center py-5 text-muted">
+                            <i class="fas fa-check-circle fa-3x opacity-25 mb-3"></i>
+                            <p class="mb-0 fw-semibold">Tidak ada peminjaman yang perlu ditindaklanjuti</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Charts & Activities -->
     <div class="row g-3">
         <!-- Chart -->
@@ -230,7 +350,7 @@
                     @if(count($activities) > 0)
                         <div class="list-group list-group-flush">
                             @foreach ($activities as $index => $activity)
-                                <div class="list-group-item border-0 px-4 py-3 activity-item" style="animation: slideIn 0.4s ease-out {{ $index * 0.08 }}s forwards; opacity: 0;">
+                                <div class="list-group-item border-0 px-4 py-3 activity-item" data-delay="{{ $index * 0.08 }}">
                                     <div class="d-flex align-items-start gap-3">
                                         <div class="activity-icon flex-shrink-0 {{ $activity['context'] ?? 'bg-primary-subtle text-primary' }}">
                                             <i class="{{ $activity['icon'] ?? 'fas fa-circle' }}"></i>
@@ -776,8 +896,8 @@
             const chartCanvas = document.getElementById('borrowersChart');
             if (!chartCanvas) return;
 
-            const labels = @json($borrowChartLabels ?? []);
-            const totals = @json($borrowChartData ?? []);
+                const labels = {!! json_encode($borrowChartLabels ?? []) !!};
+                const totals = {!! json_encode($borrowChartData ?? []) !!};
 
             if (!labels.length || !totals.length) {
                 chartCanvas.parentElement.innerHTML = `
@@ -802,7 +922,13 @@
                 gradient.addColorStop(0.5, 'rgba(102, 126, 234, 0.15)');
                 gradient.addColorStop(1, 'rgba(102, 126, 234, 0.01)');
 
-                new Chart(chartCanvas, {
+                // store chart instance globally to allow updates
+                if (window.borrowersChart) {
+                    try { window.borrowersChart.destroy(); } catch (e) { /* ignore */ }
+                    window.borrowersChart = null;
+                }
+
+                window.borrowersChart = new Chart(chartCanvas, {
                     type: 'line',
                     data: {
                         labels: labels,
@@ -919,10 +1045,70 @@
             }
         }
 
-        // Period Filter
+        function toggleRejectForm(peminjamanId) {
+            const row = document.getElementById(`rejectForm${peminjamanId}`);
+            if (!row) return;
+
+            row.classList.toggle('d-none');
+            if (!row.classList.contains('d-none')) {
+                const textarea = row.querySelector('textarea');
+                textarea?.focus();
+            }
+        }
+
+        // Period Filter - fetch new chart data via AJAX and update chart in-place
         document.getElementById('period-filter')?.addEventListener('change', function() {
-            // TODO: Implement period filter functionality
-            console.log('Period changed to:', this.value);
+            const value = this.value;
+            const endpoint = '{{ route('admin.dashboard.chart') }}' + '?period=' + encodeURIComponent(value);
+
+            fetch(endpoint, { headers: { 'Accept': 'application/json' } })
+                .then(res => res.json())
+                .then(data => {
+                    const labels = data.labels || [];
+                    const totals = data.totals || [];
+
+                    const chartCanvas = document.getElementById('borrowersChart');
+                    if (!chartCanvas) return;
+
+                    if (window.borrowersChart) {
+                        try { window.borrowersChart.destroy(); } catch (e) { /* ignore */ }
+                        window.borrowersChart = null;
+                    }
+
+                    const ctx = chartCanvas.getContext('2d');
+                    const gradient = ctx.createLinearGradient(0, 0, 0, 320);
+                    gradient.addColorStop(0, 'rgba(102, 126, 234, 0.5)');
+                    gradient.addColorStop(0.5, 'rgba(102, 126, 234, 0.15)');
+                    gradient.addColorStop(1, 'rgba(102, 126, 234, 0.01)');
+
+                    window.borrowersChart = new Chart(chartCanvas, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Peminjaman',
+                                data: totals,
+                                borderColor: '#667eea',
+                                backgroundColor: gradient,
+                                borderWidth: 4,
+                                borderRadius: 8,
+                                pointBackgroundColor: '#667eea',
+                                pointBorderColor: '#ffffff',
+                                pointBorderWidth: 2,
+                                pointRadius: 6,
+                                pointHoverRadius: 8,
+                                tension: 0.4,
+                                fill: true,
+                            }],
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            interaction: { intersect: false, mode: 'index' },
+                        }
+                    });
+                })
+                .catch(err => console.error('Failed to load chart data:', err));
         });
 
         // Initialize on DOM ready

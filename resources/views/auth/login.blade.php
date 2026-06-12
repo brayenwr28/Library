@@ -1,112 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Document</title>
-</head>
-
-<body>
-
+    <title>Login | Perpustakaan Digital</title>
     <style>
         @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(25px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        .animate-fadeUp {
-            animation: fadeUp .7s ease-out forwards;
-        }
+        .animate-fadeUp { animation: fadeUp 0.5s ease-out forwards; }
     </style>
+</head>
 
-    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-200 to-slate-100 px-4">
+<body class="min-h-screen bg-slate-100 text-slate-800 flex items-center justify-center px-4 py-12 antialiased">
 
-        <div class="w-full max-w-md bg-white/90 backdrop-blur
-                rounded-2xl shadow-2xl p-8 animate-fadeUp">
-
-            <!-- Logo -->
-            <div class="flex flex-col items-center mb-8">
-                <img src="/logo/logo-univ.png" alt="Logo Universitas Metamedia" class="w-24 h-24 object-contain mb-4">
-
-                <h1 class="text-xl font-semibold text-slate-800">
-                    Perpustakaan Digital
-                </h1>
-                <p class="text-sm text-slate-500">
-                    Universitas Metamedia
-                </p>
+    <div class="w-full max-w-md bg-white rounded-2xl border-2 border-slate-300/80 shadow-2xl overflow-hidden animate-fadeUp">
+        
+        <div class="flex flex-col items-center p-6 bg-slate-50 border-b-2 border-slate-200 text-center">
+            <div class="p-1.5 bg-white rounded-xl border border-slate-300 shadow-sm mb-3 shrink-0">
+                <img src="/logo/logo-univ.png" alt="Logo Universitas Metamedia" class="w-16 h-16 object-contain">
             </div>
+            <h1 class="text-xl font-bold tracking-tight text-slate-900">Perpustakaan Digital</h1>
+            <p class="text-xs font-bold uppercase tracking-wider text-indigo-600 mt-0.5">Universitas Metamedia</p>
+        </div>
 
-            <!-- Alerts -->
-            @if (session('status'))
-                <div class="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-600">
-                    {{ session('status') }}
-                </div>
-            @endif
-
-            @if ($errors->any())
-                <div class="mb-5 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">
-                    {{ $errors->first() }}
-                </div>
-            @endif
-
-            <!-- Form -->
-            <form method="POST" action="{{ route('login.store') }}" class="space-y-5">
+        <div class="p-6 md:p-8">
+            <form method="POST" action="{{ route('login.store') }}" class="space-y-4">
                 @csrf
 
-                <div>
-                    <label class="text-sm font-medium text-slate-600">
-                        Email
-                    </label>
-                    <input type="email" name="email" value="{{ old('email') }}" required class="w-full mt-1 px-4 py-2.5 rounded-lg
-                              border border-slate-300
-                              focus:outline-none focus:ring-2 focus:ring-slate-400
-                              transition">
+                <div class="p-5 bg-slate-50 rounded-xl border-2 border-slate-200 shadow-sm space-y-4">
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-2 mb-1">Kredensial Masuk</p>
+                    
+                    <div>
+                        <label class="text-xs font-bold uppercase tracking-wide text-slate-600">Alamat Email</label>
+                        <input type="email" name="email" value="{{ old('email') }}" required placeholder="nama@email.com"
+                            class="w-full mt-1.5 px-3.5 py-2.5 border-2 border-slate-300 bg-white rounded-lg text-sm transition focus:border-indigo-600 focus:outline-none focus:ring-4 focus:ring-indigo-100">
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold uppercase tracking-wide text-slate-600">Password</label>
+                        <input type="password" name="password" required placeholder="••••••••" 
+                            class="w-full mt-1.5 px-3.5 py-2.5 border-2 border-slate-300 bg-white rounded-lg text-sm transition focus:border-indigo-600 focus:outline-none focus:ring-4 focus:ring-indigo-100">
+                    </div>
                 </div>
 
-                <div>
-                    <label class="text-sm font-medium text-slate-600">
-                        Password
-                    </label>
-                    <input type="password" name="password" required placeholder="********" class="w-full mt-1 px-4 py-2.5 rounded-lg
-                              border border-slate-300
-                              focus:outline-none focus:ring-2 focus:ring-slate-400
-                              transition">
-                </div>
-
-                <button type="submit" class="w-full py-2.5 rounded-lg
-                           bg-slate-700 text-white font-medium
-                           hover:bg-slate-800
-                           transition duration-200">
-                    Login
+                <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold text-sm shadow-md transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-100 active:scale-[0.99] mt-2">
+                    Masuk Sekarang →
                 </button>
             </form>
 
-            <!-- Footer -->
-            <div class="text-center mt-6 text-sm text-slate-500">
-                Belum punya akun?
-                <a href="{{ route('register') }}" class="text-slate-700 font-medium hover:underline">
-                    Daftar Anggota
-                </a>
+            <div class="mt-6 border-t-2 border-slate-100 pt-4 text-center space-y-3 text-xs md:text-sm">
+                <div class="text-slate-500">
+                    Belum punya akun? 
+                    <a href="{{ route('register') }}" class="text-indigo-600 font-bold hover:underline">Daftar Anggota</a>
+                </div>
+                <div>
+                    <a href="/" class="inline-flex items-center gap-1 text-xs text-slate-400 font-medium hover:text-slate-600 transition hover:underline">
+                        ← Kembali ke Beranda
+                    </a>
+                </div>
             </div>
-            <div class="text-center mt-4">
-                <a href="/" class="text-xs text-slate-500 hover:underline">
-                    ← Kembali ke Beranda
-                </a>
-            </div>
-
         </div>
+
     </div>
 
-
 </body>
-
 </html>

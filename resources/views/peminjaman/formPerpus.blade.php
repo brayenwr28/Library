@@ -64,6 +64,7 @@
                         @endif
 
                         <input type="hidden" name="book_id" value="{{ $selectedBook->id }}">
+                        <input type="hidden" name="book_type" value="fisik">
                     @else
                         <select
                             id="book_id"
@@ -81,7 +82,7 @@
                                 <option value="" disabled>Tidak ada buku tersedia</option>
                             @endforelse
                         </select>
-                        <p class="text-xs text-slate-500 mt-2">Buku yang ditampilkan adalah yang sudah memiliki file PDF, berstatus tersedia, dan memiliki stok > 0.</p>
+                        <p class="text-xs text-slate-500 mt-2">Buku yang ditampilkan adalah buku fisik perpustakaan yang berstatus tersedia dan memiliki stok > 0.</p>
                     @endif
                 </div>
 
@@ -106,19 +107,12 @@
                     >
                 </div>
 
-                <!-- Tanggal Kembali -->
-                <div>
-                    <label for="tgl_kembali" class="block text-sm font-semibold text-slate-700 mb-2">
-                        Tanggal Kembali *
-                    </label>
-                    <input 
-                        type="date" 
-                        id="tgl_kembali" 
-                        name="tgl_kembali" 
-                        value="{{ old('tgl_kembali') }}"
-                        class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-700 transition"
-                        required
-                    >
+                <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+                    <p class="font-semibold text-slate-900">Masa pinjam otomatis</p>
+                    <p>
+                        {{ $member->jenis_anggota_label }} mendapatkan masa pinjam {{ $member->durasi_pinjam_hari }} hari.
+                        Tanggal kembali akan dihitung otomatis oleh sistem setelah Anda memilih tanggal pinjam.
+                    </p>
                 </div>
                 <!-- Buttons -->
                 <div class="flex gap-4 pt-4">
@@ -133,8 +127,8 @@
                     @else
                         <button 
                             type="submit"
-                            @if(!$selectedBook || $books->isEmpty()) disabled @endif
-                            class="flex-1 @if($selectedBook && $books->isNotEmpty()) bg-slate-700 hover:bg-slate-800 @else bg-gray-400 cursor-not-allowed @endif text-white font-semibold py-3 rounded-lg transition duration-200"
+                            @if(!$selectedBook && $books->isEmpty()) disabled @endif
+                            class="flex-1 @if($selectedBook || $books->isNotEmpty()) bg-slate-700 hover:bg-slate-800 @else bg-gray-400 cursor-not-allowed @endif text-white font-semibold py-3 rounded-lg transition duration-200"
                         >
                             📋 Ajukan Peminjaman
                         </button>

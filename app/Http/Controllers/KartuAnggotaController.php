@@ -29,22 +29,24 @@ class KartuAnggotaController extends Controller
         }
 
         try {
-            // Convert foto ke base64 untuk dompdf
+            // Convert foto & logo ke base64 untuk dompdf.
             $photoBase64 = null;
+            $logoBase64 = null;
+
             if ($member->photo) {
                 $photoPath = storage_path('app/public/' . $member->photo);
                 if (file_exists($photoPath)) {
                     $photoData = file_get_contents($photoPath);
-                    $photoBase64 = 'data:image/' . pathinfo($photoPath, PATHINFO_EXTENSION) . ';base64,' . base64_encode($photoData);
+                    $photoMime = mime_content_type($photoPath) ?: 'image/jpeg';
+                    $photoBase64 = 'data:' . $photoMime . ';base64,' . base64_encode($photoData);
                 }
             }
 
-            // Convert logo ke base64
-            $logoBase64 = null;
             $logoPath = public_path('logo/logo-univ.png');
             if (file_exists($logoPath)) {
                 $logoData = file_get_contents($logoPath);
-                $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+                $logoMime = mime_content_type($logoPath) ?: 'image/png';
+                $logoBase64 = 'data:' . $logoMime . ';base64,' . base64_encode($logoData);
             }
 
             // Generate PDF dengan dompdf

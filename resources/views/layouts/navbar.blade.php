@@ -52,6 +52,19 @@
                 <span class="absolute left-0 -bottom-1 w-0 h-[2px] bg-slate-700 transition-all group-hover:w-full"></span>
             </li>
 
+            <li class="relative group">
+                @if(Auth::guard('admin')->check())
+                    <a href="{{ route('admin.dashboard') }}" class="hover:text-slate-900 transition">
+                        Admin Panel
+                    </a>
+                @else
+                    <a href="{{ route('admin.login') }}" class="hover:text-slate-900 transition">
+                        Admin Panel
+                    </a>
+                @endif
+                <span class="absolute left-0 -bottom-1 w-0 h-[2px] bg-slate-700 transition-all group-hover:w-full"></span>
+            </li>
+
             <!-- AUTH BUTTONS -->
             @guest
                 <li>

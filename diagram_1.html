@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Diagram 1</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body style="margin:0;padding:20px;background:#f5f5f5;">
+    <div style="background:white;padding:30px;border-radius:8px;width:100%;">
+        <h2 style="text-align:center;margin-top:0;">Activity Diagram - Peminjaman Buku</h2>
+        <div class="mermaid">
+graph TD
+    A([Member]) -->|Login Sistem| B[Buka Halaman Peminjaman]
+    B --> C{Pilih Jenis Buku?}
+    
+    C -->|Digital/Katalog| D[Lihat Daftar Buku Digital]
+    C -->|Fisik/Perpus| E[Lihat Daftar Buku Fisik]
+    
+    D --> F[Pilih Buku dari Katalog]
+    E --> F
+    F --> G{Stok Tersedia?}
+    
+    G -->|Tidak| H[Tampil Error:<br/>Stok Habis]
+    H --> F
+    
+    G -->|Ya| I[Masukkan Data Peminjaman]
+    I --> J[Pilih Tanggal Pinjam]
+    J --> K[Pilih Tanggal Kembali]
+    K --> L{Upload Bukti<br/>Registrasi?}
+    
+    L -->|Ya| M[Upload File Bukti]
+    M --> N[Validasi Data]
+    
+    L -->|Tidak| N
+    
+    N --> O{Validasi Berhasil?}
+    O -->|Tanggal Pinjam<br/>di Masa Lalu| P[Tampil Error:<br/>Tanggal Tidak Valid]
+    P --> J
+    
+    O -->|Tanggal Kembali<br/>Lebih Awal| Q[Tampil Error:<br/>Kembali Harus<br/>Lebih Lambat]
+    Q --> K
+    
+    O -->|Valid| R[Cek Peminjaman Aktif]
+    R --> S{Sudah Pinjam<br/>Buku Ini?}
+    
+    S -->|Ya| T[Tampil Error:<br/>Peminjaman Aktif<br/>Masih Ada]
+    T --> F
+    
+    S -->|Tidak| U[Generate Nomor Antrian]
+    U --> V[Simpan Data Peminjaman]
+    V --> W[Update Status:<br/>MENUNGGU_KONFIRMASI]
+    W --> X[Simpan Bukti Registrasi]
+    
+    X --> Y[Tampil Pesan Sukses<br/>Nomor Antrian: XXX]
+    Y --> Z[Redirect ke Riwayat<br/>Peminjaman]
+    Z --> AA([Menunggu Konfirmasi Admin])
+        </div>
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+        mermaid.contentLoaded();
+    </script>
+</body>
+</html>

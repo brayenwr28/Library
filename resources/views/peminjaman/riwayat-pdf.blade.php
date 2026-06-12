@@ -104,12 +104,20 @@ table.data th {
     font-weight: bold;
 }
 
+.menunggu_konfirmasi {
+    color: #b45309;
+}
+
 .terpinjam {
     color: blue;
 }
 
 .dikembalikan {
     color: green;
+}
+
+.ditolak {
+    color: #be123c;
 }
 
 /* FOOTER */
@@ -194,6 +202,7 @@ table.data th {
                 <th>Tgl Kembali</th>
                 <th>Antrian</th>
                 <th>Status</th>
+                <th>Catatan</th>
             </tr>
         </thead>
         <tbody>
@@ -205,7 +214,20 @@ table.data th {
                 <td>{{ \Carbon\Carbon::parse($p->tgl_kembali)->format('d/m/Y') }}</td>
                 <td>{{ $p->nomor_antrian }}</td>
                 <td class="status {{ $p->status }}">
-                    {{ ucfirst($p->status) }}
+                    @if($p->status === 'diambil')
+                        Disetujui
+                    @elseif($p->status === 'dikembalikan')
+                        Dikembalikan
+                    @elseif($p->status === 'menunggu_konfirmasi')
+                        Menunggu Konfirmasi
+                    @elseif($p->status === 'ditolak')
+                        Ditolak
+                    @else
+                        {{ ucfirst($p->status) }}
+                    @endif
+                </td>
+                <td>
+                    {{ $p->status === 'ditolak' ? ($p->catatan ?? '-') : '-' }}
                 </td>
             </tr>
             @endforeach

@@ -55,6 +55,7 @@ class AuthController extends Controller
             'password' => ['required', 'string', 'confirmed'],
             'nim' => ['required', 'string', 'max:20', 'unique:members,nim'],
             'prodi' => ['required', 'string', 'max:100'],
+            'jenis_anggota' => ['required', 'in:mahasiswa,dosen'],
             'tgl_daftar' => ['nullable', 'date'],
         ]);
 
@@ -74,6 +75,7 @@ class AuthController extends Controller
                 'password' => $validated['password'],
                 'nim' => $validated['nim'] ?? null,
                 'prodi' => $validated['prodi'] ?? null,
+                'jenis_anggota' => $validated['jenis_anggota'],
                 'member_id' => $memberId,
                 'tgl_daftar' => $registrationDate,
             ]);

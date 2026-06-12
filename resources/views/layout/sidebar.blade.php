@@ -1,7 +1,7 @@
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
   <div class="sidebar-brand">
     <a href="{{ route('admin.dashboard') }}" class="brand-link text-decoration-none">
-      <img src="{{ asset('logo/univmetamedia.png') }}" alt="Logo" class="brand-image opacity-75 shadow">
+      <img src="{{ asset('logo/univmetamedia.png') }}" alt="Logo" class="brand-image opacity-75 shadow" style="max-width: 48px; height: auto;">
       <span class="brand-text fw-semibold">{{ config('app.name', 'Admin Dashboard') }}</span>
     </a>
   </div>
@@ -17,6 +17,8 @@
         </li>
         
         <li class="nav-header ps-3 pt-2 pb-1 text-uppercase small text-secondary">Management Buku</li>
+        <li class="nav-item">
+        </li>
         <li class="nav-item {{ request()->is('admin/books*') || request()->routeIs('Bukuperpus.*') ? 'menu-open' : '' }}">
           <a href="#" class="nav-link {{ request()->is('admin/books*') || request()->routeIs('Bukuperpus.*') ? 'active' : '' }}">
             <i class="nav-icon bi bi-journal-text"></i>
@@ -55,6 +57,12 @@
           </ul>
         </li>
         <li class="nav-header ps-3 pt-2 pb-1 text-uppercase small text-secondary">Management Anggota</li>
+        <li class="nav-item">
+          <a href="{{ route('admin.members.import.form') }}" class="nav-link">
+            <i class="nav-icon bi bi-upload"></i>
+            <p>Import Anggota</p>
+          </a>
+        </li>
         <li class="nav-item {{ request()->is('admin/members*') ? 'menu-open' : '' }}">
           <a href="#" class="nav-link {{ request()->is('admin/members*') ? 'active' : '' }}">
             <i class="nav-icon bi bi-people"></i>
@@ -98,6 +106,30 @@
               <a href="{{ url('admin/loans/history') }}" class="nav-link {{ request()->is('admin/loans/history*') ? 'active' : '' }}">
                 <i class="nav-icon bi bi-circle"></i>
                 <p>Riwayat Peminjaman</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item {{ request()->is('admin/pengembalian*') ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ request()->is('admin/pengembalian*') ? 'active' : '' }}">
+            <i class="nav-icon bi bi-arrow-return-left"></i>
+            <p>
+              Transaksi Pengembalian
+              <i class="nav-arrow bi bi-chevron-right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('admin.pengembalian.index') }}" class="nav-link {{ request()->routeIs('admin.pengembalian.index') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>Input Pengembalian</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('admin.pengembalian.menunggu') }}" class="nav-link {{ request()->routeIs('admin.pengembalian.menunggu') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>Konfirmasi Pengembalian</p>
               </a>
             </li>
           </ul>
