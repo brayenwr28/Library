@@ -19,6 +19,10 @@ Route::controller(AuthController::class)->prefix('auth')->middleware('guest')->g
     Route::post('/register', 'registerStore')->name('register.store');
 });
 
+Route::post('/auth/logout', [AuthController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
+
 
 Route::controller(AdminRegistrationController::class)->group(function () {
 
