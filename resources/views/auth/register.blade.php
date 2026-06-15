@@ -130,6 +130,46 @@
                     ← Kembali ke Beranda
                 </a>
             </div>
+<<<<<<< HEAD
+=======
+
+            <!-- Password -->
+            <div>
+                <label class="text-sm font-medium text-slate-600">Password</label>
+                <input type="password" name="password"
+                    class="w-full mt-1 px-4 py-2 border rounded-lg
+                          focus:outline-none focus:ring-2 focus:ring-slate-400 @error('password') border-red-500 @enderror">
+                @error('password')
+                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+                <label class="text-sm font-medium text-slate-600">Konfirmasi Password</label>
+                <input type="password" name="password_confirmation" class="w-full mt-1 px-4 py-2 border rounded-lg
+                          focus:outline-none focus:ring-2 focus:ring-slate-400">
+            </div>
+            <!-- Button -->
+            <button type="submit" class="w-full bg-slate-700 text-white py-3 rounded-lg
+                       hover:bg-slate-800 transition font-semibold">
+                Daftar Anggota
+            </button>
+        </form>
+
+        <!-- Footer -->
+        <div class="text-center mt-6 text-sm text-slate-500">
+            Sudah punya akun?
+            <a href="{{ route('login') }}" class="text-slate-700 font-medium hover:underline">
+                Login
+            </a>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/" class="text-xs text-slate-500 hover:underline">
+                ← Kembali ke Beranda
+            </a>
+>>>>>>> fb754dc (update download)
         </div>
 
     </div>

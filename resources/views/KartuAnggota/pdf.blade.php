@@ -4,177 +4,258 @@
     <meta charset="utf-8">
     <title>KTM - {{ $member->member_id }}</title>
     <style>
+        @page {
+            size: A4;
+            margin: 18mm;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            color: #111;
-            background: #fff;
+            background: #ffffff;
+            color: #1f2933;
+            font-family: Arial, Helvetica, sans-serif;
         }
-        .page {
+
+        .page-title {
+            margin-bottom: 14px;
+            text-align: center;
+        }
+
+        .page-title h1 {
+            margin: 0;
+            color: #102a43;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 0;
+        }
+
+        .page-title p {
+            margin: 4px 0 0;
+            color: #627d98;
+            font-size: 12px;
+        }
+
+        .ktm-card {
+            width: 170mm;
+            margin: 0 auto;
+            overflow: hidden;
+            border: 1px solid #bcccdc;
+            background: #ffffff;
+        }
+
+        .header {
             width: 100%;
-            padding: 16px;
-            box-sizing: border-box;
+            border-collapse: collapse;
+            background: #0b4f8a;
+            color: #ffffff;
         }
-        .card {
-            width: 100%;
-            border: 1px solid #ccc;
-            padding: 18px;
-            box-sizing: border-box;
+
+        .logo-cell {
+            width: 27mm;
+            padding: 9mm 5mm 8mm 8mm;
+            vertical-align: middle;
+            text-align: center;
         }
-        .header-table,
-        .content-table {
+
+        .logo-img {
+            width: 20mm;
+            max-height: 20mm;
+        }
+
+        .logo-placeholder {
+            width: 20mm;
+            height: 20mm;
+            line-height: 20mm;
+            background: #ffffff;
+            color: #0b4f8a;
+            font-size: 9px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .header-text {
+            padding: 8mm 8mm 8mm 0;
+            vertical-align: middle;
+        }
+
+        .university {
+            margin: 0 0 3mm;
+            font-size: 21px;
+            font-weight: bold;
+            color: #ffffff;
+            letter-spacing: 0;
+        }
+
+        .address,
+        .contact {
+            margin: 0 0 1.5mm;
+            color: #e6f0ff;
+            font-size: 11px;
+            line-height: 1.35;
+        }
+
+        .gold-line {
+            height: 4mm;
+            background: #f6c343;
+        }
+
+        .content {
             width: 100%;
             border-collapse: collapse;
         }
-        .header-logo {
-            width: 90px;
-            vertical-align: top;
-        }
-        .header-logo img {
-            display: block;
-            max-width: 90px;
-            height: auto;
-        }
-        .header-text {
-            padding-left: 12px;
-            vertical-align: top;
-        }
-        .title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-        .subtitle,
-        .contact {
-            font-size: 11px;
-            color: #444;
-            line-height: 1.4;
-            margin-bottom: 3px;
-        }
-        .separator {
-            height: 10px;
-            background: #0d437a;
-            margin: 14px 0;
-        }
+
         .photo-cell {
-            width: 34%;
-            padding-right: 14px;
+            width: 48mm;
+            padding: 10mm 0 10mm 9mm;
             vertical-align: top;
         }
-        .photo-box {
-            width: 100%;
-            border: 2px solid #0d437a;
-            min-height: 220px;
-            padding: 6px;
+
+        .photo-frame {
+            width: 35mm;
+            height: 45mm;
+            overflow: hidden;
+            border: 1.5px solid #0b4f8a;
+            background: #f0f4f8;
             text-align: center;
         }
-        .photo-box img {
-            display: block;
-            max-width: 100%;
-            max-height: 220px;
-            margin: 0 auto;
+
+        .photo-img {
+            width: 35mm;
+            height: 45mm;
         }
-        .placeholder {
-            width: 100%;
-            min-height: 220px;
-            background: #f2f2f2;
-            color: #777;
-            display: table;
-        }
-        .placeholder span {
-            display: table-cell;
-            vertical-align: middle;
+
+        .photo-placeholder {
+            width: 35mm;
+            height: 45mm;
+            line-height: 45mm;
+            color: #829ab1;
+            font-size: 11px;
             text-align: center;
-            font-size: 12px;
         }
+
         .info-cell {
-            width: 66%;
+            padding: 10mm 9mm 10mm 3mm;
             vertical-align: top;
         }
-        .info-row {
-            margin-bottom: 12px;
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
         }
+
+        .info-table td {
+            padding: 0 0 4.2mm;
+            vertical-align: top;
+        }
+
         .label {
-            font-size: 10px;
-            color: #555;
+            color: #52606d;
+            font-size: 8.5px;
             font-weight: bold;
+            line-height: 1.2;
             text-transform: uppercase;
         }
+
         .value {
-            display: block;
+            margin-top: 1mm;
+            color: #102a43;
             font-size: 14px;
-            color: #111;
-            margin-top: 4px;
+            line-height: 1.25;
+            word-break: break-word;
         }
-        .footer-bar {
-            margin-top: 16px;
-            height: 10px;
-            background: #0d437a;
+
+        .footer {
+            height: 5mm;
+            background: #0b4f8a;
         }
     </style>
 </head>
 <body>
-<div class="page">
-    <div class="card">
-        <table class="header-table">
+    <div class="page-title">
+        <h1>Kartu Tanda Member (KTM)</h1>
+        <p>Universitas Metamedia</p>
+    </div>
+
+    <div class="ktm-card">
+        <table class="header">
             <tr>
-                <td class="header-logo">
+                <td class="logo-cell">
                     @if($logoBase64)
-                        <img src="{{ $logoBase64 }}" alt="Logo">
+                        <img class="logo-img" src="{{ $logoBase64 }}" alt="Logo">
                     @else
-                        <div class="placeholder"><span>Logo</span></div>
+                        <div class="logo-placeholder">LOGO</div>
                     @endif
                 </td>
                 <td class="header-text">
-                    <div class="title">UNIVERSITAS METAMEDIA</div>
-                    <div class="subtitle">Jl. Khatib Sulaiman Dalam No.1, Padang</div>
-                    <div class="contact">0812 6774 5677 | rektorat@metamedia.ac.id</div>
+                    <div class="university">UNIVERSITAS METAMEDIA</div>
+                    <p class="address">Jl. Khatib Sulaiman Dalam No.1, RT.004/RW.006, Lolong Belanti, Padang Utara, Kota Padang</p>
+                    <p class="contact">0812 6774 5677 | rektorat@metamedia.ac.id | www.metamedia.ac.id</p>
                 </td>
             </tr>
         </table>
-        <div class="separator"></div>
-        <table class="content-table">
+
+        <div class="gold-line"></div>
+
+        <table class="content">
             <tr>
                 <td class="photo-cell">
-                    <div class="photo-box">
+                    <div class="photo-frame">
                         @if($photoBase64)
-                            <img src="{{ $photoBase64 }}" alt="Foto Member">
+                            <img class="photo-img" src="{{ $photoBase64 }}" alt="Foto Member">
                         @else
-                            <div class="placeholder"><span>No Photo</span></div>
+                            <div class="photo-placeholder">NO PHOTO</div>
                         @endif
                     </div>
                 </td>
                 <td class="info-cell">
-                    <div class="info-row">
-                        <div class="label">Nama Lengkap</div>
-                        <span class="value">{{ $member->name }}</span>
-                    </div>
-                    <div class="info-row">
-                        <div class="label">NIM</div>
-                        <span class="value">{{ $member->nim ?? '-' }}</span>
-                    </div>
-                    <div class="info-row">
-                        <div class="label">Program Studi</div>
-                        <span class="value">{{ $member->prodi ?? '-' }}</span>
-                    </div>
-                    <div class="info-row">
-                        <div class="label">Nomor Member</div>
-                        <span class="value">{{ $member->member_id }}</span>
-                    </div>
-                    <div class="info-row">
-                        <div class="label">Email</div>
-                        <span class="value">{{ $member->email }}</span>
-                    </div>
-                    <div class="info-row">
-                        <div class="label">Tanggal Daftar</div>
-                        <span class="value">{{ $member->tgl_daftar ? $member->tgl_daftar->format('d-m-Y') : '-' }}</span>
-                    </div>
+                    <table class="info-table">
+                        <tr>
+                            <td>
+                                <div class="label">Nama Lengkap</div>
+                                <div class="value">{{ $member->name }}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="label">Nomor Induk Mahasiswa (NIM)</div>
+                                <div class="value">{{ $member->nim ?? '-' }}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="label">Program Studi</div>
+                                <div class="value">{{ $member->prodi ?? '-' }}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="label">Nomor Member</div>
+                                <div class="value">{{ $member->member_id }}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="label">Email</div>
+                                <div class="value">{{ $member->email }}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="label">Tanggal Daftar</div>
+                                <div class="value">{{ $member->tgl_daftar ? $member->tgl_daftar->format('d-m-Y') : '-' }}</div>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
         </table>
-        <div class="footer-bar"></div>
+
+        <div class="footer"></div>
     </div>
-</div>
 </body>
 </html>

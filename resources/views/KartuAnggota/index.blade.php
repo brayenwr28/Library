@@ -175,6 +175,18 @@
                     <p class="text-muted">Universitas Metamedia</p>
                 </div>
 
+                @if(session('error'))
+                    <div class="alert alert-danger" role="alert">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                @if(session('success'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
                 <!-- KTM Card -->
                 <div class="ktm-card shadow-lg">
                     <!-- Header Section -->
@@ -276,7 +288,7 @@
                     <h5 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Informasi Penting</h5>
                     <ul class="mb-0">
                         <li>Klik tombol <strong>"Download PDF"</strong> untuk mengunduh Kartu Tanda Member Anda</li>
-                        <li>File akan diunduh dengan nama: <strong>KTM-{Nomor Member}-{Tanggal}.pdf</strong></li>
+                        <li>File akan diunduh dengan nama: <strong>KTM-{{ $member->member_id }}-{{ now()->format('dmY') }}.pdf</strong></li>
                         <li>Simpan file PDF dengan aman di folder Anda</li>
                         <li>Anda dapat mencetak file PDF kapan saja sesuai kebutuhan</li>
                         <li>Gunakan kertas <strong>A4</strong> untuk hasil optimal</li>

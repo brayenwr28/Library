@@ -48,7 +48,11 @@
                             @endif
                             <p class="mt-2 text-xs @if($selectedBook->stock > 0) text-emerald-600 @else text-red-600 font-semibold @endif">
                                 @if($selectedBook->stock > 0)
-                                    ✅ Buku dipilih otomatis dari katalog. | Stok: <span class="font-semibold">{{ $selectedBook->stock }}</span> tersedia
+                                    @if(isset($selectedBook->book_type) && $selectedBook->book_type === 'perpustakaan')
+                                        ✅ Buku dipilih otomatis dari Perpustakaan. | Stok: <span class="font-semibold">{{ $selectedBook->stock }}</span> tersedia
+                                    @else
+                                        ✅ Buku dipilih otomatis dari Katalog Digital. | Stok: <span class="font-semibold">{{ $selectedBook->stock }}</span> tersedia
+                                    @endif
                                 @else
                                     ⚠️ Stok buku sudah habis! Tidak dapat dipinjam.
                                 @endif
@@ -82,7 +86,7 @@
                                 <option value="" disabled>Tidak ada buku tersedia</option>
                             @endforelse
                         </select>
-                        <p class="text-xs text-slate-500 mt-2">Buku yang ditampilkan adalah yang sudah memiliki file PDF, berstatus tersedia, dan memiliki stok > 0.</p>
+                        <p class="text-xs text-slate-500 mt-2">Buku yang ditampilkan adalah yang berstatus tersedia dan memiliki stok > 0. Terdiri dari Katalog Digital dan Buku Perpustakaan Fisik.</p>
                     @endif
                 </div>
 

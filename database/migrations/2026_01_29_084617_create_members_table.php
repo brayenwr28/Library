@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('nim')->unique();
             $table->string('prodi');
             $table->string('member_id')->unique(); // Nomor Anggota Pustaka
-            $table->date('tgl_daftar')->default(\Illuminate\Support\Facades\DB::raw('CURRENT_DATE'));
+            $table->date('tgl_daftar');
             $table->timestamps();
         });
     }

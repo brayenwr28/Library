@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Member;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class KartuAnggotaController extends Controller
@@ -12,7 +13,7 @@ class KartuAnggotaController extends Controller
     public function index()
     {
         $member = Member::where('email', Auth::user()->email)->first();
-        
+
         if (!$member) {
             return redirect()->route('dashboard')->with('error', 'Data member tidak ditemukan');
         }
@@ -23,31 +24,26 @@ class KartuAnggotaController extends Controller
     public function downloadPDF()
     {
         $member = Member::where('email', Auth::user()->email)->first();
-        
+
         if (!$member) {
             return redirect()->route('dashboard')->with('error', 'Data member tidak ditemukan');
         }
 
         try {
-            // Convert foto & logo ke base64 untuk dompdf.
+            $canRenderImages = extension_loaded('gd');
+
+            if (!$canRenderImages) {
+                Log::warning('KTM PDF generated without images because PHP GD extension is not installed.');
+            }
+
             $photoBase64 = null;
-            $logoBase64 = null;
-
-            if ($member->photo) {
-                $photoPath = storage_path('app/public/' . $member->photo);
-                if (file_exists($photoPath)) {
-                    $photoData = file_get_contents($photoPath);
-                    $photoMime = mime_content_type($photoPath) ?: 'image/jpeg';
-                    $photoBase64 = 'data:' . $photoMime . ';base64,' . base64_encode($photoData);
-                }
+            if ($canRenderImages && $member->photo) {
+                $photoBase64 = $this->imageDataUri(storage_path('app/public/' . $member->photo));
             }
 
-            $logoPath = public_path('logo/logo-univ.png');
-            if (file_exists($logoPath)) {
-                $logoData = file_get_contents($logoPath);
-                $logoMime = mime_content_type($logoPath) ?: 'image/png';
-                $logoBase64 = 'data:' . $logoMime . ';base64,' . base64_encode($logoData);
-            }
+            $logoBase64 = $canRenderImages
+                ? $this->imageDataUri(public_path('logo/logo-univ.png'))
+                : null;
 
             // Generate PDF dengan dompdf
             $pdf = Pdf::loadView('KartuAnggota.pdf', [
@@ -68,9 +64,9 @@ class KartuAnggotaController extends Controller
             // Download dengan nama file KTM-{member_id}-{tanggal}.pdf
             $filename = 'KTM-' . $member->member_id . '-' . now()->format('dmY') . '.pdf';
             return $pdf->download($filename);
-            
-        } catch (\Exception $e) {
-            \Log::error('PDF Download Error: ' . $e->getMessage());
+
+        } catch (\Throwable $e) {
+            Log::error('PDF Download Error: ' . $e->getMessage());
             return redirect()->route('ktm.index')
                 ->with('error', 'Gagal download PDF: ' . $e->getMessage());
         }
@@ -79,7 +75,7 @@ class KartuAnggotaController extends Controller
     public function show($member_id)
     {
         $member = Member::where('member_id', $member_id)->first();
-        
+
         if (!$member) {
             return redirect()->route('dashboard')->with('error', 'Data member tidak ditemukan');
         }
@@ -90,7 +86,7 @@ class KartuAnggotaController extends Controller
     public function edit()
     {
         $member = Member::where('email', Auth::user()->email)->first();
-        
+
         if (!$member) {
             return redirect()->route('dashboard')->with('error', 'Data member tidak ditemukan');
         }
@@ -101,7 +97,7 @@ class KartuAnggotaController extends Controller
     public function update(Request $request)
     {
         $member = Member::where('email', Auth::user()->email)->first();
-        
+
         if (!$member) {
             return redirect()->route('dashboard')->with('error', 'Data member tidak ditemukan');
         }
@@ -135,5 +131,16 @@ class KartuAnggotaController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('profile.edit')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
+    }
+
+    private function imageDataUri(string $path): ?string
+    {
+        if (!file_exists($path)) {
+            return null;
+        }
+
+        $mimeType = mime_content_type($path) ?: 'image/' . pathinfo($path, PATHINFO_EXTENSION);
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($path));
     }
 }

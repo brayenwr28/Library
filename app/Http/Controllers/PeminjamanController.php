@@ -32,17 +32,18 @@ class PeminjamanController extends Controller
             return $member;
         }
 
-        // Query dari tabel books (yang memiliki stok > 0)
+        // Query dari tabel books (katalog digital - yang memiliki stok > 0)
         $digitalBooks = Book::whereNotNull('pdf_path')
             ->where('status', 'available')
             ->where('stock', '>', 0)
+            ->selectRaw("*, 'digital' as book_type")
             ->orderBy('title')
             ->get();
 
-        // Query dari tabel perpusses (yang memiliki stok > 0)
+        // Query dari tabel perpusses (buku perpustakaan fisik - yang memiliki stok > 0)
         $perpussBooks = Perpuss::where('status', 'available')
             ->where('stock', '>', 0)
-            ->whereNotNull('pdf_path')
+            ->selectRaw("*, 'perpustakaan' as book_type")
             ->orderBy('title')
             ->get();
 
@@ -56,8 +57,13 @@ class PeminjamanController extends Controller
         // Jika ada parameter book_id, cari buku dari kedua tabel
         if ($selectedBookId) {
             $selectedBook = Book::find((int) $selectedBookId);
-            if (!$selectedBook) {
+            if ($selectedBook) {
+                $selectedBook->book_type = 'digital';
+            } else {
                 $selectedBook = Perpuss::find((int) $selectedBookId);
+                if ($selectedBook) {
+                    $selectedBook->book_type = 'perpustakaan';
+                }
             }
             
             // Cek apakah buku masih memiliki stok

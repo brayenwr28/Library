@@ -19,12 +19,9 @@ Route::controller(AuthController::class)->prefix('auth')->middleware('guest')->g
     Route::post('/register', 'registerStore')->name('register.store');
 });
 
-Route::post('/auth/logout', [AuthController::class, 'logout'])
-    ->middleware('auth')
-    ->name('logout');
 
-// Admin Login and Register Routes - show login page directly
-Route::controller(AdminRegistrationController::class)->prefix('login')->group(function () {
+Route::controller(AdminRegistrationController::class)->group(function () {
+
     Route::get('/admin','login')->name('admin.login');
     Route::post('/admin','loginStore')->name('admin.login.store');
     Route::get('/register-admin', 'create')->name('admin.register');
