@@ -130,19 +130,17 @@
 
 <div class="bg-white min-h-screen text-slate-700">
 
-    <!-- ================= HERO HEADER ================= -->
     <section class="relative pt-40 pb-24 text-center overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-br from-purple-50 via-indigo-50 to-purple-100 -z-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-sky-50 via-blue-50 to-blue-100 -z-10"></div>
         
-        <!-- Floating Elements -->
-        <div class="absolute top-20 left-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
-        <div class="absolute top-40 right-10 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style="animation-delay: 2s;"></div>
+        <div class="absolute top-20 left-10 w-72 h-72 bg-sky-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
+        <div class="absolute top-40 right-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style="animation-delay: 2s;"></div>
         
         <div class="max-w-4xl mx-auto px-6 animate-fadeUp">
-            <span class="inline-block px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-semibold mb-4 animate-zoomIn">
+            <span class="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4 animate-zoomIn">
                 ℹ️ Tentang Kami
             </span>
-            <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-900 via-indigo-700 to-purple-900 bg-clip-text text-transparent mb-6 animate-slideInLeft">
+            <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-900 via-blue-700 to-sky-600 bg-clip-text text-transparent mb-6 animate-slideInLeft">
                 Perpustakaan Digital Kami
             </h1>
             <p class="text-xl text-slate-600 leading-relaxed animate-slideInRight delay-1">
@@ -151,11 +149,9 @@
         </div>
     </section>
 
-    <!-- ================= INTRODUCTION SECTION ================= -->
     <section class="px-6 py-16 bg-white">
         <div class="max-w-5xl mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <!-- Text -->
                 <div class="scroll-reveal">
                     <h2 class="text-4xl font-bold mb-6 text-slate-900">
                         Misi Kami
@@ -184,33 +180,32 @@
                     </div>
                 </div>
 
-                <!-- Image -->
                 <div class="scroll-reveal" style="animation-delay: 0.2s;">
                     <div class="relative">
-                        <div class="absolute inset-0 bg-gradient-to-br from-purple-400 to-indigo-400 rounded-3xl transform rotate-6"></div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-400 to-sky-400 rounded-3xl transform rotate-6"></div>
                         <div class="relative bg-white rounded-3xl p-8 shadow-2xl transform hover:-rotate-2 transition-transform">
                             <div class="grid grid-cols-3 gap-4">
-                                <div class="bg-purple-100 rounded-2xl p-4 text-center">
+                                <div class="bg-blue-50 rounded-2xl p-4 text-center hover:bg-blue-100 transition-colors">
                                     <div class="text-3xl mb-2">📖</div>
                                     <p class="text-xs font-semibold text-slate-700">Buku Cetak</p>
                                 </div>
-                                <div class="bg-indigo-100 rounded-2xl p-4 text-center">
+                                <div class="bg-sky-50 rounded-2xl p-4 text-center hover:bg-sky-100 transition-colors">
                                     <div class="text-3xl mb-2">💻</div>
                                     <p class="text-xs font-semibold text-slate-700">E-Book</p>
                                 </div>
-                                <div class="bg-pink-100 rounded-2xl p-4 text-center">
+                                <div class="bg-blue-50 rounded-2xl p-4 text-center hover:bg-blue-100 transition-colors">
                                     <div class="text-3xl mb-2">📰</div>
                                     <p class="text-xs font-semibold text-slate-700">E-Journal</p>
                                 </div>
-                                <div class="bg-blue-100 rounded-2xl p-4 text-center">
+                                <div class="bg-sky-50 rounded-2xl p-4 text-center hover:bg-sky-100 transition-colors">
                                     <div class="text-3xl mb-2">🎓</div>
                                     <p class="text-xs font-semibold text-slate-700">Tesis</p>
                                 </div>
-                                <div class="bg-green-100 rounded-2xl p-4 text-center">
+                                <div class="bg-blue-50 rounded-2xl p-4 text-center hover:bg-blue-100 transition-colors">
                                     <div class="text-3xl mb-2">📊</div>
                                     <p class="text-xs font-semibold text-slate-700">Database</p>
                                 </div>
-                                <div class="bg-yellow-100 rounded-2xl p-4 text-center">
+                                <div class="bg-sky-50 rounded-2xl p-4 text-center hover:bg-sky-100 transition-colors">
                                     <div class="text-3xl mb-2">🎬</div>
                                     <p class="text-xs font-semibold text-slate-700">Multimedia</p>
                                 </div>
@@ -222,57 +217,50 @@
         </div>
     </section>
 
-    <!-- ================= STATISTICS SECTION ================= -->
-    <section class="px-6 py-20 bg-gradient-to-r from-purple-600 to-indigo-600">
+    <section class="px-6 py-20 bg-gradient-to-r from-blue-700 to-blue-600">
         <div class="max-w-5xl mx-auto">
             <h2 class="text-4xl font-bold text-center text-white mb-16 animate-fadeUp">
                 Statistik Perpustakaan
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <!-- Stat 1 -->
                 <div class="scroll-reveal bg-white/10 backdrop-blur-md rounded-2xl p-8 text-center border border-white/20 hover:bg-white/20 transition-all">
                     <div class="counter text-white mb-2">15K+</div>
                     <h4 class="text-white font-semibold text-lg">Koleksi Buku</h4>
-                    <p class="text-purple-100 text-sm mt-2">Buku fisik di perpustakaan</p>
+                    <p class="text-blue-100 text-sm mt-2">Buku fisik di perpustakaan</p>
                 </div>
 
-                <!-- Stat 2 -->
                 <div class="scroll-reveal bg-white/10 backdrop-blur-md rounded-2xl p-8 text-center border border-white/20 hover:bg-white/20 transition-all" style="animation-delay: 0.2s;">
                     <div class="counter text-white mb-2">5K+</div>
                     <h4 class="text-white font-semibold text-lg">E-Book & E-Journal</h4>
-                    <p class="text-purple-100 text-sm mt-2">Koleksi digital tersedia</p>
+                    <p class="text-blue-100 text-sm mt-2">Koleksi digital tersedia</p>
                 </div>
 
-                <!-- Stat 3 -->
                 <div class="scroll-reveal bg-white/10 backdrop-blur-md rounded-2xl p-8 text-center border border-white/20 hover:bg-white/20 transition-all" style="animation-delay: 0.4s;">
                     <div class="counter text-white mb-2">8K+</div>
                     <h4 class="text-white font-semibold text-lg">Anggota Aktif</h4>
-                    <p class="text-purple-100 text-sm mt-2">Civitas akademika kami</p>
+                    <p class="text-blue-100 text-sm mt-2">Civitas akademika kami</p>
                 </div>
 
-                <!-- Stat 4 -->
                 <div class="scroll-reveal bg-white/10 backdrop-blur-md rounded-2xl p-8 text-center border border-white/20 hover:bg-white/20 transition-all" style="animation-delay: 0.6s;">
                     <div class="counter text-white mb-2">50K+</div>
                     <h4 class="text-white font-semibold text-lg">Peminjaman/Tahun</h4>
-                    <p class="text-purple-100 text-sm mt-2">Transaksi berhasil</p>
+                    <p class="text-blue-100 text-sm mt-2">Transaksi berhasil</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ================= SERVICES SECTION ================= -->
     <section class="px-6 py-20 bg-slate-50">
         <div class="max-w-5xl mx-auto">
             <h2 class="text-4xl font-bold text-center mb-16 animate-fadeUp">
-                <span class="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Layanan Kami</span>
+                <span class="bg-gradient-to-r from-blue-700 to-sky-600 bg-clip-text text-transparent">Layanan Kami</span>
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Service 1 -->
                 <div class="scroll-reveal group">
                     <div class="card-hover bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2">
-                        <div class="icon-box bg-purple-100 text-purple-600 mb-4 group-hover:scale-110 transition-transform">
+                        <div class="icon-box bg-blue-50 text-blue-600 mb-4 group-hover:scale-110 transition-transform">
                             📚
                         </div>
                         <h3 class="text-xl font-bold text-slate-900 mb-3">Koleksi Buku</h3>
@@ -280,10 +268,9 @@
                     </div>
                 </div>
 
-                <!-- Service 2 -->
                 <div class="scroll-reveal group" style="animation-delay: 0.2s;">
                     <div class="card-hover bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2">
-                        <div class="icon-box bg-indigo-100 text-indigo-600 mb-4 group-hover:scale-110 transition-transform">
+                        <div class="icon-box bg-sky-50 text-sky-600 mb-4 group-hover:scale-110 transition-transform">
                             💻
                         </div>
                         <h3 class="text-xl font-bold text-slate-900 mb-3">E-Book & E-Journal</h3>
@@ -291,10 +278,9 @@
                     </div>
                 </div>
 
-                <!-- Service 3 -->
                 <div class="scroll-reveal group" style="animation-delay: 0.4s;">
                     <div class="card-hover bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2">
-                        <div class="icon-box bg-pink-100 text-pink-600 mb-4 group-hover:scale-110 transition-transform">
+                        <div class="icon-box bg-blue-50 text-blue-500 mb-4 group-hover:scale-110 transition-transform">
                             🔍
                         </div>
                         <h3 class="text-xl font-bold text-slate-900 mb-3">Referensi Penelitian</h3>
@@ -302,10 +288,9 @@
                     </div>
                 </div>
 
-                <!-- Service 4 -->
                 <div class="scroll-reveal group" style="animation-delay: 0.6s;">
                     <div class="card-hover bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2">
-                        <div class="icon-box bg-blue-100 text-blue-600 mb-4 group-hover:scale-110 transition-transform">
+                        <div class="icon-box bg-sky-50 text-blue-600 mb-4 group-hover:scale-110 transition-transform">
                             🎓
                         </div>
                         <h3 class="text-xl font-bold text-slate-900 mb-3">Ruang Baca & Belajar</h3>
@@ -313,10 +298,9 @@
                     </div>
                 </div>
 
-                <!-- Service 5 -->
                 <div class="scroll-reveal group" style="animation-delay: 0.8s;">
                     <div class="card-hover bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2">
-                        <div class="icon-box bg-green-100 text-green-600 mb-4 group-hover:scale-110 transition-transform">
+                        <div class="icon-box bg-blue-50 text-sky-600 mb-4 group-hover:scale-110 transition-transform">
                             🔖
                         </div>
                         <h3 class="text-xl font-bold text-slate-900 mb-3">Layanan Peminjaman</h3>
@@ -324,10 +308,9 @@
                     </div>
                 </div>
 
-                <!-- Service 6 -->
                 <div class="scroll-reveal group" style="animation-delay: 1s;">
                     <div class="card-hover bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2">
-                        <div class="icon-box bg-yellow-100 text-yellow-600 mb-4 group-hover:scale-110 transition-transform">
+                        <div class="icon-box bg-sky-50 text-blue-500 mb-4 group-hover:scale-110 transition-transform">
                             💬
                         </div>
                         <h3 class="text-xl font-bold text-slate-900 mb-3">Konsultasi Librarian</h3>
@@ -338,17 +321,16 @@
         </div>
     </section>
 
-    <!-- ================= FEATURES/FACILITIES ================= -->
     <section class="px-6 py-20 bg-slate-50">
         <div class="max-w-5xl mx-auto">
             <h2 class="text-4xl font-bold text-center mb-16 animate-fadeUp">
-                <span class="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Fasilitas & Keunggulan</span>
+                <span class="bg-gradient-to-r from-blue-700 to-sky-600 bg-clip-text text-transparent">Fasilitas & Keunggulan</span>
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="scroll-reveal space-y-4">
                     <div class="flex gap-4 p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all">
-                        <div class="text-3xl flex-shrink-0">🌐</div>
+                        <div class="text-3xl flex-shrink-0 text-blue-600">🌐</div>
                         <div>
                             <h4 class="font-bold text-slate-900">Akses Digital 24/7</h4>
                             <p class="text-sm text-slate-600">Akses e-resources dari mana saja kapan saja</p>
@@ -356,7 +338,7 @@
                     </div>
 
                     <div class="flex gap-4 p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all">
-                        <div class="text-3xl flex-shrink-0">⚙️</div>
+                        <div class="text-3xl flex-shrink-0 text-blue-600">⚙️</div>
                         <div>
                             <h4 class="font-bold text-slate-900">Sistem Manajemen Modern</h4>
                             <p class="text-sm text-slate-600">Aplikasi perpustakaan terintegrasi dan user-friendly</p>
@@ -364,7 +346,7 @@
                     </div>
 
                     <div class="flex gap-4 p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all">
-                        <div class="text-3xl flex-shrink-0">🎯</div>
+                        <div class="text-3xl flex-shrink-0 text-blue-600">🎯</div>
                         <div>
                             <h4 class="font-bold text-slate-900">Pengelompokan Terstruktur</h4>
                             <p class="text-sm text-slate-600">Koleksi tersusun sistematis sesuai Dewey Decimal</p>
@@ -374,7 +356,7 @@
 
                 <div class="scroll-reveal space-y-4" style="animation-delay: 0.2s;">
                     <div class="flex gap-4 p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all">
-                        <div class="text-3xl flex-shrink-0">📖</div>
+                        <div class="text-3xl flex-shrink-0 text-blue-600">📖</div>
                         <div>
                             <h4 class="font-bold text-slate-900">Literasi Digital</h4>
                             <p class="text-sm text-slate-600">Program pelatihan penggunaan database akademik</p>
@@ -382,7 +364,7 @@
                     </div>
 
                     <div class="flex gap-4 p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all">
-                        <div class="text-3xl flex-shrink-0">👥</div>
+                        <div class="text-3xl flex-shrink-0 text-blue-600">👥</div>
                         <div>
                             <h4 class="font-bold text-slate-900">Tim Profesional</h4>
                             <p class="text-sm text-slate-600">Librarian berpengalaman siap membantu Anda</p>
@@ -390,7 +372,7 @@
                     </div>
 
                     <div class="flex gap-4 p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all">
-                        <div class="text-3xl flex-shrink-0">🏆</div>
+                        <div class="text-3xl flex-shrink-0 text-blue-600">🏆</div>
                         <div>
                             <h4 class="font-bold text-slate-900">Standar Internasional</h4>
                             <p class="text-sm text-slate-600">Layanan bersertifikat dan terakreditasi</p>
@@ -401,11 +383,9 @@
         </div>
     </section>
 
-    <!-- ================= CTA SECTION ================= -->
     <section class="relative px-6 py-20 overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-indigo-600 -z-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-700 to-sky-600 -z-10"></div>
         
-        <!-- Floating elements -->
         <div class="absolute top-10 right-10 w-40 h-40 bg-white rounded-full opacity-10 animate-float"></div>
         <div class="absolute bottom-10 left-10 w-32 h-32 bg-white rounded-full opacity-10 animate-float" style="animation-delay: 2s;"></div>
         
@@ -413,11 +393,11 @@
             <h2 class="text-4xl font-bold text-white mb-4 animate-slideInLeft">
                 Siap Bergabung?
             </h2>
-            <p class="text-purple-100 mb-8 text-xl animate-slideInRight delay-1">
+            <p class="text-blue-50 mb-8 text-xl animate-slideInRight delay-1">
                 Daftarkan diri Anda dan nikmati semua layanan perpustakaan kami
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{{ route('register') }}" class="inline-block px-8 py-4 bg-white text-purple-600 font-bold rounded-2xl hover:bg-purple-50 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 animate-bounce delay-2">
+                <a href="{{ route('register') }}" class="inline-block px-8 py-4 bg-white text-blue-700 font-bold rounded-2xl hover:bg-sky-50 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 animate-bounce delay-2">
                     <span class="flex items-center justify-center gap-2">
                         ✍️ Daftar Sekarang
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -434,7 +414,6 @@
 
 </div>
 
-<!-- ================= SCROLL ANIMATION SCRIPT ================= -->
 <script>
     // Intersection Observer untuk scroll animations
     const observerOptions = {

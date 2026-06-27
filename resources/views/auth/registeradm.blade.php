@@ -23,16 +23,16 @@
     </style>
 </head>
 
-<body class="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-indigo-50/30 text-slate-800 flex items-center justify-center px-4 py-12 antialiased">
-    <div class="w-full max-w-4xl rounded-[2rem] border border-slate-200 bg-white shadow-2xl shadow-indigo-100/40 overflow-hidden animate-fadeUp">
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-blue-50/30 text-slate-800 flex items-center justify-center px-4 py-12 antialiased">
+    <div class="w-full max-w-4xl rounded-[2rem] border border-slate-200 bg-white shadow-2xl shadow-blue-100/40 overflow-hidden animate-fadeUp">
         <div class="grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr]">
             
             <section class="relative overflow-hidden border-b border-slate-100 bg-gradient-to-b from-slate-50/90 to-slate-100/50 p-8 md:border-b-0 md:border-r md:p-12 flex flex-col justify-between">
-                <div class="absolute -top-20 -left-20 w-40 h-40 bg-indigo-200/20 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-200/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -top-20 -left-20 w-40 h-40 bg-blue-200/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-sky-200/20 rounded-full blur-3xl pointer-events-none"></div>
 
                 <div class="relative z-10">
-                    <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.25em] text-indigo-600">
+                    <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.25em] text-blue-600">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-.856.12-1.685.342-2.466"></path></svg>
                         Perpustakaan Digital
                     </div>
@@ -49,11 +49,11 @@
                     </p>
                     <ul class="space-y-3 text-sm text-slate-600">
                         <li class="flex items-start gap-2.5">
-                            <span class="text-indigo-500 font-bold mt-0.5">•</span>
+                            <span class="text-blue-500 font-bold mt-0.5">•</span>
                             <span>Gunakan <strong>email institusi</strong> untuk keperluan verifikasi valid.</span>
                         </li>
                         <li class="flex items-start gap-2.5">
-                            <span class="text-indigo-500 font-bold mt-0.5">•</span>
+                            <span class="text-blue-500 font-bold mt-0.5">•</span>
                             <span>Sandi minimal <strong>8 karakter</strong> kombinasi huruf dan angka.</span>
                         </li>
                     </ul>
@@ -63,7 +63,7 @@
             <main class="p-8 md:p-12 flex flex-col justify-between">
                 <div>
                     <div class="mb-8 flex items-center gap-4">
-                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-xs font-bold tracking-wider text-indigo-600 border border-indigo-100">
+                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-xs font-bold tracking-wider text-blue-600 border border-blue-100">
                             ADM
                         </div>
                         <div>
@@ -98,14 +98,14 @@
 
                         <div class="grid gap-5 md:grid-cols-2">
                             <div>
-                                <label for="name" class="text-xs font-bold uppercase tracking-wide text-slate-500">Nama Lengkap <span class="text-rose-500">*</span></label>
+                                <label class="text-xs font-bold uppercase tracking-wide text-slate-500">Nama Lengkap <span class="text-rose-500">*</span></label>
                                 <input
                                     id="name"
                                     type="text"
                                     name="name"
                                     value="{{ old('name') }}"
                                     required
-                                    class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 transition duration-200 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100"
+                                    class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 transition duration-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"
                                     placeholder="Masukkan nama lengkap"
                                 >
                                 @error('name')
@@ -113,14 +113,14 @@
                                 @enderror
                             </div>
                             <div>
-                                <label for="email" class="text-xs font-bold uppercase tracking-wide text-slate-500">Email Admin <span class="text-rose-500">*</span></label>
+                                <label class="text-xs font-bold uppercase tracking-wide text-slate-500">Email Admin <span class="text-rose-500">*</span></label>
                                 <input
                                     id="email"
-                                    type="email"
+                                    type="text"
                                     name="email"
                                     value="{{ old('email') }}"
                                     required
-                                    class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 transition duration-200 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100"
+                                    class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 transition duration-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"
                                     placeholder="nama@perpustakaan.ac.id"
                                 >
                                 @error('email')
@@ -130,14 +130,14 @@
                         </div>
 
                         <div>
-                            <label for="username" class="text-xs font-bold uppercase tracking-wide text-slate-500">Username <span class="text-rose-500">*</span></label>
+                            <label class="text-xs font-bold uppercase tracking-wide text-slate-500">Username <span class="text-rose-500">*</span></label>
                             <input
                                 id="username"
                                 type="text"
                                 name="username"
                                 value="{{ old('username') }}"
                                 required
-                                class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 transition duration-200 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100"
+                                class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 transition duration-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"
                                 placeholder="admin.nama"
                             >
                             @error('username')
@@ -147,13 +147,13 @@
 
                         <div class="grid gap-5 md:grid-cols-2">
                             <div>
-                                <label for="password" class="text-xs font-bold uppercase tracking-wide text-slate-500">Kata Sandi <span class="text-rose-500">*</span></label>
+                                <label class="text-xs font-bold uppercase tracking-wide text-slate-500">Kata Sandi <span class="text-rose-500">*</span></label>
                                 <input
                                     id="password"
                                     type="password"
                                     name="password"
                                     required
-                                    class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 transition duration-200 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100"
+                                    class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 transition duration-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"
                                     placeholder="Minimal 8 karakter"
                                 >
                                 @error('password')
@@ -161,19 +161,19 @@
                                 @enderror
                             </div>
                             <div>
-                                <label for="password_confirmation" class="text-xs font-bold uppercase tracking-wide text-slate-500">Konfirmasi Kata Sandi <span class="text-rose-500">*</span></label>
+                                <label class="text-xs font-bold uppercase tracking-wide text-slate-500">Konfirmasi Kata Sandi <span class="text-rose-500">*</span></label>
                                 <input
                                     id="password_confirmation"
                                     type="password"
                                     name="password_confirmation"
                                     required
-                                    class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 transition duration-200 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100"
+                                    class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 transition duration-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"
                                     placeholder="Ulangi kata sandi"
                                 >
                             </div>
                         </div>
 
-                        <button type="submit" class="mt-2 w-full rounded-xl bg-indigo-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-200 transition duration-200 hover:bg-indigo-700 hover:shadow-indigo-300 focus:outline-none focus:ring-4 focus:ring-indigo-100 active:scale-[0.99]">
+                        <button type="submit" class="mt-2 w-full rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-200 transition duration-200 hover:bg-blue-700 hover:shadow-blue-300 focus:outline-none focus:ring-4 focus:ring-blue-100 active:scale-[0.99]">
                             Buat Akun Admin
                         </button>
                     </form>
@@ -182,7 +182,7 @@
                 <div class="mt-8 space-y-3 text-center">
                     <div class="text-xs text-slate-500">
                         Sudah memiliki akun admin? 
-                        <a href="{{ route('admin.login') }}" class="font-bold text-indigo-600 hover:text-indigo-700 hover:underline">Masuk di sini</a>
+                        <a href="{{ route('admin.login') }}" class="font-bold text-blue-600 hover:text-blue-700 hover:underline">Masuk di sini</a>
                     </div>
                     <div class="text-[11px] text-slate-400">
                         <a href="{{ url('/') }}" class="inline-flex items-center gap-1 hover:text-slate-600 hover:underline transition">
