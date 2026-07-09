@@ -170,6 +170,12 @@
                 <p>Laporan Anggota</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="{{ route('admin.report.denda') }}" class="nav-link ps-4 {{ request()->routeIs('admin.report.denda') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>Laporan Denda</p>
+              </a>
+            </li>
           </ul>
         </li>
       </ul>

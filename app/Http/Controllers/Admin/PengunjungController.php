@@ -62,13 +62,38 @@ class PengunjungController extends Controller
     }
 
     /**
+     * Menampilkan form edit pengunjung
+     */
+    public function edit(Pengunjung $pengunjung)
+    {
+        return view('admin.pengunjung.edit', compact('pengunjung'));
+    }
+
+    /**
+     * Menyimpan perubahan data pengunjung
+     */
+    public function update(Request $request, Pengunjung $pengunjung)
+    {
+        $validated = $request->validate([
+            'nama' => 'required|string|max:100',
+            'nim' => 'nullable|string|max:50',
+            'tipe_pengunjung' => 'required|string|in:mahasiswa,dosen,umum',
+        ]);
+
+        $pengunjung->update($validated);
+
+        return redirect()->route('admin.report.pengunjung')
+            ->with('success', 'Data pengunjung berhasil diperbarui');
+    }
+
+    /**
      * Menghapus data pengunjung
      */
     public function destroy(Pengunjung $pengunjung)
     {
         $pengunjung->delete();
 
-        return redirect()->route('pengunjung.index')
+        return redirect()->route('admin.report.pengunjung')
             ->with('success', 'Data pengunjung berhasil dihapus');
     }
 }

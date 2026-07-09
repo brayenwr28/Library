@@ -24,11 +24,20 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
         
-        $member = Member::where('email', $credentials['email'])
-            ->where('password', $credentials['password'])
-            ->first();
+        $member = Member::where('email', $credentials['email'])->first();
 
+        $passwordMatches = false;
         if ($member) {
+            if (\Illuminate\Support\Facades\Hash::check($credentials['password'], $member->password)) {
+                $passwordMatches = true;
+            } elseif ($member->password === $credentials['password']) {
+                $passwordMatches = true;
+                // Upgrade password to hash
+                $member->update(['password' => \Illuminate\Support\Facades\Hash::make($credentials['password'])]);
+            }
+        }
+
+        if ($passwordMatches) {
             Auth::login($member, $request->boolean('remember'));
             $request->session()->regenerate();
             return redirect()->route('dashboard');
@@ -72,7 +81,7 @@ class AuthController extends Controller
                 'username' => $validated['username'],
                 'name' => $validated['name'],
                 'email' => $validated['email'],
-                'password' => $validated['password'],
+                'password' => \Illuminate\Support\Facades\Hash::make($validated['password']),
                 'nim' => $validated['nim'] ?? null,
                 'prodi' => $validated['prodi'] ?? null,
                 'jenis_anggota' => $validated['jenis_anggota'],

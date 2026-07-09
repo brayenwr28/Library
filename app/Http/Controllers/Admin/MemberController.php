@@ -142,4 +142,43 @@ class MemberController extends Controller
 
         return redirect()->route('admin.report.index')->with('success', $message);
     }
+
+    /**
+     * Menampilkan form edit anggota
+     */
+    public function edit(Member $member): View
+    {
+        return view('admin.members.edit', compact('member'));
+    }
+
+    /**
+     * Memperbarui data anggota
+     */
+    public function update(Request $request, Member $member): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:members,email,' . $member->id],
+            'nim' => ['nullable', 'string', 'max:50'],
+            'prodi' => ['nullable', 'string', 'max:100'],
+            'jenis_anggota' => ['required', 'string', 'in:mahasiswa,dosen'],
+        ]);
+
+        $member->update($validated);
+
+        return redirect()->route('admin.report.anggota')
+            ->with('success', 'Data anggota berhasil diperbarui');
+    }
+
+    /**
+     * Menghapus data anggota
+     */
+    public function destroy(Member $member): RedirectResponse
+    {
+        // Peringatan: Idealnya tambahkan pengecekan apakah member ini punya peminjaman aktif.
+        $member->delete();
+
+        return redirect()->route('admin.report.anggota')
+            ->with('success', 'Data anggota berhasil dihapus');
+    }
 }

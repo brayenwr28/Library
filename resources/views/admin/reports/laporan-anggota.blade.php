@@ -107,6 +107,7 @@
                                         <th>NIM / ID Anggota</th>
                                         <th>Jumlah Peminjaman</th>
                                         <th>Tanggal Daftar</th>
+                                        <th class="text-end pe-4">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -124,6 +125,20 @@
                                             </td>
                                             <td>
                                                 <small class="text-muted">{{ \Carbon\Carbon::parse($member->created_at)->translatedFormat('d F Y') }}</small>
+                                            </td>
+                                            <td class="text-end pe-4">
+                                                <div class="d-flex justify-content-end gap-1">
+                                                    <a href="{{ route('admin.members.edit', $member->id) }}" class="btn btn-sm btn-outline-primary" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <form action="{{ route('admin.members.destroy', $member->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Peringatan: Menghapus data anggota juga bisa berakibat pada hilangnya data referensi peminjaman mereka. Yakin ingin menghapus?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

@@ -201,6 +201,7 @@ class PengembalianController extends Controller
                 'tgl_kembali_aktual' => $request->tgl_kembali_aktual,
                 'kondisi_buku' => $request->kondisi_buku,
                 'denda' => $denda,
+                'status_denda' => $denda > 0 ? 'belum_lunas' : 'lunas',
                 'status' => 'menunggu_konfirmasi',
                 'catatan' => $request->catatan,
             ]);

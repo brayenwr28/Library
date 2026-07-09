@@ -173,11 +173,31 @@ class PeminjamanController extends Controller
 
         // Determine book source based on type
         if ($bookType === 'fisik') {
-            // Buku fisik dari Perpuss table
             $book = Perpuss::findOrFail($validated['book_id']);
         } else {
-            // Buku digital dari Books table
             $book = Book::findOrFail($validated['book_id']);
+        }
+
+        // Cek batasan maksimal 3 buku peminjaman aktif
+        $activeBorrowCount = Peminjaman::where('member_id', $member->id)
+            ->whereIn('status', ['menunggu_konfirmasi', 'diambil'])
+            ->count();
+
+        if ($activeBorrowCount >= 3) {
+            return back()->withErrors([
+                'book_id' => 'Batas maksimal peminjaman (3 buku) telah tercapai. Silakan kembalikan buku sebelumnya terlebih dahulu.',
+            ])->withInput();
+        }
+
+        // Cek apakah ada denda yang belum lunas
+        $hasUnpaidFine = \App\Models\Pengembalian::whereHas('peminjaman', function ($q) use ($member) {
+            $q->where('member_id', $member->id);
+        })->where('status_denda', 'belum_lunas')->exists();
+
+        if ($hasUnpaidFine) {
+            return back()->withErrors([
+                'book_id' => 'Selesaikan pembayaran denda ke Pustaka Universitas Metamedia terlebih dahulu sebelum meminjam buku kembali.',
+            ])->withInput();
         }
 
         try {

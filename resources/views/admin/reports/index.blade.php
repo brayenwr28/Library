@@ -102,6 +102,27 @@
                 </div>
             </a>
         </div>
+
+        <!-- Laporan Denda -->
+        <div class="col-12 col-md-6 col-lg-3 animate-fade-in-up delay-4">
+            <a href="{{ route('admin.report.denda') }}" class="card border-0 shadow-sm h-100 text-decoration-none text-reset overflow-hidden hover-lift">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <div class="rounded-circle bg-danger-subtle p-3 flex-shrink-0">
+                            <i class="fas fa-money-bill-wave fa-lg text-danger"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="card-title fw-bold mb-0">Laporan Denda</h5>
+                            <small class="text-muted">Denda keterlambatan buku</small>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-0 small">Pantau denda dari pengembalian terlambat. Filter berdasarkan minggu/bulan/tahun.</p>
+                    <div class="mt-3 pt-3 border-top border-danger border-opacity-10">
+                        <small class="text-danger fw-semibold">Buka Laporan <i class="fas fa-arrow-right ms-2"></i></small>
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
 
     <!-- Quick Stats -->

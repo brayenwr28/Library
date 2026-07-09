@@ -132,6 +132,7 @@
                                         <th>NIM / NIDN</th>
                                         <th>Tipe Pengunjung</th>
                                         <th>Tanggal Kunjung</th>
+                                        <th class="text-end pe-4">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -158,6 +159,20 @@
                                             </td>
                                             <td>
                                                 <small class="text-muted">{{ $pengunjung->created_at->translatedFormat('d F Y H:i') }}</small>
+                                            </td>
+                                            <td class="text-end pe-4">
+                                                <div class="d-flex justify-content-end gap-1">
+                                                    <a href="{{ route('pengunjung.edit', $pengunjung->id) }}" class="btn btn-sm btn-outline-primary" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <form action="{{ route('pengunjung.destroy', $pengunjung->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data pengunjung ini?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

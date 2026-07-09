@@ -25,9 +25,11 @@ Route::post('/auth/logout', [AuthController::class, 'logout'])
 
 
 Route::controller(AdminRegistrationController::class)->group(function () {
-
     Route::get('/admin','login')->name('admin.login');
     Route::post('/admin','loginStore')->name('admin.login.store');
+});
+
+Route::middleware('auth:admin')->controller(AdminRegistrationController::class)->group(function () {
     Route::get('/register-admin', 'create')->name('admin.register');
     Route::post('/register-admin', 'store')->name('admin.register.store');
 });
@@ -37,7 +39,7 @@ Route::controller(AdminRegistrationController::class)->prefix('login')->middlewa
     Route::post('/logout','logout')->name('admin.logout');
     Route::get('/dashboard', 'index')->name('admin.dashboard');
 });
-Route::controller(BookController::class)->prefix('digital')->group(function () {
+Route::middleware('auth:admin')->controller(BookController::class)->prefix('digital')->group(function () {
     Route::get('/', 'index')->name('admin.books.index');
     Route::post('/', 'store')->name('admin.books.store');
     Route::get('/create', 'create')->name('admin.books.create');
@@ -70,7 +72,7 @@ Route::controller(PeminjamanController::class)->prefix('peminjaman')->group(func
     Route::get('/baca/{book}/stream', 'stream')->name('peminjaman.read.stream');
 });
 
-Route::controller(PerpussController::class)->prefix('perpuss')->group(function () {
+Route::middleware('auth:admin')->controller(PerpussController::class)->prefix('perpuss')->group(function () {
     Route::get('/', 'index')->name('admin.books.library.index');
     Route::post('/', 'store')->name('admin.books.library.store');
     Route::get('/create', 'create')->name('admin.books.library.create');
@@ -99,7 +101,12 @@ Route::middleware('auth')->controller(KartuAnggotaController::class)->prefix('pr
 Route::controller(PengunjungController::class)->prefix('pengunjung')->group(function () {
     Route::get('/form', 'show')->name('pengunjung.form');
     Route::post('/', 'store')->name('pengunjung.store');
+});
+
+Route::middleware('auth:admin')->controller(PengunjungController::class)->prefix('pengunjung')->group(function () {
     Route::get('/', 'index')->name('pengunjung.index');
+    Route::get('/{pengunjung}/edit', 'edit')->name('pengunjung.edit');
+    Route::put('/{pengunjung}', 'update')->name('pengunjung.update');
     Route::delete('/{pengunjung}', 'destroy')->name('pengunjung.destroy');
 });
 
@@ -136,6 +143,10 @@ Route::middleware('auth:admin')->controller(\App\Http\Controllers\Admin\AdminRep
     
     Route::get('/anggota', 'laporanAnggota')->name('admin.report.anggota');
     Route::get('/anggota/export-pdf', 'exportAnggotaPdf')->name('admin.report.anggota.export');
+
+    Route::get('/denda', 'laporanDenda')->name('admin.report.denda');
+    Route::get('/denda/export-pdf', 'exportDendaPdf')->name('admin.report.denda.export');
+    Route::put('/denda/{pengembalian}/lunas', 'bayarDenda')->name('admin.report.denda.lunas');
 });
 
 // Admin Import Routes (Books & Members)
@@ -144,9 +155,12 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
     Route::get('books/import', [\App\Http\Controllers\Admin\BookController::class, 'importForm'])->name('admin.books.import.form');
     Route::post('books/import', [\App\Http\Controllers\Admin\BookController::class, 'importProcess'])->name('admin.books.import.process');
 
-    // Members import
+    // Members
     Route::get('members/import', [\App\Http\Controllers\Admin\MemberController::class, 'importForm'])->name('admin.members.import.form');
     Route::post('members/import', [\App\Http\Controllers\Admin\MemberController::class, 'importProcess'])->name('admin.members.import.process');
+    Route::get('members/{member}/edit', [\App\Http\Controllers\Admin\MemberController::class, 'edit'])->name('admin.members.edit');
+    Route::put('members/{member}', [\App\Http\Controllers\Admin\MemberController::class, 'update'])->name('admin.members.update');
+    Route::delete('members/{member}', [\App\Http\Controllers\Admin\MemberController::class, 'destroy'])->name('admin.members.destroy');
 });
 
 // AJAX chart data for admin dashboard

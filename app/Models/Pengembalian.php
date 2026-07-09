@@ -17,6 +17,7 @@ class Pengembalian extends Model
         'tgl_kembali_aktual',
         'kondisi_buku',
         'denda',
+        'status_denda',
         'admin_id',
         'status',
         'catatan',

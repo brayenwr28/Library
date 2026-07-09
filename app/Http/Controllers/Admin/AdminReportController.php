@@ -347,4 +347,87 @@ class AdminReportController extends Controller
             ])->withInput();
         }
     }
+    /**
+     * Laporan Denda - Daftar pengembalian yang memiliki denda
+     */
+    public function laporanDenda(Request $request): View
+    {
+        $query = Pengembalian::with(['peminjaman.member', 'peminjaman.book', 'admin'])
+            ->where('denda', '>', 0)
+            ->whereIn('status', ['diterima', 'menunggu_konfirmasi']);
+
+        // Filter by date range
+        if ($request->filled('dari_tanggal')) {
+            $query->whereDate('created_at', '>=', $request->dari_tanggal);
+        }
+
+        if ($request->filled('sampai_tanggal')) {
+            $query->whereDate('created_at', '<=', $request->sampai_tanggal);
+        }
+
+        $pengembalians = $query->orderByDesc('created_at')->paginate(20);
+
+        $stats = [
+            'total_transaksi' => $pengembalians->total(),
+            'total_denda' => Pengembalian::where('denda', '>', 0)->whereIn('status', ['diterima', 'menunggu_konfirmasi'])->sum('denda'),
+            'denda_bulan_ini' => Pengembalian::where('denda', '>', 0)->whereIn('status', ['diterima', 'menunggu_konfirmasi'])->whereMonth('created_at', today()->month)->whereYear('created_at', today()->year)->sum('denda'),
+        ];
+
+        return view('admin.reports.laporan-denda', compact(
+            'pengembalians',
+            'stats'
+        ));
+    }
+
+    /**
+     * Export Laporan Denda ke PDF
+     */
+    public function exportDendaPdf(Request $request)
+    {
+        try {
+            $query = Pengembalian::with(['peminjaman.member', 'peminjaman.book', 'admin'])
+                ->where('denda', '>', 0)
+                ->whereIn('status', ['diterima', 'menunggu_konfirmasi']);
+
+            if ($request->filled('dari_tanggal')) {
+                $query->whereDate('created_at', '>=', $request->dari_tanggal);
+            }
+
+            if ($request->filled('sampai_tanggal')) {
+                $query->whereDate('created_at', '<=', $request->sampai_tanggal);
+            }
+
+            $pengembalians = $query->orderByDesc('created_at')->get();
+            $totalDenda = $pengembalians->sum('denda');
+
+            $pdf = PDF::loadView('admin.reports.pdf.laporan-denda-pdf', [
+                'pengembalians' => $pengembalians,
+                'totalDenda' => $totalDenda,
+                'dari_tanggal' => $request->dari_tanggal,
+                'sampai_tanggal' => $request->sampai_tanggal,
+            ]);
+
+            return $pdf->download('Laporan_Denda_' . now()->format('Y-m-d_H-i-s') . '.pdf');
+        } catch (\Exception $e) {
+            return back()->withErrors([
+                'error' => 'Export PDF gagal: ' . $e->getMessage()
+            ])->withInput();
+        }
+    }
+
+    /**
+     * Menandai denda sebagai Lunas
+     */
+    public function bayarDenda(Pengembalian $pengembalian)
+    {
+        try {
+            $pengembalian->update([
+                'status_denda' => 'lunas'
+            ]);
+
+            return back()->with('success', 'Denda berhasil dilunasi.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Gagal melunasi denda: ' . $e->getMessage()]);
+        }
+    }
 }

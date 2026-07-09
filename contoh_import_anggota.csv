@@ -1,0 +1,4 @@
+member_id,name,email,nim,prodi,role
+MBR001,Ahmad Dani,ahmad@example.com,2210115261,Sistem Informasi,mahasiswa
+MBR002,Siti Sarah,siti@example.com,2210115262,Teknik Informatika,mahasiswa
+MBR003,Dr. Rian Adi,rian@example.com,1985031201,Sistem Informasi,dosen
