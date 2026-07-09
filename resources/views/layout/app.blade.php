@@ -14,7 +14,7 @@
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BkyQi+0lKQ8Zq+6N0hZl5uN5l5Z4O3BO6cK7VQ0YzJis+qJfFZ0CPt2jT9sSk6U2g=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     @stack('styles')
 </head>
 
