@@ -10,10 +10,13 @@ class Perpuss extends Model
     use HasFactory;
 
     protected $fillable = [
+        'registration_number',
         'title',
         'author',
         'publisher',
         'category',
+        'klasifikasi',
+        'edisi',
         'isbn',
         'status',
         'stock',

@@ -162,9 +162,11 @@
                 <div class="text-7xl mb-4 animate-bounce filter drop-shadow-[0_10px_10px_rgba(59,130,246,0.2)]">📚</div>
                 <h2 class="text-2xl font-bold text-slate-800 mb-2">Katalog Kosong</h2>
                 <p class="text-slate-600 max-w-md mx-auto mb-6">Belum ada data buku dalam katalog. Tambahkan melalui halaman input buku untuk menampilkannya di sini.</p>
+                @auth('admin')
                 <a href="{{ route('admin.books.index') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-3.5 text-sm font-bold text-white shadow-[0_5px_15px_rgba(37,99,235,0.35)] transition duration-300 hover:from-blue-700 hover:to-blue-600 hover:shadow-[0_8px_20px_rgba(37,99,235,0.5)] active:scale-95">
                     ➕ Tambah Buku Baru
                 </a>
+                @endauth
             </div>
         @endforelse
     </div>

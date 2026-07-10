@@ -29,7 +29,7 @@ Route::controller(AdminRegistrationController::class)->group(function () {
     Route::post('/admin','loginStore')->name('admin.login.store');
 });
 
-Route::middleware('auth:admin')->controller(AdminRegistrationController::class)->group(function () {
+Route::controller(AdminRegistrationController::class)->group(function () {
     Route::get('/register-admin', 'create')->name('admin.register');
     Route::post('/register-admin', 'store')->name('admin.register.store');
 });
@@ -72,13 +72,20 @@ Route::controller(PeminjamanController::class)->prefix('peminjaman')->group(func
     Route::get('/baca/{book}/stream', 'stream')->name('peminjaman.read.stream');
 });
 
-Route::middleware('auth:admin')->controller(PerpussController::class)->prefix('perpuss')->group(function () {
+Route::controller(PerpussController::class)->prefix('perpuss')->group(function () {
     Route::get('/', 'index')->name('admin.books.library.index');
+});
+
+Route::middleware('auth:admin')->controller(PerpussController::class)->prefix('perpuss')->group(function () {
     Route::post('/', 'store')->name('admin.books.library.store');
     Route::get('/create', 'create')->name('admin.books.library.create');
     Route::get('/show', 'show')->name('admin.books.library.show');
+    Route::get('/export/template', 'downloadTemplate')->name('admin.books.library.export.template');
+    Route::get('/export', 'exportExcel')->name('admin.books.library.export');
     Route::get('/import', 'importForm')->name('admin.books.library.import.form');
     Route::post('/import', 'importProcess')->name('admin.books.library.import.process');
+    Route::post('/import/preview', 'importPreview')->name('admin.books.library.import.preview');
+    Route::post('/import/confirm', 'importConfirm')->name('admin.books.library.import.confirm');
     Route::get('/{perpuss}/edit', 'edit')->name('admin.books.library.edit');
     Route::put('/{perpuss}', 'update')->name('admin.books.library.update');
     Route::delete('/{perpuss}', 'destroy')->name('admin.books.library.destroy');
@@ -156,6 +163,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
     Route::post('books/import', [\App\Http\Controllers\Admin\BookController::class, 'importProcess'])->name('admin.books.import.process');
 
     // Members
+    Route::get('members/template', [\App\Http\Controllers\Admin\MemberController::class, 'downloadTemplate'])->name('admin.members.template');
     Route::get('members/import', [\App\Http\Controllers\Admin\MemberController::class, 'importForm'])->name('admin.members.import.form');
     Route::post('members/import', [\App\Http\Controllers\Admin\MemberController::class, 'importProcess'])->name('admin.members.import.process');
     Route::get('members/{member}/edit', [\App\Http\Controllers\Admin\MemberController::class, 'edit'])->name('admin.members.edit');

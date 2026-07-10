@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'Perpustakaan Digital')</title>
     <script src="https://cdn.tailwindcss.com"></script>
+       @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="bg-white text-slate-700">

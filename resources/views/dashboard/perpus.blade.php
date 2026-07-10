@@ -49,7 +49,12 @@
                 <div class="text-7xl animate-bounce filter drop-shadow-[0_10px_10px_rgba(59,130,246,0.2)]">📭</div>
                 <div>
                     <h2 class="text-2xl font-bold text-slate-800">Buku Belum Tersedia</h2>
-                    <p class="max-w-md text-slate-600 mt-2 mx-auto">Belum ada buku yang ditambahkan. Silakan masukkan data buku melalui halaman input admin untuk memunculkannya di sini.</p>
+                    <p class="max-w-md text-slate-600 mt-2 mx-auto mb-4">Belum ada buku yang ditambahkan. Silakan masukkan data buku melalui halaman input admin untuk memunculkannya di sini.</p>
+                    @auth('admin')
+                    <a href="{{ route('admin.books.library.create') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-3.5 text-sm font-bold text-white shadow-[0_5px_15px_rgba(37,99,235,0.35)] transition duration-300 hover:from-blue-700 hover:to-blue-600 hover:shadow-[0_8px_20px_rgba(37,99,235,0.5)] active:scale-95">
+                        ➕ Tambah Buku Baru
+                    </a>
+                    @endauth
                 </div>
             </div>
         @else
