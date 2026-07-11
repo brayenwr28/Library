@@ -152,7 +152,7 @@ table.data th {
                 <td class="label">Email</td>
                 <td>: {{ $member->email }}</td>
                 <td class="label">No Identitas</td>
-                <td>: {{ $member->nomor_identitas ?? '-' }}</td>
+                <td>: {{ $member->member_id  ?? '-' }}</td>
             </tr>
             <tr>
                 <td class="label">Tanggal Cetak</td>

@@ -6,7 +6,7 @@
             <span>Seluruh hak cipta dilindungi.</span>
         </div>
         <div class="text-muted small">
-            Dibangun dengan <a href="https://adminlte.io" target="_blank" rel="noopener">AdminLTE 4</a> &amp; Bootstrap 5.
+        Universitas Metamedia
         </div>
     </div>
 </footer>

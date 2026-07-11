@@ -175,7 +175,7 @@
                     <div class="flex h-16 w-16 items-center justify-center rounded-full border border-slate-200">📚</div>
                     <h2 class="text-lg font-semibold text-slate-800">Belum ada peminjaman tercatat</h2>
                     <p class="max-w-md">Mulai jelajahi katalog dan ajukan peminjaman untuk mengisi riwayat bacaan Anda.</p>
-                    <a href="{{ route('peminjaman.show') }}" class="inline-flex items-center rounded-full border border-slate-300 px-5 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50">
+                    <a href="{{ route('dashboard') }}" class="inline-flex items-center rounded-full border border-slate-300 px-5 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50">
                         Ajukan Peminjaman Baru
                     </a>
                 </div>
@@ -183,7 +183,7 @@
         </section>
 
         <div class="mt-8 flex flex-col gap-3 text-sm text-slate-600 sm:flex-row">
-            <a href="{{ route('peminjaman.show') }}" class="flex-1 rounded-xl border border-slate-200 bg-white px-5 py-3 text-center font-medium transition hover:bg-slate-50">
+            <a href="{{ route('dashboard') }}" class="flex-1 rounded-xl border border-slate-200 bg-white px-5 py-3 text-center font-medium transition hover:bg-slate-50">
                 Ajukan Peminjaman Baru
             </a>
             <form action="{{ route('logout') }}" method="POST" class="flex-1">

@@ -175,7 +175,7 @@
             </div>
             
             <div class="space-y-6">
-                <h1 class="text-5xl font-bold text-white md:text-6xl lg:text-7xl leading-tight animate-fade-in-up delay-100">
+                <h1 class="text-4xl sm:text-5xl font-bold text-white md:text-6xl lg:text-7xl leading-tight animate-fade-in-up delay-100">
                     <span class="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-300 bg-clip-text text-transparent">
                         Jelajahi Pengetahuan
                     </span>
@@ -192,14 +192,14 @@
                 </p>
             </div>
 
-            <div class="flex gap-4 animate-fade-in-up delay-300">
-                <a href="{{ route('katalog') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/50 transition-all hover:-translate-y-0.5">
+            <div class="flex flex-col sm:flex-row gap-4 animate-fade-in-up delay-300">
+                <a href="{{ route('katalog') }}" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/50 transition-all hover:-translate-y-0.5 w-full sm:w-auto">
                     <span>Jelajahi Sekarang</span>
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                     </svg>
                 </a>
-                <a href="{{ route('peminjaman.riwayat') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-blue-400/50 bg-blue-500/10 backdrop-blur text-blue-100 font-semibold hover:bg-blue-500/20 hover:border-blue-300 transition-all hover:-translate-y-0.5">
+                <a href="{{ route('peminjaman.riwayat') }}" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-blue-400/50 bg-blue-500/10 backdrop-blur text-blue-100 font-semibold hover:bg-blue-500/20 hover:border-blue-300 transition-all hover:-translate-y-0.5 w-full sm:w-auto">
                     <span>📊 Lihat Riwayat</span>
                 </a>
             </div>

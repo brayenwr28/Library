@@ -1,5 +1,6 @@
 <nav class="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
-    <div class="flex items-center justify-between px-12 py-3">
+    <!-- Navbar Container -->
+    <div class="flex items-center justify-between px-4 md:px-12 py-3">
 
         <!-- LOGO + NAMA -->
         <div class="flex items-center gap-4">
@@ -8,16 +9,22 @@
                  class="w-21 h-16 object-contain">
         </div>
 
-        <!-- MENU -->
-        <ul class="flex items-center gap-8 text-sm font-medium text-slate-600">
+        <!-- MOBILE HAMBURGER TOGGLE -->
+        <button id="mobile-menu-toggle" type="button" class="inline-flex items-center justify-center p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 focus:outline-none md:hidden transition">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path id="hamburger-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                <path id="close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
 
+        <!-- DESKTOP MENU -->
+        <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
             <li class="relative group">
                 <a href="{{ route('dashboard') }}" class="hover:text-slate-900 transition">
                     Beranda
                 </a>
                 <span class="absolute left-0 -bottom-1 w-0 h-[2px] bg-slate-700 transition-all group-hover:w-full"></span>
             </li>
-
             <li class="relative group">
                 <a href="{{ route('katalog') }}" class="hover:text-slate-900 transition">
                     Katalog
@@ -30,27 +37,25 @@
                 </a>
                 <span class="absolute left-0 -bottom-1 w-0 h-[2px] bg-slate-700 transition-all group-hover:w-full"></span>
             </li>
-
             <li class="relative group">
                 <a href="{{ route('sejarah') }}" class="hover:text-slate-900 transition">
                     Sejarah
                 </a>
                 <span class="absolute left-0 -bottom-1 w-0 h-[2px] bg-slate-700 transition-all group-hover:w-full"></span>
             </li>
-
             <li class="relative group">
                 <a href="{{ route('tentang') }}" class="hover:text-slate-900 transition">
                     Tentang
                 </a>
                 <span class="absolute left-0 -bottom-1 w-0 h-[2px] bg-slate-700 transition-all group-hover:w-full"></span>
             </li>
-
             <li class="relative group">
                 <a href="{{ route('contact') }}" class="hover:text-slate-900 transition">
                     Contact
                 </a>
                 <span class="absolute left-0 -bottom-1 w-0 h-[2px] bg-slate-700 transition-all group-hover:w-full"></span>
             </li>
+
             <!-- AUTH BUTTONS -->
             @guest
                 <li>
@@ -97,7 +102,41 @@
                 </li>
             @endguest
         </ul>
+    </div>
 
+    <!-- MOBILE MENU DROPDOWN -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-200 px-6 py-4 space-y-3 shadow-inner">
+        <a href="{{ route('dashboard') }}" class="block text-slate-600 hover:text-slate-900 font-medium py-1">Beranda</a>
+        <a href="{{ route('katalog') }}" class="block text-slate-600 hover:text-slate-900 font-medium py-1">Katalog</a>
+        <a href="{{ route('admin.books.library.index') }}" class="block text-slate-600 hover:text-slate-900 font-medium py-1">Perpustakaan</a>
+        <a href="{{ route('sejarah') }}" class="block text-slate-600 hover:text-slate-900 font-medium py-1">Sejarah</a>
+        <a href="{{ route('tentang') }}" class="block text-slate-600 hover:text-slate-900 font-medium py-1">Tentang</a>
+        <a href="{{ route('contact') }}" class="block text-slate-600 hover:text-slate-900 font-medium py-1">Contact</a>
+        
+        <hr class="border-slate-200 my-2">
+        
+        @guest
+            <div class="flex flex-col gap-2 pt-1">
+                <a href="{{ route('login') }}" class="w-full text-center px-5 py-2.5 rounded-lg bg-slate-500 text-white font-medium hover:bg-slate-600 transition">
+                    Login
+                </a>
+                <a href="{{ route('register') }}" class="w-full text-center px-5 py-2.5 rounded-lg border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition">
+                    Register
+                </a>
+            </div>
+        @else
+            <div class="space-y-2">
+                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Akun: {{ auth()->user()->name }}</div>
+                <a href="{{ route('peminjaman.riwayat') }}" class="block text-slate-600 hover:text-slate-900 font-medium py-1">Riwayat Peminjaman</a>
+                <a href="{{ route('profile.edit') }}" class="block text-slate-600 hover:text-slate-900 font-medium py-1">Edit Profil</a>
+                <form action="{{ route('logout') }}" method="POST" class="pt-1">
+                    @csrf
+                    <button type="submit" class="w-full text-left text-red-600 hover:text-red-700 font-medium py-1">
+                        Logout
+                    </button>
+                </form>
+            </div>
+        @endguest
     </div>
 </nav>
 
@@ -106,29 +145,46 @@
         const toggle = document.getElementById('profile-menu-button');
         const menu = document.getElementById('profile-menu');
 
-        if (!toggle || !menu) {
-            return;
+        if (toggle && menu) {
+            const hideMenu = () => {
+                menu.classList.add('hidden');
+            };
+
+            toggle.addEventListener('click', function (event) {
+                event.stopPropagation();
+                menu.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', function (event) {
+                if (!menu.contains(event.target) && !toggle.contains(event.target)) {
+                    hideMenu();
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    hideMenu();
+                }
+            });
         }
 
-        const hideMenu = () => {
-            menu.classList.add('hidden');
-        };
+        // MOBILE MENU TOGGLE
+        const mobileToggleBtn = document.getElementById('mobile-menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const hamburgerIcon = document.getElementById('hamburger-icon');
+        const closeIcon = document.getElementById('close-icon');
 
-        toggle.addEventListener('click', function (event) {
-            event.stopPropagation();
-            menu.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', function (event) {
-            if (!menu.contains(event.target) && !toggle.contains(event.target)) {
-                hideMenu();
-            }
-        });
-
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                hideMenu();
-            }
-        });
+        if (mobileToggleBtn && mobileMenu) {
+            mobileToggleBtn.addEventListener('click', function () {
+                const isHidden = mobileMenu.classList.toggle('hidden');
+                if (isHidden) {
+                    hamburgerIcon.classList.remove('hidden');
+                    closeIcon.classList.add('hidden');
+                } else {
+                    hamburgerIcon.classList.add('hidden');
+                    closeIcon.classList.remove('hidden');
+                }
+            });
+        }
     });
 </script>

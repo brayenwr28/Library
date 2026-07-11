@@ -5,7 +5,7 @@
     <div class="row align-items-center gy-3">
         <div class="col">
             <div class="section-header">
-                <h1 class="h2 mb-2 fw-bold">📦 Pengembalian Menunggu Konfirmasi</h1>
+                <h1 class="h2 mb-2 fw-bold">📦 Konfirmasi Pengembalian</h1>
                 <p class="text-muted mb-0">Daftar pengembalian buku yang perlu dikonfirmasi oleh admin</p>
             </div>
         </div>
@@ -42,7 +42,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-0">
                     @if($pengembalians->count() > 0)
-                        <div class="table-responsive">
+                        <div class="table-responsive d-none d-md-block">
                             <table class="table table-hover mb-0">
                                 <thead class="table-light border-bottom">
                                     <tr>
@@ -209,6 +209,144 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                        </div>
+
+                        <!-- Mobile Card View -->
+                        <div class="d-md-none p-3">
+                            @foreach($pengembalians as $pengembalian)
+                                @php
+                                    $kondisiClass = match($pengembalian->kondisi_buku) {
+                                        'baik' => 'success',
+                                        'rusak_ringan' => 'warning',
+                                        'rusak_berat' => 'danger',
+                                        default => 'secondary'
+                                    };
+                                    $kondisiLabel = match($pengembalian->kondisi_buku) {
+                                        'baik' => 'Baik',
+                                        'rusak_ringan' => 'Rusak Ringan',
+                                        'rusak_berat' => 'Rusak Berat',
+                                        default => 'Tidak Diketahui'
+                                    };
+                                @endphp
+                                <div class="card border border-light shadow-sm mb-3 rounded-4 p-3 bg-white">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <span class="badge bg-primary px-2.5 py-1.5 fw-semibold">{{ $pengembalian->peminjaman?->nomor_antrian }}</span>
+                                        <span class="badge bg-{{ $kondisiClass }}">{{ $kondisiLabel }}</span>
+                                    </div>
+                                    <h6 class="fw-bold text-dark mb-1">{{ $pengembalian->peminjaman?->judul_buku }}</h6>
+                                    <hr class="my-2 opacity-50">
+                                    <div class="small text-muted mb-3">
+                                        <div class="mb-1"><strong>Peminjam:</strong> {{ $pengembalian->peminjaman?->member?->name ?? 'N/A' }}</div>
+                                        <div class="mb-1"><strong>Batas Kembali:</strong> {{ $pengembalian->peminjaman?->tgl_kembali->translatedFormat('d M Y') }}</div>
+                                        <div class="mb-1"><strong>Tgl Kembali Aktual:</strong> {{ $pengembalian->tgl_kembali_aktual->translatedFormat('d M Y') }}</div>
+                                        <div><strong>Denda:</strong> <span class="text-danger fw-bold">Rp {{ number_format($pengembalian->denda ?? 0, 0, ',', '.') }}</span></div>
+                                        @if($pengembalian->catatan)
+                                            <div class="mt-2 p-2 bg-light rounded border small">
+                                                <strong>Catatan:</strong> {{ $pengembalian->catatan }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="d-flex flex-column gap-2">
+                                        <div class="d-flex gap-2">
+                                            <form action="{{ route('admin.pengembalian.terima', $pengembalian->id) }}" method="POST" style="flex: 1;">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit" class="btn btn-success btn-sm w-100 fw-semibold" onclick="return confirm('Konfirmasi penerimaan pengembalian?')">
+                                                    <i class="fas fa-check me-1"></i> Terima
+                                                </button>
+                                            </form>
+                                            <button type="button" class="btn btn-warning btn-sm fw-semibold text-dark" style="flex: 1;" data-bs-toggle="modal" data-bs-target="#editModalMobile{{ $pengembalian->id }}">
+                                                <i class="fas fa-edit me-1"></i> Edit
+                                            </button>
+                                        </div>
+                                        <button type="button" class="btn btn-danger btn-sm fw-semibold w-100" data-bs-toggle="modal" data-bs-target="#rejectModalMobile{{ $pengembalian->id }}">
+                                            <i class="fas fa-times me-1"></i> Tolak
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Mobile Reject Modal -->
+                                <div class="modal fade" id="rejectModalMobile{{ $pengembalian->id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title fw-bold">Tolak Pengembalian</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <form action="{{ route('admin.pengembalian.tolak', $pengembalian->id) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <div class="modal-body">
+                                                    <p class="mb-3">
+                                                        Anda akan menolak pengembalian dari <strong>{{ $pengembalian->peminjaman?->member?->name }}</strong> untuk buku <strong>{{ $pengembalian->peminjaman?->judul_buku }}</strong>.
+                                                    </p>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Alasan Penolakan *</label>
+                                                        <textarea class="form-control" name="alasan" rows="3" placeholder="Tuliskan alasan penolakan..." required></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                    <button type="submit" class="btn btn-danger fw-semibold">Tolak Pengembalian</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Mobile Edit Modal -->
+                                <div class="modal fade" id="editModalMobile{{ $pengembalian->id }}" tabindex="-1" aria-labelledby="editModalMobileLabel{{ $pengembalian->id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content text-start">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title fw-bold" id="editModalMobileLabel{{ $pengembalian->id }}">📝 Edit Data Pengembalian</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{ route('admin.pengembalian.update', $pengembalian->id) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <div class="modal-body">
+                                                    <div class="p-3 mb-3 bg-light rounded-3 border">
+                                                        <p class="text-uppercase small fw-bold text-primary mb-2">📌 Info Peminjaman</p>
+                                                        <div class="small">
+                                                            <div class="mb-1"><strong>Member:</strong> {{ $pengembalian->peminjaman?->member?->name }} ({{ $pengembalian->peminjaman?->member?->nim ?? '-' }})</div>
+                                                            <div class="mb-1"><strong>Buku:</strong> {{ $pengembalian->peminjaman?->judul_buku }}</div>
+                                                            <div><strong>Batas Kembali:</strong> {{ $pengembalian->peminjaman?->tgl_kembali->translatedFormat('d F Y') }}</div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Tanggal Kembali Aktual</label>
+                                                        <input type="date" name="tgl_kembali_aktual" 
+                                                               class="form-control" 
+                                                               value="{{ old('tgl_kembali_aktual', $pengembalian->tgl_kembali_aktual->format('Y-m-d')) }}" 
+                                                               max="{{ now()->format('Y-m-d') }}"
+                                                               required>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Kondisi Buku</label>
+                                                        <select name="kondisi_buku" class="form-select" required>
+                                                            <option value="baik" @selected($pengembalian->kondisi_buku === 'baik')>Baik</option>
+                                                            <option value="rusak_ringan" @selected($pengembalian->kondisi_buku === 'rusak_ringan')>Rusak Ringan</option>
+                                                            <option value="rusak_berat" @selected($pengembalian->kondisi_buku === 'rusak_berat')>Rusak Berat</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Catatan</label>
+                                                        <textarea class="form-control" name="catatan" rows="3" placeholder="Opsional: kondisi tambahan atau catatan denda...">{{ old('catatan', $pengembalian->catatan) }}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                    <button type="submit" class="btn btn-primary fw-semibold">Simpan Perubahan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
 
                         <!-- Pagination -->

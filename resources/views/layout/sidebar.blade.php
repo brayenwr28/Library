@@ -72,7 +72,7 @@
         <li class="nav-item">
           <a href="{{ route('admin.dashboard') }}"
             class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-            <i class="nav-icon bi bi-speedometer"></i>
+            <i class="nav-icon bi bi-grid-1x2-fill"></i>
             <p>Dashboard</p>
           </a>
         </li>
@@ -82,7 +82,7 @@
           class="nav-item {{ request()->is('admin/books*') || request()->routeIs('Bukuperpus.*') ? 'menu-open' : '' }}">
           <a href="#"
             class="nav-link {{ request()->is('admin/books*') || request()->routeIs('Bukuperpus.*') ? 'active' : '' }}">
-            <i class="nav-icon bi bi-journal-text"></i>
+            <i class="nav-icon bi bi-journals"></i>
             <p>
               Manajemen Buku
               <i class="nav-arrow bi bi-chevron-right"></i>
@@ -94,14 +94,14 @@
             <li class="nav-item">
               <a href="{{ route('admin.books.create') }}"
                 class="nav-link ps-4 {{ request()->is('admin/books/create') ? 'active' : '' }}">
-                <i class="nav-icon bi bi-plus-circle"></i>
+                <i class="nav-icon bi bi-file-earmark-arrow-up-fill"></i>
                 <p>Input Buku Digital</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="{{ route('admin.books.library.create') }}"
                 class="nav-link ps-4 {{ request()->routeIs('admin.books.library.create') ? 'active' : '' }}">
-                <i class="nav-icon bi bi-plus-circle-dotted"></i>
+                <i class="nav-icon bi bi-plus-square-fill"></i>
                 <p>Input Buku Perpustakaan</p>
               </a>
             </li>
@@ -110,14 +110,14 @@
             <li class="nav-item">
               <a href="{{ route('admin.books.show') }}"
                 class="nav-link ps-4 {{ request()->is('admin/books/digital*') ? 'active' : '' }}">
-                <i class="nav-icon bi bi-circle"></i>
+                <i class="nav-icon bi bi-laptop-fill"></i>
                 <p>Buku Digital</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="{{ route('admin.books.library.show') }}"
                 class="nav-link ps-4 {{ request()->is('admin/books/library*') ? 'active' : '' }}">
-                <i class="nav-icon bi bi-circle"></i>
+                <i class="nav-icon bi bi-book-fill"></i>
                 <p>Buku Perpustakaan</p>
               </a>
             </li>
@@ -127,7 +127,7 @@
         <li class="nav-header ps-3 pt-3 pb-1">Management Anggota</li>
         <li class="nav-item">
           <a href="{{ route('admin.members.import.form') }}" class="nav-link">
-            <i class="nav-icon bi bi-upload"></i>
+            <i class="nav-icon bi bi-file-earmark-spreadsheet-fill"></i>
             <p>Import Anggota</p>
           </a>
         </li>
@@ -135,21 +135,21 @@
         <li class="nav-item">
           <a href="{{ route('admin.pengembalian.index') }}"
             class="nav-link {{ request()->routeIs('admin.pengembalian.index') ? 'active' : '' }}">
-            <i class="nav-icon bi bi-journal-check"></i>
+            <i class="nav-icon bi bi-clipboard2-check-fill"></i>
             <p>Konfirmasi Peminjaman</p>
           </a>
         </li>
         <li class="nav-item">
           <a href="{{ route('admin.pengembalian.menunggu') }}"
             class="nav-link {{ request()->routeIs('admin.pengembalian.menunggu') ? 'active' : '' }}">
-            <i class="nav-icon bi bi-arrow-return-left"></i>
+            <i class="nav-icon bi bi-box-arrow-in-left"></i>
             <p>Konfirmasi Pengembalian</p>
           </a>
         </li>
 
         <li class="nav-item {{ request()->is('admin/reports*') ? 'menu-open' : '' }}">
           <a href="#" class="nav-link {{ request()->is('admin/reports*') ? 'active' : '' }}">
-            <i class="nav-icon bi bi-graph-up"></i>
+            <i class="nav-icon bi bi-clipboard-data-fill"></i>
             <p>
               Laporan & Statistik
               <i class="nav-arrow bi bi-chevron-right"></i>
@@ -159,35 +159,35 @@
             <li class="nav-item">
               <a href="{{ route('admin.report.peminjaman') }}"
                 class="nav-link ps-4 {{ request()->routeIs('admin.report.peminjaman') ? 'active' : '' }}">
-                <i class="nav-icon bi bi-circle"></i>
+                <i class="nav-icon bi bi-file-earmark-arrow-down-fill"></i>
                 <p>Laporan Peminjaman</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="{{ route('admin.report.pengembalian') }}"
                 class="nav-link ps-4 {{ request()->routeIs('admin.report.pengembalian') ? 'active' : '' }}">
-                <i class="nav-icon bi bi-circle"></i>
+                <i class="nav-icon bi bi-file-earmark-arrow-up-fill"></i>
                 <p>Laporan Pengembalian</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="{{ route('admin.report.pengunjung') }}"
                 class="nav-link ps-4 {{ request()->routeIs('admin.report.pengunjung') ? 'active' : '' }}">
-                <i class="nav-icon bi bi-circle"></i>
+                <i class="nav-icon bi bi-people-fill"></i>
                 <p>Laporan Pengunjung</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="{{ route('admin.report.anggota') }}"
                 class="nav-link ps-4 {{ request()->routeIs('admin.report.anggota') ? 'active' : '' }}">
-                <i class="nav-icon bi bi-circle"></i>
+                <i class="nav-icon bi bi-person-badge-fill"></i>
                 <p>Laporan Anggota</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="{{ route('admin.report.denda') }}"
                 class="nav-link ps-4 {{ request()->routeIs('admin.report.denda') ? 'active' : '' }}">
-                <i class="nav-icon bi bi-circle"></i>
+                <i class="nav-icon bi bi-cash-stack"></i>
                 <p>Laporan Denda</p>
               </a>
             </li>
