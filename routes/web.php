@@ -133,6 +133,7 @@ Route::middleware('auth:admin')->controller(PengembalianController::class)->pref
     Route::get('/{pengembalian}', 'show')->name('admin.pengembalian.show');
     Route::put('/{pengembalian}/terima', 'terima')->name('admin.pengembalian.terima');
     Route::put('/{pengembalian}/tolak', 'tolak')->name('admin.pengembalian.tolak');
+    Route::put('/{pengembalian}', 'update')->name('admin.pengembalian.update');
 });
 
 // Admin Report Routes

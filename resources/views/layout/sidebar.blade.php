@@ -1,7 +1,11 @@
 <aside class="app-sidebar shadow" data-bs-theme="dark" style="background-color: #191b20 !important;">
-  <div class="sidebar-brand" style="display: flex; justify-content: center; align-items: center; padding: 18px 0; border-bottom: 1px solid rgba(195, 213, 226, 0.15);">
-    <a href="{{ route('admin.dashboard') }}" class="brand-link text-decoration-none d-flex align-items-center justify-content-center w-100">
-      <img src="{{ asset('logo/univmetamedia.png') }}" alt="Logo" class="brand-image" style="max-height: 55px; width: auto; filter: drop-shadow(0px 4px 8px rgba(40, 144, 255, 0.25)); transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+  <div class="sidebar-brand"
+    style="display: flex; justify-content: center; align-items: center; padding: 18px 0; border-bottom: 1px solid rgba(195, 213, 226, 0.15);">
+    <a href="{{ route('admin.dashboard') }}"
+      class="brand-link text-decoration-none d-flex align-items-center justify-content-center w-100">
+      <img src="{{ asset('logo/univmetamedia.png') }}" alt="Logo" class="brand-image"
+        style="max-height: 55px; width: auto; filter: drop-shadow(0px 4px 8px rgba(40, 144, 255, 0.25)); transition: transform 0.3s ease;"
+        onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
     </a>
   </div>
 
@@ -15,27 +19,30 @@
           position: relative;
           border-left: 3px solid transparent;
         }
-        
+
         /* Efek Animasi Hover Menarik */
         .sidebar-menu .nav-link:hover {
           background-color: rgba(255, 255, 255, 0.06) !important;
           color: #ffffff !important;
-          padding-left: 20px !important; /* Efek bergeser smooth ke kanan */
+          padding-left: 20px !important;
+          /* Efek bergeser smooth ke kanan */
         }
-        
+
         /* Gaya Menu Ketika Aktif dengan Garis Indikator */
         .sidebar-menu .nav-link.active {
           background: linear-gradient(90deg, rgba(40, 144, 255, 0.2) 0%, rgba(40, 144, 255, 0.02) 100%) !important;
-          color: #2890ff !important; /* Warna teks teks/ikon mengikuti warna highlight */
+          color: #2890ff !important;
+          /* Warna teks teks/ikon mengikuti warna highlight */
           font-weight: 600;
-          border-left: 3px solid #2890ff !important; /* Garis vertikal menyala di kiri */
+          border-left: 3px solid #2890ff !important;
+          /* Garis vertikal menyala di kiri */
         }
 
         /* Memastikan icon pendukung di menu aktif ikut berwarna cerah */
         .sidebar-menu .nav-link.active .nav-icon {
           color: #2890ff !important;
         }
-        
+
         /* Gaya Judul Kelompok Menu (Header) */
         .sidebar-menu .nav-header {
           color: rgba(255, 255, 255, 0.35) !important;
@@ -50,9 +57,11 @@
         .sidebar-menu .nav-treeview .nav-link {
           border-left: 3px solid transparent !important;
         }
+
         .sidebar-menu .nav-treeview .nav-link:hover {
           padding-left: 28px !important;
         }
+
         .sidebar-menu .nav-treeview .nav-link.active {
           border-left: 3px solid #2890ff !important;
           background: transparent !important;
@@ -61,15 +70,18 @@
 
       <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation" data-accordion="false">
         <li class="nav-item">
-          <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+          <a href="{{ route('admin.dashboard') }}"
+            class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
             <i class="nav-icon bi bi-speedometer"></i>
             <p>Dashboard</p>
           </a>
         </li>
-        
+
         <li class="nav-header ps-3 pt-3 pb-1">Management Buku</li>
-        <li class="nav-item {{ request()->is('admin/books*') || request()->routeIs('Bukuperpus.*') ? 'menu-open' : '' }}">
-          <a href="#" class="nav-link {{ request()->is('admin/books*') || request()->routeIs('Bukuperpus.*') ? 'active' : '' }}">
+        <li
+          class="nav-item {{ request()->is('admin/books*') || request()->routeIs('Bukuperpus.*') ? 'menu-open' : '' }}">
+          <a href="#"
+            class="nav-link {{ request()->is('admin/books*') || request()->routeIs('Bukuperpus.*') ? 'active' : '' }}">
             <i class="nav-icon bi bi-journal-text"></i>
             <p>
               Manajemen Buku
@@ -77,28 +89,34 @@
             </p>
           </a>
           <ul class="nav nav-treeview" style="background-color: rgba(0, 0, 0, 0.2);">
-            <li class="nav-header ps-4 pt-2 pb-1 text-uppercase tiny text-muted" style="font-size: 10px; opacity: 0.6;">Input Koleksi</li>
+            <li class="nav-header ps-4 pt-2 pb-1 text-uppercase tiny text-muted" style="font-size: 10px; opacity: 0.6;">
+              Input Koleksi</li>
             <li class="nav-item">
-              <a href="{{ route('admin.books.create') }}" class="nav-link ps-4 {{ request()->is('admin/books/create') ? 'active' : '' }}">
+              <a href="{{ route('admin.books.create') }}"
+                class="nav-link ps-4 {{ request()->is('admin/books/create') ? 'active' : '' }}">
                 <i class="nav-icon bi bi-plus-circle"></i>
                 <p>Input Buku Digital</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{ route('admin.books.library.create') }}" class="nav-link ps-4 {{ request()->routeIs('admin.books.library.create') ? 'active' : '' }}">
+              <a href="{{ route('admin.books.library.create') }}"
+                class="nav-link ps-4 {{ request()->routeIs('admin.books.library.create') ? 'active' : '' }}">
                 <i class="nav-icon bi bi-plus-circle-dotted"></i>
                 <p>Input Buku Perpustakaan</p>
               </a>
             </li>
-            <li class="nav-header ps-4 pt-2 pb-1 text-uppercase tiny text-muted" style="font-size: 10px; opacity: 0.6;">List Buku</li>
+            <li class="nav-header ps-4 pt-2 pb-1 text-uppercase tiny text-muted" style="font-size: 10px; opacity: 0.6;">
+              List Buku</li>
             <li class="nav-item">
-              <a href="{{ route('admin.books.show') }}" class="nav-link ps-4 {{ request()->is('admin/books/digital*') ? 'active' : '' }}">
+              <a href="{{ route('admin.books.show') }}"
+                class="nav-link ps-4 {{ request()->is('admin/books/digital*') ? 'active' : '' }}">
                 <i class="nav-icon bi bi-circle"></i>
                 <p>Buku Digital</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{ route('admin.books.library.show') }}" class="nav-link ps-4 {{ request()->is('admin/books/library*') ? 'active' : '' }}">
+              <a href="{{ route('admin.books.library.show') }}"
+                class="nav-link ps-4 {{ request()->is('admin/books/library*') ? 'active' : '' }}">
                 <i class="nav-icon bi bi-circle"></i>
                 <p>Buku Perpustakaan</p>
               </a>
@@ -113,28 +131,20 @@
             <p>Import Anggota</p>
           </a>
         </li>
-        <li class="nav-item {{ request()->is('admin/pengembalian*') ? 'menu-open' : '' }}">
-          <a href="#" class="nav-link {{ request()->is('admin/pengembalian*') ? 'active' : '' }}">
-            <i class="nav-icon bi bi-arrow-return-left"></i>
-            <p>
-              Transaksi Pengembalian
-              <i class="nav-arrow bi bi-chevron-right"></i>
-            </p>
+        <li class="nav-header ps-3 pt-3 pb-1">Transaksi & Sirkulasi</li>
+        <li class="nav-item">
+          <a href="{{ route('admin.pengembalian.index') }}"
+            class="nav-link {{ request()->routeIs('admin.pengembalian.index') ? 'active' : '' }}">
+            <i class="nav-icon bi bi-journal-check"></i>
+            <p>Konfirmasi Peminjaman</p>
           </a>
-          <ul class="nav nav-treeview" style="background-color: rgba(0, 0, 0, 0.2);">
-            <li class="nav-item">
-              <a href="{{ route('admin.pengembalian.index') }}" class="nav-link ps-4 {{ request()->routeIs('admin.pengembalian.index') ? 'active' : '' }}">
-                <i class="nav-icon bi bi-circle"></i>
-                <p>Input Pengembalian</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="{{ route('admin.pengembalian.menunggu') }}" class="nav-link ps-4 {{ request()->routeIs('admin.pengembalian.menunggu') ? 'active' : '' }}">
-                <i class="nav-icon bi bi-circle"></i>
-                <p>Konfirmasi Pengembalian</p>
-              </a>
-            </li>
-          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="{{ route('admin.pengembalian.menunggu') }}"
+            class="nav-link {{ request()->routeIs('admin.pengembalian.menunggu') ? 'active' : '' }}">
+            <i class="nav-icon bi bi-arrow-return-left"></i>
+            <p>Konfirmasi Pengembalian</p>
+          </a>
         </li>
 
         <li class="nav-item {{ request()->is('admin/reports*') ? 'menu-open' : '' }}">
@@ -147,31 +157,36 @@
           </a>
           <ul class="nav nav-treeview" style="background-color: rgba(0, 0, 0, 0.2);">
             <li class="nav-item">
-              <a href="{{ route('admin.report.peminjaman') }}" class="nav-link ps-4 {{ request()->routeIs('admin.report.peminjaman') ? 'active' : '' }}">
+              <a href="{{ route('admin.report.peminjaman') }}"
+                class="nav-link ps-4 {{ request()->routeIs('admin.report.peminjaman') ? 'active' : '' }}">
                 <i class="nav-icon bi bi-circle"></i>
                 <p>Laporan Peminjaman</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{ route('admin.report.pengembalian') }}" class="nav-link ps-4 {{ request()->routeIs('admin.report.pengembalian') ? 'active' : '' }}">
+              <a href="{{ route('admin.report.pengembalian') }}"
+                class="nav-link ps-4 {{ request()->routeIs('admin.report.pengembalian') ? 'active' : '' }}">
                 <i class="nav-icon bi bi-circle"></i>
                 <p>Laporan Pengembalian</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{ route('admin.report.pengunjung') }}" class="nav-link ps-4 {{ request()->routeIs('admin.report.pengunjung') ? 'active' : '' }}">
+              <a href="{{ route('admin.report.pengunjung') }}"
+                class="nav-link ps-4 {{ request()->routeIs('admin.report.pengunjung') ? 'active' : '' }}">
                 <i class="nav-icon bi bi-circle"></i>
                 <p>Laporan Pengunjung</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{ route('admin.report.anggota') }}" class="nav-link ps-4 {{ request()->routeIs('admin.report.anggota') ? 'active' : '' }}">
+              <a href="{{ route('admin.report.anggota') }}"
+                class="nav-link ps-4 {{ request()->routeIs('admin.report.anggota') ? 'active' : '' }}">
                 <i class="nav-icon bi bi-circle"></i>
                 <p>Laporan Anggota</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{ route('admin.report.denda') }}" class="nav-link ps-4 {{ request()->routeIs('admin.report.denda') ? 'active' : '' }}">
+              <a href="{{ route('admin.report.denda') }}"
+                class="nav-link ps-4 {{ request()->routeIs('admin.report.denda') ? 'active' : '' }}">
                 <i class="nav-icon bi bi-circle"></i>
                 <p>Laporan Denda</p>
               </a>

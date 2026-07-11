@@ -18,6 +18,25 @@
 @endsection
 
 @section('content')
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
+            <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+    @if(session('warning'))
+        <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm mb-4 text-dark" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i> {{ session('warning') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+    @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
+            <i class="fas fa-times-circle me-2"></i> {{ $errors->first() }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <div class="row">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
@@ -28,7 +47,7 @@
                                 <thead class="table-light border-bottom">
                                     <tr>
                                         <th class="ps-4">No. Antrian</th>
-                                        <th>Member</th>
+                                        <th>Peminjam</th>
                                         <th>Judul Buku</th>
                                         <th>Tgl Kembali Rencana</th>
                                         <th>Tgl Kembali Aktual</th>
@@ -44,8 +63,7 @@
                                                 <span class="badge bg-primary">{{ $pengembalian->peminjaman?->nomor_antrian }}</span>
                                             </td>
                                             <td>
-                                                <div class="fw-semibold">{{ $pengembalian->peminjaman?->member?->name ?? 'N/A' }}</div>
-                                                <small class="text-muted">{{ $pengembalian->peminjaman?->member?->email }}</small>
+                                                <div class="fw-bold text-dark">{{ $pengembalian->peminjaman?->member?->name ?? 'N/A' }}</div>
                                             </td>
                                             <td>
                                                 {{ $pengembalian->peminjaman?->judul_buku }}
@@ -83,15 +101,20 @@
                                                 </strong>
                                             </td>
                                             <td class="text-center">
-                                                <div class="btn-group btn-group-sm" role="group">
-                                                    <form action="{{ route('admin.pengembalian.terima', $pengembalian->id) }}" method="POST" style="display: inline;">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Konfirmasi penerimaan pengembalian?')">
-                                                            <i class="fas fa-check"></i> Terima
+                                                <div class="d-flex flex-column gap-1 align-items-center" style="max-width: 140px; margin: 0 auto;">
+                                                    <div class="btn-group btn-group-sm w-100" role="group">
+                                                        <form action="{{ route('admin.pengembalian.terima', $pengembalian->id) }}" method="POST" style="display: inline;" class="w-50">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <button type="submit" class="btn btn-success btn-sm w-100 fw-semibold" onclick="return confirm('Konfirmasi penerimaan pengembalian?')">
+                                                                <i class="fas fa-check"></i> Terima
+                                                            </button>
+                                                        </form>
+                                                        <button type="button" class="btn btn-warning btn-sm w-50 fw-semibold text-dark" data-bs-toggle="modal" data-bs-target="#editModal{{ $pengembalian->id }}">
+                                                            <i class="fas fa-edit"></i> Edit
                                                         </button>
-                                                    </form>
-                                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $pengembalian->id }}">
+                                                    </div>
+                                                    <button type="button" class="btn btn-danger btn-sm w-100 fw-semibold" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $pengembalian->id }}">
                                                         <i class="fas fa-times"></i> Tolak
                                                     </button>
                                                 </div>
@@ -103,7 +126,7 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title">Tolak Pengembalian</h5>
+                                                        <h5 class="modal-title fw-bold">Tolak Pengembalian</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                     </div>
                                                     <form action="{{ route('admin.pengembalian.tolak', $pengembalian->id) }}" method="POST">
@@ -124,7 +147,60 @@
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                            <button type="submit" class="btn btn-danger">Tolak Pengembalian</button>
+                                                            <button type="submit" class="btn btn-danger fw-semibold">Tolak Pengembalian</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Edit Modal -->
+                                        <div class="modal fade" id="editModal{{ $pengembalian->id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $pengembalian->id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content text-start">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title fw-bold" id="editModalLabel{{ $pengembalian->id }}">📝 Edit Data Pengembalian</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <form action="{{ route('admin.pengembalian.update', $pengembalian->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-body">
+                                                            <div class="p-3 mb-3 bg-light rounded-3 border">
+                                                                <p class="text-uppercase small fw-bold text-primary mb-2">📌 Info Peminjaman</p>
+                                                                <div class="small">
+                                                                    <div class="mb-1"><strong>Member:</strong> {{ $pengembalian->peminjaman?->member?->name }} ({{ $pengembalian->peminjaman?->member?->nim ?? '-' }})</div>
+                                                                    <div class="mb-1"><strong>Buku:</strong> {{ $pengembalian->peminjaman?->judul_buku }}</div>
+                                                                    <div><strong>Batas Kembali:</strong> {{ $pengembalian->peminjaman?->tgl_kembali->translatedFormat('d F Y') }}</div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label fw-semibold">Tanggal Kembali Aktual</label>
+                                                                <input type="date" name="tgl_kembali_aktual" 
+                                                                       class="form-control" 
+                                                                       value="{{ old('tgl_kembali_aktual', $pengembalian->tgl_kembali_aktual->format('Y-m-d')) }}" 
+                                                                       max="{{ now()->format('Y-m-d') }}"
+                                                                       required>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label fw-semibold">Kondisi Buku</label>
+                                                                <select name="kondisi_buku" class="form-select" required>
+                                                                    <option value="baik" @selected($pengembalian->kondisi_buku === 'baik')>Baik</option>
+                                                                    <option value="rusak_ringan" @selected($pengembalian->kondisi_buku === 'rusak_ringan')>Rusak Ringan</option>
+                                                                    <option value="rusak_berat" @selected($pengembalian->kondisi_buku === 'rusak_berat')>Rusak Berat</option>
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label fw-semibold">Catatan</label>
+                                                                <textarea class="form-control" name="catatan" rows="3" placeholder="Opsional: kondisi tambahan atau catatan denda...">{{ old('catatan', $pengembalian->catatan) }}</textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                            <button type="submit" class="btn btn-primary fw-semibold">Simpan Perubahan</button>
                                                         </div>
                                                     </form>
                                                 </div>

@@ -7,6 +7,7 @@ use App\Models\Book;
 use App\Models\Member;
 use App\Models\Peminjaman;
 use App\Models\Perpuss;
+use App\Models\Pengembalian;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -446,9 +447,20 @@ class PeminjamanController extends Controller
                 }
             }
 
+            // Buat record pengembalian otomatis berstatus 'menunggu_konfirmasi'
+            Pengembalian::create([
+                'peminjaman_id' => $peminjaman->id,
+                'tgl_kembali_aktual' => now()->toDateString(),
+                'kondisi_buku' => 'baik',
+                'denda' => 0,
+                'status_denda' => 'lunas',
+                'status' => 'menunggu_konfirmasi',
+                'catatan' => 'Dibuat otomatis setelah peminjaman dikonfirmasi.',
+            ]);
+
             return redirect()
-                ->route('admin.peminjaman.menunggu')
-                ->with('success', 'Peminjaman diterima! Member dapat mengambil buku dengan nomor antrian: ' . $peminjaman->nomor_antrian);
+                ->route('admin.pengembalian.menunggu')
+                ->with('success', 'Peminjaman berhasil diterima! Transaksi otomatis diajukan ke Konfirmasi Pengembalian.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }
@@ -475,7 +487,7 @@ class PeminjamanController extends Controller
             ]);
 
             return redirect()
-                ->route('admin.peminjaman.menunggu')
+                ->route('admin.pengembalian.index')
                 ->with('warning', 'Peminjaman ditolak. Member akan menerima notifikasi penolakan.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);

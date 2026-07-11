@@ -1,85 +1,158 @@
 @extends('layout.app')
-@section('title', 'Input Pengembalian')
+@section('title', 'Konfirmasi Peminjaman')
 
 @section('content-header')
     <div class="row align-items-center gy-3">
         <div class="col">
             <div class="section-header">
-                <h1 class="h2 mb-2 fw-bold">📥 Input Pengembalian</h1>
-                <p class="text-muted mb-0">Pilih peminjaman aktif yang sudah dikembalikan oleh member untuk diinput ke sistem</p>
+                <h1 class="h2 mb-2 fw-bold">⏳ Konfirmasi Peminjaman</h1>
+                <p class="text-muted mb-0">Daftar permohonan peminjaman buku oleh member yang menunggu persetujuan admin</p>
             </div>
-        </div>
-        <div class="col-auto">
-            <a href="{{ route('admin.pengembalian.menunggu') }}" class="btn btn-warning fw-semibold shadow-sm text-dark">
-                ⏳ Lihat Konfirmasi Menunggu
-            </a>
         </div>
     </div>
 @endsection
 
 @section('content')
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-            @if($peminjamans->count() > 0)
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0 align-middle">
-                        <thead class="table-light border-bottom text-uppercase fs-7 tracking-wider text-muted">
-                            <tr>
-                                <th class="ps-4 py-3">No. Antrian</th>
-                                <th class="py-3">Member</th>
-                                <th class="py-3">Judul Buku</th>
-                                <th class="py-3">Tgl Pinjam</th>
-                                <th class="py-3">Tgl Kembali</th>
-                                <th class="text-center py-3 pe-4">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($peminjamans as $peminjaman)
-                                <tr>
-                                    <td class="ps-4 fw-bold text-primary">
-                                        #{{ $peminjaman->nomor_antrian }}
-                                    </td>
-                                    <td>
-                                        <div class="fw-semibold text-dark">{{ $peminjaman->member?->name ?? '-' }}</div>
-                                        <small class="text-muted d-block" style="font-size: 0.85rem;">{{ $peminjaman->member?->email }}</small>
-                                    </td>
-                                    <td class="fw-semibold text-secondary">
-                                        {{ $peminjaman->judul_buku }}
-                                    </td>
-                                    <td>
-                                        <span class="text-muted">{{ \Carbon\Carbon::parse($peminjaman->tgl_pinjam)->translatedFormat('d M Y') }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="fw-semibold text-dark">{{ \Carbon\Carbon::parse($peminjaman->tgl_kembali)->translatedFormat('d M Y') }}</span>
-                                    </td>
-                                    <td class="text-center pe-4">
-                                        <a href="{{ route('admin.pengembalian.create', $peminjaman->id) }}" class="btn btn-success btn-sm fw-semibold px-3 py-1.5 shadow-sm">
-                                            ✓ Input Kembali
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
+            <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+    @if(session('warning'))
+        <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm mb-4 text-dark" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i> {{ session('warning') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+    @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
+            <i class="fas fa-times-circle me-2"></i> {{ $errors->first() }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom-0 p-4 pb-0">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                        <div>
+                            <h5 class="card-title fw-bold mb-1">📝 Peminjaman Menunggu Persetujuan</h5>
+                            <p class="text-muted small mb-0">Terima peminjaman untuk mengurangi stok buku, atau tolak dengan alasan.</p>
+                        </div>
+                    </div>
                 </div>
 
-                {{-- Pagination --}}
-                <div class="border-top p-3 d-flex justify-content-between align-items-center bg-light-subtle rounded-bottom">
-                    <span class="small text-muted">Menampilkan {{ $peminjamans->count() }} data aktif</span>
-                    <div>
-                        {{ $peminjamans->links() }}
-                    </div>
+                <div class="card-body p-4">
+                    @if($peminjamans->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table align-middle table-hover mb-0">
+                                <thead class="table-light border-bottom">
+                                    <tr>
+                                        <th class="ps-3">No. Antrian</th>
+                                        <th>Peminjam</th>
+                                        <th>Detail Buku</th>
+                                        <th>Tanggal Pinjam</th>
+                                        <th>Batas Kembali</th>
+                                        <th class="text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($peminjamans as $peminjaman)
+                                        <tr>
+                                            <td class="ps-3 fw-semibold">
+                                                <span class="badge bg-primary">{{ $peminjaman->nomor_antrian }}</span>
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold text-dark">{{ $peminjaman->member?->name ?? 'N/A' }}</div>
+                                                <div class="small text-muted">
+                                                    <div><strong>NIM:</strong> {{ $peminjaman->member?->nim ?? '-' }}</div>
+                                                    <div><strong>Prodi:</strong> {{ $peminjaman->member?->prodi ?? '-' }}</div>
+                                                    <div><strong>Email:</strong> {{ $peminjaman->member?->email ?? '-' }}</div>
+                                                    <div>
+                                                        <span class="badge bg-light text-dark border mt-1">
+                                                            {{ $peminjaman->member?->jenis_anggota_label ?? 'Mahasiswa' }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="fw-semibold text-dark">{{ $peminjaman->judul_buku }}</div>
+                                                <div>
+                                                    <span class="badge bg-{{ $peminjaman->book_type === 'fisik' ? 'info' : 'secondary' }} text-white text-xs">
+                                                        {{ ucfirst($peminjaman->book_type) }}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td class="text-muted small">
+                                                {{ $peminjaman->tgl_pinjam ? $peminjaman->tgl_pinjam->translatedFormat('d F Y') : '-' }}
+                                            </td>
+                                            <td class="text-muted small">
+                                                {{ $peminjaman->tgl_kembali ? $peminjaman->tgl_kembali->translatedFormat('d F Y') : '-' }}
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="d-flex flex-wrap justify-content-center gap-2">
+                                                    <form action="{{ route('admin.peminjaman.konfirmasi', $peminjaman->id) }}" method="POST" style="display: inline;">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <button type="submit" class="btn btn-success btn-sm fw-semibold" onclick="return confirm('Terima peminjaman ini?')">
+                                                            <i class="fas fa-check me-1"></i> Terima
+                                                        </button>
+                                                    </form>
+
+                                                    <button type="button" class="btn btn-danger btn-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $peminjaman->id }}">
+                                                        <i class="fas fa-times me-1"></i> Tolak
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Reject Modal -->
+                                        <div class="modal fade" id="rejectModal{{ $peminjaman->id }}" tabindex="-1" aria-labelledby="rejectModalLabel{{ $peminjaman->id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content text-start">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title fw-bold" id="rejectModalLabel{{ $peminjaman->id }}">Tolak Peminjaman</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <form action="{{ route('admin.peminjaman.tolak', $peminjaman->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-body">
+                                                            <p class="mb-3">
+                                                                Anda akan menolak peminjaman <strong>{{ $peminjaman->nomor_antrian }}</strong> oleh <strong>{{ $peminjaman->member?->name }}</strong> untuk buku <strong>{{ $peminjaman->judul_buku }}</strong>.
+                                                            </p>
+                                                            <div class="mb-3">
+                                                                <label class="form-label fw-semibold">Alasan Penolakan *</label>
+                                                                <textarea class="form-control" name="alasan" rows="3" placeholder="Tuliskan alasan penolakan..." required></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                            <button type="submit" class="btn btn-danger fw-semibold">Tolak Peminjaman</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="border-top p-3 mt-3">
+                            {{ $peminjamans->links() }}
+                        </div>
+                    @else
+                        <div class="d-flex flex-column align-items-center justify-content-center py-5 text-muted">
+                            <i class="fas fa-check-circle fa-3x opacity-25 mb-3"></i>
+                            <p class="mb-0 fw-semibold">Tidak ada peminjaman baru yang menunggu konfirmasi</p>
+                        </div>
+                    @endif
                 </div>
-            @else
-                {{-- Modern Empty State --}}
-                <div class="text-center p-5 my-4">
-                    <div class="avatar avatar-xl bg-light rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                        <span class="fs-1 text-muted">📚</span>
-                    </div>
-                    <h5 class="fw-bold text-dark mb-1">Semua Beres!</h5>
-                    <p class="text-muted max-w-md mx-auto mb-0">Tidak ada data peminjaman aktif yang menunggu pengembalian saat ini.</p>
-                </div>
-            @endif
+            </div>
         </div>
     </div>
 @endsection

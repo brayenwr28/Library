@@ -20,7 +20,7 @@ class PengembalianController extends Controller
     public function index(): View
     {
         $peminjamans = Peminjaman::with(['member', 'book', 'perpuss'])
-            ->where('status', 'diambil')
+            ->where('status', 'menunggu_konfirmasi')
             ->orderByDesc('created_at')
             ->paginate(15);
 
@@ -209,6 +209,46 @@ class PengembalianController extends Controller
             return redirect()
                 ->route('admin.pengembalian.index')
                 ->with('success', 'Data pengembalian berhasil disimpan! Menunggu konfirmasi admin.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Update data pengembalian (edit sebelum konfirmasi)
+     */
+    public function update(Request $request, Pengembalian $pengembalian): RedirectResponse
+    {
+        $request->validate([
+            'tgl_kembali_aktual' => 'required|date|before_or_equal:today',
+            'kondisi_buku' => 'required|in:baik,rusak_ringan,rusak_berat',
+            'catatan' => 'nullable|string|max:255',
+        ]);
+
+        if ($pengembalian->status !== 'menunggu_konfirmasi') {
+            return back()->withErrors(['error' => 'Pengembalian sudah diproses sebelumnya, tidak dapat diubah.']);
+        }
+
+        try {
+            $peminjaman = $pengembalian->peminjaman;
+
+            // Hitung ulang denda otomatis
+            $denda = Pengembalian::hitungDenda(
+                $peminjaman->tgl_kembali,
+                $request->tgl_kembali_aktual
+            );
+
+            $pengembalian->update([
+                'tgl_kembali_aktual' => $request->tgl_kembali_aktual,
+                'kondisi_buku' => $request->kondisi_buku,
+                'denda' => $denda,
+                'status_denda' => $denda > 0 ? 'belum_lunas' : 'lunas',
+                'catatan' => $request->catatan,
+            ]);
+
+            return redirect()
+                ->route('admin.pengembalian.menunggu')
+                ->with('success', 'Data pengembalian berhasil diperbarui!');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }
