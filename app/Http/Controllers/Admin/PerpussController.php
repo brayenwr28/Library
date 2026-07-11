@@ -28,7 +28,7 @@ class PerpussController extends Controller
     {
         $search = (string) $request->query('q', '');
 
-        $collections = Perpuss::query()
+        $query = Perpuss::query()
             ->when($search !== '', function ($query) use ($search) {
                 $like = "%{$search}%";
                 $query->where(function ($inner) use ($like) {
@@ -41,13 +41,24 @@ class PerpussController extends Controller
                         ->orWhere('edisi', 'like', $like)
                         ->orWhere('registration_number', 'like', $like);
                 });
-            })
-            ->orderByDesc('created_at')
-            ->get();
+            });
+
+        $totalCount = $query->count();
+        $availableCount = (clone $query)->where('status', 'available')->count();
+        $unavailableCount = (clone $query)->where('status', 'unavailable')->count();
+        $totalStock = $query->sum('stock');
+
+        $collections = $query->orderByDesc('created_at')
+            ->paginate(30)
+            ->withQueryString();
 
         return view('dashboard.perpus', [
             'books' => $collections,
             'search' => $search,
+            'totalCount' => $totalCount,
+            'availableCount' => $availableCount,
+            'unavailableCount' => $unavailableCount,
+            'totalStock' => $totalStock,
         ]);
     }
 

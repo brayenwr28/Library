@@ -494,6 +494,30 @@ class PeminjamanController extends Controller
         }
     }
 
+    /**
+     * ACTION - Update peminjaman dates
+     */
+    public function updateDates(Peminjaman $peminjaman, Request $request): RedirectResponse
+    {
+        $request->validate([
+            'tgl_pinjam' => 'required|date',
+            'tgl_kembali' => 'required|date|after_or_equal:tgl_pinjam',
+        ]);
+
+        try {
+            $peminjaman->update([
+                'tgl_pinjam' => $request->tgl_pinjam,
+                'tgl_kembali' => $request->tgl_kembali,
+            ]);
+
+            return redirect()
+                ->route('admin.peminjaman.menunggu')
+                ->with('success', 'Tanggal peminjaman berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        }
+    }
+
     private function resolveMember(): Member|RedirectResponse
     {
         $user = Auth::user();

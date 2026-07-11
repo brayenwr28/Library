@@ -60,163 +60,253 @@
         @else
             <div class="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-stretch">
                 @foreach($books as $book)
-                    <article class="group h-full min-h-[35rem] flex flex-col overflow-hidden rounded-2xl border-2 border-blue-100/70 bg-white shadow-md transition duration-300 hover:shadow-[0_15px_30px_rgba(37,99,235,0.2)] hover:border-blue-500 hover:-translate-y-2">
-                        <div class="relative h-56 w-full overflow-hidden bg-gradient-to-br from-blue-50 to-sky-100 border-b border-blue-50">
+                    <article class="group h-full flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:border-blue-500 hover:-translate-y-1.5">
+                        <!-- Cover Image Container -->
+                        <div class="relative aspect-[4/3] w-full overflow-hidden bg-slate-50 border-b border-slate-100">
                             @if($book->cover_url)
-                                <img src="{{ $book->cover_url }}" alt="Sampul {{ $book->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-110" />
-                                <div class="absolute inset-0 bg-gradient-to-t from-blue-950/20 via-transparent to-transparent opacity-60"></div>
+                                <img src="{{ $book->cover_url }}" alt="Sampul {{ $book->title }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                             @else
-                                <div class="flex h-full w-full items-center justify-center">
-                                    <div class="text-6xl group-hover:scale-110 transition duration-300 filter drop-shadow-md">📕</div>
+                                <div class="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50/30">
+                                    <span class="text-5xl filter drop-shadow transition-transform duration-300 group-hover:scale-110">📕</span>
                                 </div>
                             @endif
                             
-                            <div class="absolute top-3 right-3">
+                            <!-- Badges Overlays -->
+                            <div class="absolute top-3.5 right-3.5">
                                 @if($book->status === 'available')
-                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-[0_4px_10px_rgba(37,99,235,0.4)]">
-                                        <span class="inline-block h-2 w-2 rounded-full bg-white animate-pulse"></span>
-                                        ✓ Tersedia
+                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/95 backdrop-blur px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-white animate-pulse"></span>
+                                        Tersedia
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-red-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-[0_4px_10px_rgba(220,38,38,0.4)]">
-                                        <span class="inline-block h-2 w-2 rounded-full bg-white"></span>
-                                        ✗ Penuh
+                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-rose-500/95 backdrop-blur px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+                                        Dipinjam
                                     </span>
                                 @endif
                             </div>
 
-                            <div class="absolute bottom-3 left-3">
-                                <span class="inline-flex items-center gap-1.5 rounded-lg bg-white/95 border border-blue-100 backdrop-blur px-2.5 py-1 text-xs font-bold text-blue-700 shadow-sm">
+                            <div class="absolute bottom-3.5 left-3.5">
+                                <span class="inline-flex items-center gap-1.5 rounded-lg bg-slate-900/80 backdrop-blur px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
                                     📦 {{ $book->stock }} Stok
                                 </span>
                             </div>
                         </div>
 
-                        <div class="flex flex-1 flex-col gap-4 p-5">
-                            <div class="border-b border-blue-50 pb-3">
-                                <h3 class="text-base font-extrabold text-slate-900 line-clamp-2 group-hover:text-blue-600 transition duration-300" title="{{ $book->title }}">{{ $book->title }}</h3>
-                                <p class="text-sm text-slate-500 mt-1 flex items-center gap-1">
-                                    <svg class="h-3.5 w-3.5 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10.5 1.5H5.75A2.75 2.75 0 0 0 3 4.25v11.5A2.75 2.75 0 0 0 5.75 18.5h8.5a2.75 2.75 0 0 0 2.75-2.75V8M10.5 1.5v5.25h5.25M10.5 1.5a2.75 2.75 0 0 1 2.75 2.75v2.5"/></svg>
+                        <!-- Details Container -->
+                        <div class="flex flex-1 flex-col p-5">
+                            <!-- Category & Meta -->
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[10px] font-extrabold uppercase tracking-wide border border-blue-100">
+                                    {{ $book->category ?? 'Umum' }}
+                                </span>
+                                <span class="text-[11px] text-slate-400 font-medium">
+                                    {{ $book->publication_year }}
+                                </span>
+                            </div>
+
+                            <!-- Title & Author -->
+                            <div class="mb-4">
+                                <h3 class="text-base font-bold text-slate-900 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors duration-200" title="{{ $book->title }}">
+                                    {{ $book->title }}
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-1.5 flex items-center gap-1 font-medium">
+                                    <i class="bi bi-person text-slate-400 text-sm"></i>
                                     {{ $book->author }}
                                 </p>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-3 text-xs">
-                                <div class="rounded-lg bg-blue-50/60 p-2.5 border border-blue-100">
-                                    <dt class="font-bold text-blue-700">🏢 Penerbit</dt>
-                                    <dd class="text-slate-600 mt-1 truncate font-medium">{{ $book->publisher }}</dd>
+                            <!-- Metadata List -->
+                            <div class="space-y-2 text-xs text-slate-500 border-t border-slate-100 pt-3.5 mb-5 mt-auto">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-slate-400">Penerbit</span>
+                                    <span class="font-semibold text-slate-700 truncate max-w-[150px]">{{ $book->publisher }}</span>
                                 </div>
-
-                                <div class="rounded-lg bg-indigo-50/60 p-2.5 border border-indigo-100">
-                                    <dt class="font-bold text-indigo-700">📅 Tahun</dt>
-                                    <dd class="text-slate-600 mt-1 font-medium">{{ $book->publication_year }}</dd>
-                                </div>
-
-                                <div class="rounded-lg bg-sky-50/70 p-2.5 border border-sky-100 col-span-2">
-                                    <dt class="font-bold text-sky-700">🏷️ Kategori</dt>
-                                    <dd class="text-slate-600 mt-1 truncate font-medium">{{ $book->category ?? '(Belum diatur)' }}</dd>
-                                </div>
-
                                 @if($book->isbn)
-                                    <div class="rounded-lg bg-slate-50 p-2.5 border border-slate-200 col-span-2">
-                                        <dt class="font-bold text-slate-700">🔢 ISBN</dt>
-                                        <dd class="text-slate-600 mt-1 font-mono truncate">{{ $book->isbn }}</dd>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-slate-400">ISBN</span>
+                                        <span class="font-mono text-slate-700">{{ $book->isbn }}</span>
                                     </div>
                                 @endif
                             </div>
 
-                            @if($book->summary)
-                                <div class="bg-slate-50/80 rounded-lg p-3 border border-slate-100 min-h-[5.5rem]">
-                                    <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">{{ $book->summary }}</p>
-                                </div>
-                            @else
-                                <div class="bg-slate-50/40 rounded-lg p-3 border border-dashed border-slate-200 min-h-[5.5rem] flex items-center justify-center">
-                                    <p class="text-xs text-slate-400 italic">Ringkasan belum tersedia</p>
-                                </div>
-                            @endif
-
-                            <div class="mt-auto pt-4 border-t border-slate-100 space-y-3">
-                                <div class="flex items-center justify-between text-xs text-slate-400 font-medium">
-                                    <span>{{ $book->created_at?->diffForHumans() }}</span>
-                                    @if($book->pdf_path)
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-100 border border-blue-200 text-blue-700 font-extrabold text-[10px]">
-                                            E-BOOK
-                                        </span>
-                                    @endif
-                                </div>
-
+                            <!-- Action Buttons -->
+                            <div class="space-y-2">
                                 @php
                                     $canRead = auth()->check() && isset($borrowedBookIds) && in_array($book->id, $borrowedBookIds, true);
                                 @endphp
 
-                                <div class="flex flex-col gap-2">
-                                    <div class="flex gap-2">
-                                        @if(!$canRead)
-                                            <a href="{{ route('peminjaman.perpus', ['book_id' => $book->id]) }}" 
-                                               class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-3 text-sm font-bold text-white shadow-[0_5px_15px_rgba(37,99,235,0.35)] transition duration-300 hover:from-blue-700 hover:to-blue-600 hover:shadow-[0_8px_20px_rgba(37,99,235,0.5)] active:scale-95">
-                                                📌 Pinjam Buku
-                                            </a>
-                                        @else
-                                            <a href="{{ route('peminjaman.read', ['book' => $book->id]) }}" 
-                                               class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-600 to-orange-500 px-4 py-3 text-sm font-bold text-white shadow-[0_5px_15px_rgba(220,38,38,0.35)] transition duration-300 hover:from-red-700 hover:to-orange-600 hover:shadow-[0_8px_20px_rgba(220,38,38,0.5)] active:scale-95">
-                                                👁️ Baca Buku
-                                            </a>
-                                        @endif
-                                    </div>
+                                @if(!$canRead)
+                                    <a href="{{ route('peminjaman.perpus', ['book_id' => $book->id]) }}" 
+                                       class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition duration-200 active:scale-98">
+                                        📌 Pinjam Buku
+                                    </a>
+                                @else
+                                    <a href="{{ route('peminjaman.read', ['book' => $book->id]) }}" 
+                                       class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:shadow transition duration-200 active:scale-98">
+                                        👁️ Baca Buku
+                                    </a>
+                                @endif
 
-                                    @if($book->pdf_path)
-                                        @auth
-                                            @if($canRead)
-                                                <div class="rounded-xl bg-blue-50 border border-blue-200 px-4 py-2.5 text-center shadow-inner">
-                                                    <p class="text-xs font-bold text-blue-700 flex items-center justify-center gap-1.5">
-                                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
-                                                        Buku ini sedang kamu pinjam
-                                                    </p>
-                                                </div>
-                                            @else
-                                                <div class="rounded-xl bg-slate-50 border border-slate-200 px-4 py-2.5 text-center">
-                                                    <p class="text-xs font-semibold text-slate-500">
-                                                        Pinjam buku untuk membaca PDF
-                                                    </p>
-                                                </div>
-                                            @endif
-                                        @else
-                                            <a href="{{ route('login') }}" 
-                                               class="block rounded-xl bg-blue-50 border border-blue-200 px-4 py-2.5 text-xs font-bold text-blue-700 transition hover:bg-blue-100 text-center shadow-sm">
-                                                🔐 Masuk untuk membaca digital
-                                            </a>
-                                        @endauth
+                                @if($book->pdf_path)
+                                    @auth
+                                        @if($canRead)
+                                            <div class="rounded-xl bg-blue-50/50 border border-blue-100 py-2 text-center">
+                                                <p class="text-[10px] font-bold text-blue-700">
+                                                    ✓ Sedang Anda pinjam
+                                                </p>
+                                            </div>
+                                        @endif
                                     @else
-                                        <div class="rounded-xl bg-slate-100/80 border border-slate-200/60 px-4 py-2.5 text-center">
-                                            <p class="text-xs font-medium text-slate-400 italic">
-                                                E-Book/PDF tidak tersedia
-                                            </p>
-                                        </div>
-                                    @endif
-                                </div>
+                                        <a href="{{ route('login') }}" 
+                                           class="block rounded-xl bg-slate-50 border border-slate-200 py-2 text-[10px] font-bold text-slate-600 transition hover:bg-slate-100 text-center">
+                                            Masuk untuk membaca PDF
+                                        </a>
+                                    @endauth
+                                @endif
                             </div>
                         </div>
                     </article>
                 @endforeach
             </div>
 
+            <!-- Premium Pagination Links -->
+            @if($books->hasPages())
+                <nav role="navigation" aria-label="Pagination Navigation" class="mt-12 flex items-center justify-between border-t border-slate-200/80 px-4 py-6 sm:px-6">
+                    <!-- Mobile view (simple Prev/Next) -->
+                    <div class="flex flex-1 justify-between sm:hidden">
+                        @if($books->onFirstPage())
+                            <span class="relative inline-flex items-center rounded-xl border border-slate-200 bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-400 cursor-not-allowed">
+                                ❮ Sebelum
+                            </span>
+                        @else
+                            <a href="{{ $books->previousPageUrl() }}" class="relative inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition active:scale-95">
+                                ❮ Sebelum
+                            </a>
+                        @endif
+
+                        @if($books->hasMorePages())
+                            <a href="{{ $books->nextPageUrl() }}" class="relative ml-3 inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition active:scale-95">
+                                Sesudah ❯
+                            </a>
+                        @else
+                            <span class="relative ml-3 inline-flex items-center rounded-xl border border-slate-200 bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-400 cursor-not-allowed">
+                                Sesudah ❯
+                            </span>
+                        @endif
+                    </div>
+
+                    <!-- Desktop view (numbers and page count details) -->
+                    <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                        <div>
+                            <p class="text-sm text-slate-500">
+                                Menampilkan
+                                <span class="font-bold text-slate-800">{{ $books->firstItem() }}</span>
+                                sampai
+                                <span class="font-bold text-slate-800">{{ $books->lastItem() }}</span>
+                                dari
+                                <span class="font-bold text-slate-800">{{ $books->total() }}</span>
+                                buku
+                            </p>
+                        </div>
+                        <div>
+                            <ul class="inline-flex -space-x-px rounded-xl bg-white shadow-sm border border-slate-200/80 p-1 gap-1">
+                                <!-- Previous Page Link -->
+                                <li>
+                                    @if($books->onFirstPage())
+                                        <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 cursor-not-allowed">
+                                            <i class="bi bi-chevron-left text-sm"></i>
+                                        </span>
+                                    @else
+                                        <a href="{{ $books->previousPageUrl() }}" class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition active:scale-95">
+                                            <i class="bi bi-chevron-left text-sm"></i>
+                                        </a>
+                                    @endif
+                                </li>
+
+                                <!-- Page Number Links -->
+                                @php
+                                    $start = max($books->currentPage() - 2, 1);
+                                    $end = min($start + 4, $books->lastPage());
+                                    if ($end - $start < 4) {
+                                        $start = max($end - 4, 1);
+                                    }
+                                @endphp
+
+                                @if($start > 1)
+                                    <li>
+                                        <a href="{{ $books->url(1) }}" class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition active:scale-95">
+                                            1
+                                        </a>
+                                    </li>
+                                    @if($start > 2)
+                                        <li>
+                                            <span class="inline-flex h-9 w-9 items-center justify-center text-sm text-slate-400">...</span>
+                                        </li>
+                                    @endif
+                                @endif
+
+                                @for($page = $start; $page <= $end; $page++)
+                                    <li>
+                                        @if($page == $books->currentPage())
+                                            <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 font-bold text-sm text-white shadow-sm shadow-blue-500/30">
+                                                {{ $page }}
+                                            </span>
+                                        @else
+                                            <a href="{{ $books->url($page) }}" class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition active:scale-95">
+                                                {{ $page }}
+                                            </a>
+                                        @endif
+                                    </li>
+                                @endfor
+
+                                @if($end < $books->lastPage())
+                                    @if($end < $books->lastPage() - 1)
+                                        <li>
+                                            <span class="inline-flex h-9 w-9 items-center justify-center text-sm text-slate-400">...</span>
+                                        </li>
+                                    @endif
+                                    <li>
+                                        <a href="{{ $books->url($books->lastPage()) }}" class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition active:scale-95">
+                                            {{ $books->lastPage() }}
+                                        </a>
+                                    </li>
+                                @endif
+
+                                <!-- Next Page Link -->
+                                <li>
+                                    @if($books->hasMorePages())
+                                        <a href="{{ $books->nextPageUrl() }}" class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition active:scale-95">
+                                            <i class="bi bi-chevron-right text-sm"></i>
+                                        </a>
+                                    @else
+                                        <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 cursor-not-allowed">
+                                            <i class="bi bi-chevron-right text-sm"></i>
+                                        </span>
+                                    @endif
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            @endif
+
             <div class="mt-12 rounded-2xl bg-white border-2 border-blue-100 p-8 shadow-xl relative overflow-hidden">
                 <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-2xl"></div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
                     <div class="text-center md:border-r border-blue-100 last:border-0">
-                        <div class="text-4xl font-black text-blue-600 drop-shadow-sm">{{ $books->count() }}</div>
+                        <div class="text-4xl font-black text-blue-600 drop-shadow-sm">{{ $totalCount }}</div>
                         <p class="text-xs uppercase tracking-wider font-bold text-slate-500 mt-2">Total Judul</p>
                     </div>
                     <div class="text-center md:border-r border-blue-100 last:border-0">
-                        <div class="text-4xl font-black text-blue-600 drop-shadow-sm">{{ $books->where('status', 'available')->count() }}</div>
+                        <div class="text-4xl font-black text-blue-600 drop-shadow-sm">{{ $availableCount }}</div>
                         <p class="text-xs uppercase tracking-wider font-bold text-slate-500 mt-2">Tersedia</p>
                     </div>
                     <div class="text-center md:border-r border-blue-100 last:border-0">
-                        <div class="text-4xl font-black text-red-500 drop-shadow-sm">{{ $books->where('status', 'unavailable')->count() }}</div>
+                        <div class="text-4xl font-black text-red-500 drop-shadow-sm">{{ $unavailableCount }}</div>
                         <p class="text-xs uppercase tracking-wider font-bold text-slate-500 mt-2">Dipinjam</p>
                     </div>
                     <div class="text-center last:border-0">
-                        <div class="text-4xl font-black text-slate-700">{{ $books->sum('stock') }}</div>
+                        <div class="text-4xl font-black text-slate-700">{{ $totalStock }}</div>
                         <p class="text-xs uppercase tracking-wider font-bold text-slate-500 mt-2">Total Stok Fisik</p>
                     </div>
                 </div>

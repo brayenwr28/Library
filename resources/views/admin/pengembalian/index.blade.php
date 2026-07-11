@@ -101,12 +101,49 @@
                                                         </button>
                                                     </form>
 
+                                                    <button type="button" class="btn btn-primary btn-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#editModal{{ $peminjaman->id }}">
+                                                        <i class="fas fa-edit me-1"></i> Edit
+                                                    </button>
+
                                                     <button type="button" class="btn btn-danger btn-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $peminjaman->id }}">
                                                         <i class="fas fa-times me-1"></i> Tolak
                                                     </button>
                                                 </div>
                                             </td>
                                         </tr>
+
+                                        <!-- Edit Dates Modal -->
+                                        <div class="modal fade" id="editModal{{ $peminjaman->id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $peminjaman->id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content text-start">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title fw-bold" id="editModalLabel{{ $peminjaman->id }}">Edit Tanggal Peminjaman</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <form action="{{ route('admin.peminjaman.update-dates', $peminjaman->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-body">
+                                                            <p class="mb-3">
+                                                                Edit tanggal peminjaman untuk <strong>{{ $peminjaman->nomor_antrian }}</strong> oleh <strong>{{ $peminjaman->member?->name }}</strong>.
+                                                            </p>
+                                                            <div class="mb-3">
+                                                                <label class="form-label fw-semibold">Tanggal Pinjam *</label>
+                                                                <input type="date" class="form-control" name="tgl_pinjam" value="{{ $peminjaman->tgl_pinjam ? $peminjaman->tgl_pinjam->format('Y-m-d') : '' }}" required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label fw-semibold">Batas Kembali *</label>
+                                                                <input type="date" class="form-control" name="tgl_kembali" value="{{ $peminjaman->tgl_kembali ? $peminjaman->tgl_kembali->format('Y-m-d') : '' }}" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                            <button type="submit" class="btn btn-primary fw-semibold">Simpan Perubahan</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <!-- Reject Modal -->
                                         <div class="modal fade" id="rejectModal{{ $peminjaman->id }}" tabindex="-1" aria-labelledby="rejectModalLabel{{ $peminjaman->id }}" aria-hidden="true">
@@ -169,6 +206,9 @@
                                                 <i class="fas fa-check me-1"></i> Terima
                                             </button>
                                         </form>
+                                        <button type="button" class="btn btn-primary btn-sm fw-semibold" style="flex: 1;" data-bs-toggle="modal" data-bs-target="#editModal{{ $peminjaman->id }}">
+                                            <i class="fas fa-edit me-1"></i> Edit
+                                        </button>
                                         <button type="button" class="btn btn-danger btn-sm fw-semibold" style="flex: 1;" data-bs-toggle="modal" data-bs-target="#rejectModalMobile{{ $peminjaman->id }}">
                                             <i class="fas fa-times me-1"></i> Tolak
                                         </button>

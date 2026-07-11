@@ -80,45 +80,35 @@
                 <!-- Filter Section -->
                 <div class="card-header bg-light border-bottom p-4">
                     <h5 class="card-title fw-bold mb-3">🔍 Filter & Export</h5>
-                    <div class="row g-3">
-                        <form method="GET" class="col-12">
-                            <div class="row g-3">
-                                <div class="col-12 col-md-3">
-                                    <label class="form-label small fw-semibold">Tipe Pengunjung</label>
-                                    <select class="form-select form-select-sm" name="tipe_pengunjung">
-                                        <option value="">-- Semua Tipe --</option>
-                                        <option value="mahasiswa" {{ request('tipe_pengunjung') === 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
-                                        <option value="dosen" {{ request('tipe_pengunjung') === 'dosen' ? 'selected' : '' }}>Dosen</option>
-                                        <option value="umum" {{ request('tipe_pengunjung') === 'umum' ? 'selected' : '' }}>Umum</option>
-                                    </select>
-                                </div>
-                                <div class="col-12 col-md-3">
-                                    <label class="form-label small fw-semibold">Dari Tanggal</label>
-                                    <input type="date" class="form-control form-control-sm" name="dari_tanggal" value="{{ request('dari_tanggal') }}">
-                                </div>
-                                <div class="col-12 col-md-3">
-                                    <label class="form-label small fw-semibold">Sampai Tanggal</label>
-                                    <input type="date" class="form-control form-control-sm" name="sampai_tanggal" value="{{ request('sampai_tanggal') }}">
-                                </div>
-                                <div class="col-12 col-md-3">
-                                    <label class="form-label small fw-semibold">&nbsp;</label>
-                                    <button type="submit" class="btn btn-primary btn-sm w-100">
-                                        <i class="fas fa-search"></i> Filter
-                                    </button>
-                                </div>
+                    <form method="GET" action="{{ route('admin.report.pengunjung') }}">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-3">
+                                <label class="form-label small fw-semibold text-muted">Tipe Pengunjung</label>
+                                <select class="form-select form-select-sm rounded-lg" name="tipe_pengunjung">
+                                    <option value="">-- Semua Tipe --</option>
+                                    <option value="mahasiswa" {{ request('tipe_pengunjung') === 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
+                                    <option value="dosen" {{ request('tipe_pengunjung') === 'dosen' ? 'selected' : '' }}>Dosen</option>
+                                    <option value="umum" {{ request('tipe_pengunjung') === 'umum' ? 'selected' : '' }}>Umum</option>
+                                </select>
                             </div>
-                        </form>
-                        <form action="{{ route('admin.report.pengunjung.export') }}" method="GET" class="col-12">
-                            @foreach(request()->query() as $key => $value)
-                                @if($key !== '_token')
-                                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                                @endif
-                            @endforeach
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                <i class="fas fa-file-pdf"></i> Export PDF
-                            </button>
-                        </form>
-                    </div>
+                            <div class="col-12 col-md-3">
+                                <label class="form-label small fw-semibold text-muted">Dari Tanggal</label>
+                                <input type="date" class="form-control form-control-sm rounded-lg" name="dari_tanggal" value="{{ request('dari_tanggal') }}">
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label class="form-label small fw-semibold text-muted">Sampai Tanggal</label>
+                                <input type="date" class="form-control form-control-sm rounded-lg" name="sampai_tanggal" value="{{ request('sampai_tanggal') }}">
+                            </div>
+                            <div class="col-12 col-md-3 d-flex align-items-end gap-2">
+                                <button type="submit" class="btn btn-primary btn-sm flex-fill fw-semibold py-2 rounded-lg">
+                                    <i class="bi bi-search me-1"></i> Filter
+                                </button>
+                                <button type="submit" formaction="{{ route('admin.report.pengunjung.export') }}" class="btn btn-danger btn-sm flex-fill fw-semibold py-2 rounded-lg">
+                                    <i class="bi bi-file-earmark-pdf-fill me-1"></i> Export
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
 
                 <!-- Table -->
@@ -161,15 +151,15 @@
                                                 <small class="text-muted">{{ $pengunjung->created_at->translatedFormat('d F Y H:i') }}</small>
                                             </td>
                                             <td class="text-end pe-4">
-                                                <div class="d-flex justify-content-end gap-1">
-                                                    <a href="{{ route('pengunjung.edit', $pengunjung->id) }}" class="btn btn-sm btn-outline-primary" title="Edit">
-                                                        <i class="fas fa-edit"></i>
+                                                <div class="d-flex justify-content-end gap-2">
+                                                    <a href="{{ route('pengunjung.edit', $pengunjung->id) }}" class="btn btn-sm btn-outline-primary" title="Edit" style="border-radius: 6px;">
+                                                        <i class="bi bi-pencil-fill"></i>
                                                     </a>
                                                     <form action="{{ route('pengunjung.destroy', $pengunjung->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data pengunjung ini?');">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus">
-                                                            <i class="fas fa-trash"></i>
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus" style="border-radius: 6px;">
+                                                            <i class="bi bi-trash-fill"></i>
                                                         </button>
                                                     </form>
                                                 </div>

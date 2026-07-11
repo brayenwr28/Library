@@ -25,12 +25,12 @@ Route::post('/auth/logout', [AuthController::class, 'logout'])
 
 
 Route::controller(AdminRegistrationController::class)->group(function () {
-    Route::get('/admin','login')->name('admin.login');
+    Route::get('/admin/login','login')->name('admin.login');
     Route::post('/admin','loginStore')->name('admin.login.store');
 });
 
 Route::controller(AdminRegistrationController::class)->group(function () {
-    Route::get('/register-admin', 'create')->name('admin.register');
+    Route::get('/admin/register', 'create')->name('admin.register');
     Route::post('/register-admin', 'store')->name('admin.register.store');
 });
 
@@ -122,6 +122,7 @@ Route::middleware('auth:admin')->controller(PeminjamanController::class)->prefix
     Route::get('/menunggu', 'indexMenungguKonfirmasi')->name('admin.peminjaman.menunggu');
     Route::put('/{peminjaman}/konfirmasi', 'konfirmasiPeminjaman')->name('admin.peminjaman.konfirmasi');
     Route::put('/{peminjaman}/tolak', 'tolakPeminjaman')->name('admin.peminjaman.tolak');
+    Route::put('/{peminjaman}/update-dates', 'updateDates')->name('admin.peminjaman.update-dates');
 });
 
 // Admin Confirmation Routes - Pengembalian
