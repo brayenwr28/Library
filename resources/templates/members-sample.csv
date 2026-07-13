@@ -1,2 +1,3 @@
-member_id,name,email,nim,prodi,role
-M001,Ahmad Satria,ahmad@example.com,123456789,Teknik Informatika,mahasiswa
+No,NIM,Nama Lengkap,NIK,Program Studi,Tempat Lahir,Tanggal Lahir
+1,2021001001,Budi Santoso,,Sistem Informasi,Jakarta,2001-05-15
+2,,Dr. Ahmad,198008122005011002,Teknik Informatika,Padang,1980-08-12

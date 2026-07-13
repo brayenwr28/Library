@@ -1,4 +1,4 @@
-member_id,name,email,nim,prodi,role
-MBR001,Ahmad Dani,ahmad@example.com,2210115261,Sistem Informasi,mahasiswa
-MBR002,Siti Sarah,siti@example.com,2210115262,Teknik Informatika,mahasiswa
-MBR003,Dr. Rian Adi,rian@example.com,1985031201,Sistem Informasi,dosen
+No,NIM,Nama Lengkap,NIK,Program Studi,Tempat Lahir,Tanggal Lahir
+1,2210115261,Ahmad Dani,,Sistem Informasi,Jakarta,2002-04-10
+2,2210115262,Siti Sarah,,Teknik Informatika,Bandung,2002-09-18
+3,,Dr. Rian Adi,1985031201,Sistem Informasi,Medan,1985-03-12

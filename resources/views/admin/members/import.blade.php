@@ -194,7 +194,7 @@
                         <i class="bi bi-info-circle me-1"></i>Kolom yang dibutuhkan:
                     </p>
                     <div class="d-flex flex-wrap gap-2">
-                        @foreach(['member_id','name','email','nim','prodi','role'] as $col)
+                        @foreach(['NIM', 'Nama Lengkap', 'NIK', 'Program Studi', 'Tempat Lahir', 'Tanggal Lahir'] as $col)
                             <span class="badge rounded-pill"
                                   style="background:#E0F2FE;color:#0369A1;font-size:.8rem;padding:.35rem .75rem;">
                                 {{ $col }}
@@ -202,8 +202,8 @@
                         @endforeach
                     </div>
                     <p class="mb-0 mt-2 text-muted" style="font-size:.8rem">
-                        Kolom <strong>nim</strong> boleh kosong untuk dosen. Kolom <strong>role</strong>: <em>mahasiswa</em> atau <em>dosen</em>.
-                        Password default: <code>password123</code>.
+                        Kolom <strong>Nama Lengkap</strong> wajib diisi. Isi kolom <strong>NIM</strong> jika Anggota adalah Mahasiswa, atau kolom <strong>NIK</strong> jika Anggota adalah Dosen/Staf.
+                        Email, Username, ID Member, dan Password default (<code>password123</code>) akan di-generasi otomatis oleh sistem.
                     </p>
                 </div>
 
@@ -304,12 +304,13 @@
                         <tr>
                             <th style="width:60px;">Baris</th>
                             <th style="width:90px;">Status</th>
-                            <th>Member ID</th>
-                            <th>Nama</th>
-                            <th>Email</th>
                             <th>NIM</th>
+                            <th>Nama Lengkap</th>
+                            <th>NIK</th>
                             <th>Prodi</th>
+                            <th>Tempat/Tgl Lahir</th>
                             <th>Role</th>
+                            <th>Info Sistem (ID/Email)</th>
                             <th>Keterangan</th>
                         </tr>
                     </thead>
@@ -334,11 +335,18 @@
                                     </span>
                                 @endif
                             </td>
-                            <td style="font-size:.85rem;font-family:monospace;">{{ $row['data']['member_id'] ?: '—' }}</td>
-                            <td style="font-size:.85rem;">{{ $row['data']['name'] ?: '—' }}</td>
-                            <td style="font-size:.825rem;color:#374151;">{{ $row['data']['email'] ?: '—' }}</td>
                             <td style="font-size:.825rem;">{{ $row['data']['nim'] ?: '—' }}</td>
+                            <td style="font-size:.85rem; font-weight: 500;">{{ $row['data']['name'] ?: '—' }}</td>
+                            <td style="font-size:.825rem;">{{ $row['data']['nik'] ?: '—' }}</td>
                             <td style="font-size:.825rem;">{{ $row['data']['prodi'] ?: '—' }}</td>
+                            <td style="font-size:.825rem;">
+                                @if(!empty($row['data']['tempat_lahir']) || !empty($row['data']['tanggal_lahir']))
+                                    {{ $row['data']['tempat_lahir'] ?: '—' }}, 
+                                    {{ $row['data']['tanggal_lahir'] ? \Carbon\Carbon::parse($row['data']['tanggal_lahir'])->format('d-m-Y') : '—' }}
+                                @else
+                                    —
+                                @endif
+                            </td>
                             <td>
                                 <span class="badge rounded-pill px-2"
                                       style="background:{{ $row['data']['jenis_anggota'] === 'dosen' ? '#EDE9FE' : '#DBEAFE' }};
@@ -346,6 +354,10 @@
                                              font-size:.78rem;font-weight:600;">
                                     {{ ucfirst($row['data']['jenis_anggota']) }}
                                 </span>
+                            </td>
+                            <td style="font-size:.75rem; color:#4B5563;">
+                                <div>ID: <code style="font-size:.75rem;">{{ $row['data']['member_id'] }}</code></div>
+                                <div>Email: <span>{{ $row['data']['email'] }}</span></div>
                             </td>
                             <td style="font-size:.78rem;">
                                 @if(!empty($row['errors']))

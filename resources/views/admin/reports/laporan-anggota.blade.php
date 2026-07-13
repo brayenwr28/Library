@@ -9,6 +9,14 @@
                 <p class="text-muted mb-0">Laporan Data Member Perpustakaan</p>
             </div>
         </div>
+        <div class="col-auto d-flex gap-2">
+            <a href="{{ route('admin.report.index') }}" class="btn btn-outline-secondary fw-semibold d-inline-flex align-items-center gap-2">
+                <i class="bi bi-arrow-left"></i> Kembali
+            </a>
+            <a href="{{ route('admin.members.import.form') }}" class="btn btn-primary fw-semibold d-inline-flex align-items-center gap-2" style="background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%); border: none;">
+                <i class="bi bi-file-earmark-spreadsheet-fill"></i> Import Anggota
+            </a>
+        </div>
     </div>
 @endsection
 
@@ -59,40 +67,30 @@
                 <!-- Filter Section -->
                 <div class="card-header bg-light border-bottom p-4">
                     <h5 class="card-title fw-bold mb-3">🔍 Filter & Export</h5>
-                    <div class="row g-3">
-                        <form method="GET" class="col-12">
-                            <div class="row g-3">
-                                <div class="col-12 col-md-3">
-                                    <label class="form-label small fw-semibold">Cari (Nama/Email/ID)</label>
-                                    <input type="text" class="form-control form-control-sm" name="search" placeholder="Cari anggota..." value="{{ request('search') }}">
-                                </div>
-                                <div class="col-12 col-md-3">
-                                    <label class="form-label small fw-semibold">Dari Tanggal</label>
-                                    <input type="date" class="form-control form-control-sm" name="dari_tanggal" value="{{ request('dari_tanggal') }}">
-                                </div>
-                                <div class="col-12 col-md-3">
-                                    <label class="form-label small fw-semibold">Sampai Tanggal</label>
-                                    <input type="date" class="form-control form-control-sm" name="sampai_tanggal" value="{{ request('sampai_tanggal') }}">
-                                </div>
-                                <div class="col-12 col-md-3">
-                                    <label class="form-label small fw-semibold">&nbsp;</label>
-                                    <button type="submit" class="btn btn-primary btn-sm w-100">
-                                        <i class="fas fa-search"></i> Filter
-                                    </button>
-                                </div>
+                    <form method="GET" action="{{ route('admin.report.anggota') }}">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-3">
+                                <label class="form-label small fw-semibold text-muted">Cari (Nama/Email/ID)</label>
+                                <input type="text" class="form-control form-control-sm rounded-lg" name="search" placeholder="Cari anggota..." value="{{ request('search') }}">
                             </div>
-                        </form>
-                        <form action="{{ route('admin.report.anggota.export') }}" method="GET" class="col-12">
-                            @foreach(request()->query() as $key => $value)
-                                @if($key !== '_token')
-                                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                                @endif
-                            @endforeach
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                <i class="fas fa-file-pdf"></i> Export PDF
-                            </button>
-                        </form>
-                    </div>
+                            <div class="col-12 col-md-3">
+                                <label class="form-label small fw-semibold text-muted">Dari Tanggal</label>
+                                <input type="date" class="form-control form-control-sm rounded-lg" name="dari_tanggal" value="{{ request('dari_tanggal') }}">
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label class="form-label small fw-semibold text-muted">Sampai Tanggal</label>
+                                <input type="date" class="form-control form-control-sm rounded-lg" name="sampai_tanggal" value="{{ request('sampai_tanggal') }}">
+                            </div>
+                            <div class="col-12 col-md-3 d-flex align-items-end gap-2">
+                                <button type="submit" class="btn btn-primary btn-sm flex-fill fw-semibold py-2 rounded-lg">
+                                    <i class="bi bi-search me-1"></i> Filter
+                                </button>
+                                <button type="submit" formaction="{{ route('admin.report.anggota.export') }}" class="btn btn-danger btn-sm flex-fill fw-semibold py-2 rounded-lg">
+                                    <i class="bi bi-file-earmark-pdf-fill me-1"></i> Export PDF
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
 
                 <!-- Table -->
@@ -127,15 +125,25 @@
                                                 <small class="text-muted">{{ \Carbon\Carbon::parse($member->created_at)->translatedFormat('d F Y') }}</small>
                                             </td>
                                             <td class="text-end pe-4">
-                                                <div class="d-flex justify-content-end gap-1">
-                                                    <a href="{{ route('admin.members.edit', $member->id) }}" class="btn btn-sm btn-outline-primary" title="Edit">
-                                                        <i class="fas fa-edit"></i>
+                                                <div class="d-flex justify-content-end gap-2">
+                                                    <a href="{{ route('admin.members.edit', $member->id) }}" 
+                                                       class="btn btn-sm d-inline-flex align-items-center justify-content-center" 
+                                                       style="background-color: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; border-radius: 8px; width: 32px; height: 32px; transition: all 0.2s;"
+                                                       title="Edit"
+                                                       onmouseover="this.style.backgroundColor='#DBEAFE'"
+                                                       onmouseout="this.style.backgroundColor='#EFF6FF'">
+                                                        <i class="bi bi-pencil-square" style="font-size: 0.9rem;"></i>
                                                     </a>
                                                     <form action="{{ route('admin.members.destroy', $member->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Peringatan: Menghapus data anggota juga bisa berakibat pada hilangnya data referensi peminjaman mereka. Yakin ingin menghapus?');">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus">
-                                                            <i class="fas fa-trash"></i>
+                                                        <button type="submit" 
+                                                                class="btn btn-sm d-inline-flex align-items-center justify-content-center" 
+                                                                style="background-color: #FEF2F2; color: #DC2626; border: 1px solid #FCA5A5; border-radius: 8px; width: 32px; height: 32px; transition: all 0.2s;"
+                                                                title="Hapus"
+                                                                onmouseover="this.style.backgroundColor='#FEE2E2'"
+                                                                onmouseout="this.style.backgroundColor='#FEF2F2'">
+                                                            <i class="bi bi-trash-fill" style="font-size: 0.9rem;"></i>
                                                         </button>
                                                     </form>
                                                 </div>

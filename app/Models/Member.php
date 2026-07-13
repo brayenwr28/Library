@@ -18,7 +18,10 @@ class Member extends Model implements AuthenticatableContract
         'email',
         'password',
         'nim',
+        'nik',
         'prodi',
+        'tempat_lahir',
+        'tanggal_lahir',
         'jenis_anggota',
         'photo',
         'member_id',
@@ -31,6 +34,7 @@ class Member extends Model implements AuthenticatableContract
 
     protected $casts = [
         'tgl_daftar' => 'date',
+        'tanggal_lahir' => 'date',
     ];
 
     public function getJenisAnggotaLabelAttribute(): string

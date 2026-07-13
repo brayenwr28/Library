@@ -43,14 +43,14 @@ class MemberController extends Controller
         $sheet->setTitle('Template Anggota');
 
         // Headers
-        $headers = ['member_id', 'name', 'email', 'nim', 'prodi', 'role'];
+        $headers = ['No', 'NIM', 'Nama Lengkap', 'NIK', 'Program Studi', 'Tempat Lahir', 'Tanggal Lahir'];
         foreach ($headers as $col => $header) {
             $cell = chr(65 + $col) . '1';
             $sheet->setCellValue($cell, $header);
         }
 
         // Style header
-        $headerRange = 'A1:F1';
+        $headerRange = 'A1:G1';
         $sheet->getStyle($headerRange)->applyFromArray([
             'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF'], 'size' => 11],
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '1E40AF']],
@@ -60,8 +60,8 @@ class MemberController extends Controller
 
         // Contoh data
         $examples = [
-            ['MHS001', 'Budi Santoso', 'budi@metamedia.ac.id', '2021001001', 'Sistem Informasi', 'mahasiswa'],
-            ['DSN001', 'Dr. Ahmad', 'ahmad@metamedia.ac.id', '', 'Teknik Informatika', 'dosen'],
+            [1, '2021001001', 'Budi Santoso', '', 'Sistem Informasi', 'Jakarta', '2001-05-15'],
+            [2, '', 'Dr. Ahmad', '198008122005011002', 'Teknik Informatika', 'Padang', '1980-08-12'],
         ];
         foreach ($examples as $rowIdx => $row) {
             foreach ($row as $colIdx => $value) {
@@ -71,22 +71,22 @@ class MemberController extends Controller
         }
 
         // Style example rows
-        $sheet->getStyle('A2:F3')->applyFromArray([
+        $sheet->getStyle('A2:G3')->applyFromArray([
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'EFF6FF']],
             'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => 'BFDBFE']]],
             'font' => ['italic' => true, 'color' => ['rgb' => '6B7280']],
         ]);
 
         // Auto width
-        foreach (range('A', 'F') as $col) {
+        foreach (range('A', 'G') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
         $sheet->getRowDimension(1)->setRowHeight(28);
 
         // Petunjuk di bawah contoh
         $sheet->setCellValue('A5', '* Hapus baris contoh (baris 2-3) sebelum mengisi data asli.');
-        $sheet->setCellValue('A6', '* Kolom "role" diisi: mahasiswa atau dosen');
-        $sheet->setCellValue('A7', '* Password default: password123 (anggota dapat menggantinya setelah login)');
+        $sheet->setCellValue('A6', '* Jika Anggota adalah Mahasiswa, isi kolom NIM. Jika Dosen/Staff, isi kolom NIK.');
+        $sheet->setCellValue('A7', '* Format Tanggal Lahir: YYYY-MM-DD (Contoh: 2001-05-15).');
         $sheet->getStyle('A5:A7')->getFont()->setItalic(true)->setSize(9)->getColor()->setRGB('9CA3AF');
 
         $writer = new Xlsx($spreadsheet);
@@ -155,10 +155,18 @@ class MemberController extends Controller
                     return back()->withErrors(['csv_file' => 'File Excel kosong atau tidak valid.']);
                 }
 
-                $rawHeaders = array_map(
-                    fn($h) => strtolower(str_replace(' ', '_', trim((string) $h))),
-                    array_values($sheetRows[array_key_first($sheetRows)])
-                );
+                // Normalisasi header dan terjemahkan ke field internal
+                $rawHeaders = [];
+                foreach (array_values($sheetRows[array_key_first($sheetRows)]) as $h) {
+                    $cleaned = strtolower(str_replace(' ', '_', trim((string) $h)));
+                    if ($cleaned === 'nama_lengkap' || $cleaned === 'nama' || $cleaned === 'name') {
+                        $rawHeaders[] = 'name';
+                    } elseif ($cleaned === 'program_studi' || $cleaned === 'prodi') {
+                        $rawHeaders[] = 'prodi';
+                    } else {
+                        $rawHeaders[] = $cleaned;
+                    }
+                }
 
                 foreach ($sheetRows as $idx => $row) {
                     if ($idx === array_key_first($sheetRows)) continue;
@@ -173,10 +181,17 @@ class MemberController extends Controller
                     if ($headers === false) {
                         return back()->withErrors(['csv_file' => 'File CSV kosong atau tidak valid.']);
                     }
-                    $normalizedHeaders = array_map(
-                        fn($h) => strtolower(str_replace(' ', '_', trim($h))),
-                        $headers
-                    );
+                    $normalizedHeaders = [];
+                    foreach ($headers as $h) {
+                        $cleaned = strtolower(str_replace(' ', '_', trim($h)));
+                        if ($cleaned === 'nama_lengkap' || $cleaned === 'nama' || $cleaned === 'name') {
+                            $normalizedHeaders[] = 'name';
+                        } elseif ($cleaned === 'program_studi' || $cleaned === 'prodi') {
+                            $normalizedHeaders[] = 'prodi';
+                        } else {
+                            $normalizedHeaders[] = $cleaned;
+                        }
+                    }
                     while (($row = fgetcsv($handle)) !== false) {
                         $row = array_map('trim', $row);
                         if (implode('', $row) === '') continue;
@@ -197,60 +212,135 @@ class MemberController extends Controller
         $previewRows  = [];
         $existingIds  = Member::pluck('member_id')->toArray();
         $existingEmails = Member::pluck('email')->toArray();
+        $existingNims = Member::whereNotNull('nim')->pluck('nim')->toArray();
+        $existingNiks = Member::whereNotNull('nik')->pluck('nik')->toArray();
+        $existingUsernames = Member::pluck('username')->toArray();
+
         $seenIds      = [];
         $seenEmails   = [];
+        $seenNims     = [];
+        $seenNiks     = [];
+        $seenUsernames = [];
+
         $countValid   = 0;
         $countError   = 0;
         $countDuplikat = 0;
 
+        $year = now()->format('Y');
+        $baseSequence = Member::whereYear('tgl_daftar', $year)->count();
+
         foreach ($rawRows as $rowNum => $rowAssoc) {
-            $email    = $rowAssoc['email'] ?? '';
-            $username = $email ? explode('@', $email)[0] : ($rowAssoc['member_id'] ?? '');
+            $name = $rowAssoc['name'] ?? '';
+            $nim = !empty($rowAssoc['nim']) ? $rowAssoc['nim'] : null;
+            $nik = !empty($rowAssoc['nik']) ? $rowAssoc['nik'] : null;
+            $prodi = !empty($rowAssoc['prodi']) ? $rowAssoc['prodi'] : null;
+            $tempatLahir = !empty($rowAssoc['tempat_lahir']) ? $rowAssoc['tempat_lahir'] : null;
+
+            // Parse tanggal lahir
+            $tanggalLahirRaw = $rowAssoc['tanggal_lahir'] ?? null;
+            $tanggalLahir = null;
+            if (!empty($tanggalLahirRaw)) {
+                if (is_numeric($tanggalLahirRaw)) {
+                    try {
+                        $tanggalLahir = \Carbon\Carbon::instance(
+                            \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($tanggalLahirRaw)
+                        )->toDateString();
+                    } catch (\Exception $e) {}
+                } else {
+                    try {
+                        $cleanDateStr = str_replace('/', '-', $tanggalLahirRaw);
+                        $tanggalLahir = \Carbon\Carbon::parse($cleanDateStr)->toDateString();
+                    } catch (\Exception $e) {}
+                }
+            }
+
+            // Tentukan role / jenis_anggota
+            $jenisAnggota = 'mahasiswa';
+            if (!empty($nik) && empty($nim)) {
+                $jenisAnggota = 'dosen';
+            }
+
+            // Username
+            $username = !empty($nim) ? $nim : (!empty($nik) ? $nik : null);
+            if (empty($username) && !empty($name)) {
+                $username = strtolower(str_replace(' ', '', $name)) . rand(100, 999);
+            }
+
+            // Email
+            $email = ($username ? $username : 'anggota' . rand(100, 999)) . '@metamedia.ac.id';
+
+            // Generate member_id
+            $baseSequence++;
+            $memberId = sprintf('PUS%s-%04d', $year, $baseSequence);
 
             $data = [
-                'member_id'     => $rowAssoc['member_id'] ?? '',
-                'name'          => $rowAssoc['name'] ?? '',
+                'member_id'     => $memberId,
+                'name'          => $name,
                 'email'         => $email,
                 'username'      => $username,
                 'password'      => bcrypt('password123'),
-                'nim'           => $rowAssoc['nim'] ?? null,
-                'prodi'         => $rowAssoc['prodi'] ?? null,
-                'jenis_anggota' => isset($rowAssoc['role']) && strtolower($rowAssoc['role']) === 'dosen' ? 'dosen' : 'mahasiswa',
+                'nim'           => $nim,
+                'nik'           => $nik,
+                'prodi'         => $prodi,
+                'tempat_lahir'  => $tempatLahir,
+                'tanggal_lahir' => $tanggalLahir,
+                'jenis_anggota' => $jenisAnggota,
                 'tgl_daftar'    => now()->toDateString(),
             ];
-
-            $validator = Validator::make($data, [
-                'member_id' => ['required', 'string', 'max:50'],
-                'name'      => ['required', 'string', 'max:255'],
-                'email'     => ['required', 'email', 'max:255'],
-                'username'  => ['required', 'string', 'max:255'],
-            ]);
 
             $rowErrors = [];
             $status    = 'valid';
 
-            if ($validator->fails()) {
-                $rowErrors = $validator->errors()->all();
-                $status    = 'error';
+            // Validasi dasar
+            if (empty($data['name'])) {
+                $rowErrors[] = 'Nama Lengkap harus diisi.';
+            }
+            if (empty($data['nim']) && empty($data['nik'])) {
+                $rowErrors[] = 'NIM atau NIK harus diisi.';
+            }
+
+            if (!empty($rowErrors)) {
+                $status = 'error';
                 $countError++;
-            } elseif (
-                in_array($data['member_id'], $existingIds) ||
-                in_array($data['member_id'], $seenIds)
-            ) {
-                $rowErrors[] = 'member_id "' . $data['member_id'] . '" sudah terdaftar.';
-                $status      = 'duplikat';
-                $countDuplikat++;
-            } elseif (
-                in_array($data['email'], $existingEmails) ||
-                in_array($data['email'], $seenEmails)
-            ) {
-                $rowErrors[] = 'Email "' . $data['email'] . '" sudah terdaftar.';
-                $status      = 'duplikat';
-                $countDuplikat++;
             } else {
-                $countValid++;
-                $seenIds[]    = $data['member_id'];
-                $seenEmails[] = $data['email'];
+                // Cek duplikasi database & upload batch
+                $isDuplicate = false;
+
+                if (!empty($data['nim'])) {
+                    if (in_array($data['nim'], $existingNims) || in_array($data['nim'], $seenNims)) {
+                        $rowErrors[] = 'NIM "' . $data['nim'] . '" sudah terdaftar.';
+                        $isDuplicate = true;
+                    }
+                }
+
+                if (!empty($data['nik'])) {
+                    if (in_array($data['nik'], $existingNiks) || in_array($data['nik'], $seenNiks)) {
+                        $rowErrors[] = 'NIK "' . $data['nik'] . '" sudah terdaftar.';
+                        $isDuplicate = true;
+                    }
+                }
+
+                if (in_array($data['username'], $existingUsernames) || in_array($data['username'], $seenUsernames)) {
+                    $rowErrors[] = 'Username "' . $data['username'] . '" sudah digunakan.';
+                    $isDuplicate = true;
+                }
+
+                if (in_array($data['email'], $existingEmails) || in_array($data['email'], $seenEmails)) {
+                    $rowErrors[] = 'Email "' . $data['email'] . '" sudah terdaftar.';
+                    $isDuplicate = true;
+                }
+
+                if ($isDuplicate) {
+                    $status = 'duplikat';
+                    $countDuplikat++;
+                } else {
+                    $countValid++;
+                    if (!empty($data['nim'])) $seenNims[] = $data['nim'];
+                    if (!empty($data['nik'])) $seenNiks[] = $data['nik'];
+                    $seenUsernames[] = $data['username'];
+                    $seenEmails[] = $data['email'];
+                    $seenIds[] = $data['member_id'];
+                }
             }
 
             $previewRows[] = [
@@ -287,10 +377,13 @@ class MemberController extends Controller
     public function update(Request $request, Member $member): RedirectResponse
     {
         $validated = $request->validate([
-            'name'         => ['required', 'string', 'max:255'],
-            'email'        => ['required', 'email', 'max:255', 'unique:members,email,' . $member->id],
-            'nim'          => ['nullable', 'string', 'max:50'],
-            'prodi'        => ['nullable', 'string', 'max:100'],
+            'name'          => ['required', 'string', 'max:255'],
+            'email'         => ['required', 'email', 'max:255', 'unique:members,email,' . $member->id],
+            'nim'           => ['nullable', 'string', 'max:50', 'unique:members,nim,' . $member->id],
+            'nik'           => ['nullable', 'string', 'max:50', 'unique:members,nik,' . $member->id],
+            'prodi'         => ['nullable', 'string', 'max:100'],
+            'tempat_lahir'  => ['nullable', 'string', 'max:100'],
+            'tanggal_lahir' => ['nullable', 'date'],
             'jenis_anggota' => ['required', 'string', 'in:mahasiswa,dosen'],
         ]);
 
