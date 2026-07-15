@@ -593,13 +593,27 @@ class PerpussController extends Controller
             $validator = Validator::make($row, [
                 'title'  => ['required', 'string', 'max:255'],
                 'author' => ['required', 'string', 'max:255'],
-                // Kita tidak men-strict validation ISBN unik saat import massal agar tidak crash,
-                // tapi jika Anda butuh validasi unik silakan biarkan aktif.
-                'isbn'   => ['nullable', 'string', 'max:100', 'unique:perpusses,isbn'],
+                'isbn'   => ['nullable', 'string', 'max:100'],
             ]);
 
             if ($validator->fails()) {
                 $skipped++;
+                continue;
+            }
+
+            $existingBook = null;
+            if (!empty($row['isbn'])) {
+                $existingBook = Perpuss::where('isbn', $row['isbn'])->first();
+            } else {
+                $existingBook = Perpuss::where('title', $row['title'])
+                                       ->where('author', $row['author'])
+                                       ->first();
+            }
+
+            if ($existingBook) {
+                $existingBook->stock += (int)($row['stock'] ?? 1);
+                $existingBook->save();
+                $imported++;
                 continue;
             }
 
