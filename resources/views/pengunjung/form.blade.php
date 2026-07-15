@@ -110,6 +110,17 @@
             </form>
         </div>
 
+        <!-- Success Notification Container -->
+        <div id="successNotification" class="hidden mt-6 bg-green-50 border-2 border-green-200 rounded-2xl p-4 flex items-center gap-4 animate-fade-in-down shadow-lg shadow-green-900/5 transition-all">
+            <div class="bg-green-100 text-green-600 h-10 w-10 rounded-full flex items-center justify-center shrink-0">
+                <i class="fas fa-check-circle text-xl"></i>
+            </div>
+            <div>
+                <h4 class="text-green-800 font-bold text-sm">Berhasil Disimpan!</h4>
+                <p class="text-green-600 text-xs mt-0.5" id="successNotificationMsg">Terima kasih telah mengunjungi Perpustakaan Digital Universitas Metamedia.</p>
+            </div>
+        </div>
+
         <!-- Footer -->
         <div class="text-center mt-12">
             <p class="text-slate-400 text-xs tracking-wide">
@@ -210,7 +221,24 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    showToast('Sukses!', 'Selamat Kamu sudah jadi pengunjung Metamedia Digital', 'success');
+                    // Tampilkan notifikasi sukses di bawah card
+                    const notifContainer = document.getElementById('successNotification');
+                    notifContainer.classList.remove('hidden');
+
+                    // Memutar suara notifikasi
+                    if ('speechSynthesis' in window) {
+                        const text = "Terimakasih Telah Mengunjungi Perpustakaan Digital Universitas Metamedia, Selamat membaca";
+                        const msg = new SpeechSynthesisUtterance(text);
+                        msg.lang = 'id-ID';
+                        msg.rate = 0.9;
+                        window.speechSynthesis.speak(msg);
+                    }
+
+                    // Sembunyikan notif setelah 6 detik
+                    setTimeout(() => {
+                        notifContainer.classList.add('hidden');
+                    }, 6000);
+
                     form.reset();
                     
                     document.querySelectorAll('[class^="error"]').forEach(el => {
