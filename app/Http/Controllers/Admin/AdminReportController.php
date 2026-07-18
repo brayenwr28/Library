@@ -272,10 +272,13 @@ class AdminReportController extends Controller
         // Filter by nama atau email
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('name', 'like', "%$search%")
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
                   ->orWhere('email', 'like', "%$search%")
-                  ->orWhere('no_identitas', 'like', "%$search%")
+                  ->orWhere('nim', 'like', "%$search%")
+                  ->orWhere('nik', 'like', "%$search%")
                   ->orWhere('member_id', 'like', "%$search%");
+            });
         }
 
         // Filter by registration date
@@ -310,9 +313,13 @@ class AdminReportController extends Controller
 
             if ($request->filled('search')) {
                 $search = $request->search;
-                $query->where('name', 'like', "%$search%")
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%$search%")
                       ->orWhere('email', 'like', "%$search%")
-                      ->orWhere('no_identitas', 'like', "%$search%");
+                      ->orWhere('nim', 'like', "%$search%")
+                      ->orWhere('nik', 'like', "%$search%")
+                      ->orWhere('member_id', 'like', "%$search%");
+                });
             }
 
             if ($request->filled('tipe_member')) {
