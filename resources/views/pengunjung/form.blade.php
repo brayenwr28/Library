@@ -9,7 +9,7 @@
         <div class="mb-8 text-center animate-fade-in-down">
             <!-- Logo Universitas Metamedia -->
             <div class="flex justify-center mb-5">
-                <img src="{{ asset('logo/logo-univ.png') }}" alt="Logo Universitas Metamedia" class="h-16 w-auto object-contain drop-shadow-md transition-transform duration-300 hover:scale-105">
+                <img src="{{ asset('logo/logo.png') }}" alt="Logo Universitas Metamedia" class="h-[100px] w-auto object-contain drop-shadow-md transition-transform duration-300 hover:scale-105">
             </div>
             
             <h1 class="text-3xl font-black text-slate-800 tracking-tight mb-2">Presensi Pengunjung</h1>

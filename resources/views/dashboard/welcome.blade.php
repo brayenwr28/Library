@@ -186,9 +186,20 @@
         }
     </style>
 
-    <section class="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pb-20">
+    <section class="relative overflow-hidden bg-slate-950 pb-20">
+        <!-- Background Image with Overlay (Less Zoomed/Right Aligned on Desktop) -->
+        <div class="absolute inset-y-0 right-0 w-full md:w-[40%] lg:w-[38%] z-0">
+            <img src="{{ asset('logo/gedungMetamedia.webp') }}"
+                 alt="Gedung Universitas Metamedia"
+                 class="h-full w-full object-cover object-center md:object-contain md:object-right opacity-30 md:opacity-55">
+            <!-- Mobile overlay -->
+            <div class="absolute inset-0 bg-slate-950/80 md:hidden"></div>
+            <!-- Desktop fade-out gradient overlay -->
+            <div class="hidden md:block absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/30 to-transparent"></div>
+        </div>
+
         <!-- Animated background decoration -->
-        <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute inset-0 overflow-hidden z-10">
             <div
                 class="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/10 blur-3xl animate-float">
             </div>
@@ -203,12 +214,15 @@
                 style="animation-direction: reverse;"></div>
         </div>
 
-        <div class="relative mx-auto max-w-4xl px-6 py-20">
+        <div class="relative z-20 mx-auto max-w-4xl px-6 py-20">
             <div class="space-y-8">
                 <div
-                    class="inline-flex items-center gap-2 rounded-full border border-blue-500/50 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 px-4 py-2.5 backdrop-blur-sm animate-fade-in-up hover:border-blue-400/80 transition-all">
-                    <span class="h-2.5 w-2.5 rounded-full bg-blue-400 animate-pulse-glow"></span>
-                    <span class="text-xs font-semibold uppercase tracking-widest text-blue-100">
+                    class="inline-flex items-center gap-2 rounded-full border border-blue-500/50 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 px-3 sm:px-4 py-2 backdrop-blur-sm animate-fade-in-up hover:border-blue-400/80 transition-all">
+                    <span class="h-2 w-2 rounded-full bg-blue-400 animate-pulse-glow shrink-0"></span>
+                    <span class="text-[10px] font-semibold uppercase tracking-widest text-blue-100 block md:hidden">
+                        ✨ Perpustakaan Digital
+                    </span>
+                    <span class="text-xs font-semibold uppercase tracking-widest text-blue-100 hidden md:block">
                         ✨ Perpustakaan Digital Universitas Metamedia
                     </span>
                 </div>
