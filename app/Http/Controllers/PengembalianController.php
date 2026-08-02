@@ -74,6 +74,21 @@ class PengembalianController extends Controller
         }
 
         try {
+            $peminjaman = $pengembalian->peminjaman;
+            
+            // Jika admin belum meng-edit tgl_kembali_aktual secara manual (tanggalnya masih sama dengan saat dipinjam/dibuat),
+            // maka otomatis gunakan tanggal hari ini sebagai tanggal kembali aktual dan hitung dendanya.
+            if ($pengembalian->tgl_kembali_aktual->toDateString() === $pengembalian->created_at->toDateString()) {
+                $tgl_aktual = now()->toDateString();
+                $denda = \App\Models\Pengembalian::hitungDenda($peminjaman->tgl_kembali, $tgl_aktual);
+                
+                $pengembalian->update([
+                    'tgl_kembali_aktual' => $tgl_aktual,
+                    'denda' => $denda,
+                    'status_denda' => $denda > 0 ? 'belum_lunas' : 'lunas',
+                ]);
+            }
+
             // Update status pengembalian menjadi DITERIMA
             $pengembalian->update([
                 'status' => 'diterima',

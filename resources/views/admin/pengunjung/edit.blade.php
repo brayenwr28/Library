@@ -50,7 +50,6 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
-
                 <div class="d-flex justify-content-end gap-2">
                     <button type="reset" class="btn btn-light fw-semibold">Reset</button>
                     <button type="submit" class="btn btn-primary fw-semibold">Simpan Perubahan</button>
