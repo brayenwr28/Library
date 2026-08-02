@@ -2,12 +2,13 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>@yield('title', 'Perpustakaan Digital')</title>
     <script src="https://cdn.tailwindcss.com"></script>
        @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-white text-slate-700">
+<body class="overflow-x-hidden bg-white text-slate-700">
 
     <!-- Navbar -->
     @include('layouts.navbar')

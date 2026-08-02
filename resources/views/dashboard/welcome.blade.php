@@ -186,7 +186,7 @@
         }
     </style>
 
-    <section class="relative overflow-hidden bg-slate-950 pb-20">
+    <section class="relative overflow-hidden bg-slate-950 pb-16 sm:pb-20">
         <!-- Background Image with Overlay (Less Zoomed/Right Aligned on Desktop) -->
         <div class="absolute inset-y-0 right-0 w-full md:w-[40%] lg:w-[38%] z-0">
             <img src="{{ asset('logo/gedungMetamedia.webp') }}"
@@ -214,8 +214,8 @@
                 style="animation-direction: reverse;"></div>
         </div>
 
-        <div class="relative z-20 mx-auto max-w-4xl px-6 py-20">
-            <div class="space-y-8">
+        <div class="relative z-20 mx-auto max-w-4xl px-4 py-16 sm:px-6 sm:py-20">
+            <div class="space-y-7 sm:space-y-8">
                 <div
                     class="inline-flex items-center gap-2 rounded-full border border-blue-500/50 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 px-3 sm:px-4 py-2 backdrop-blur-sm animate-fade-in-up hover:border-blue-400/80 transition-all">
                     <span class="h-2 w-2 rounded-full bg-blue-400 animate-pulse-glow shrink-0"></span>
@@ -227,9 +227,9 @@
                     </span>
                 </div>
 
-                <div class="space-y-6">
+                <div class="space-y-5 sm:space-y-6">
                     <h1
-                        class="text-4xl sm:text-5xl font-bold text-white md:text-6xl lg:text-7xl leading-tight animate-fade-in-up delay-100">
+                        class="text-4xl font-bold text-white leading-[1.1] sm:text-5xl md:text-6xl lg:text-7xl animate-fade-in-up delay-100">
                         <span class="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-300 bg-clip-text text-transparent">
                             Jelajahi Pengetahuan
                         </span>
@@ -241,15 +241,15 @@
                         </span>
                     </h1>
 
-                    <p class="max-w-xl text-lg text-slate-300 leading-relaxed animate-fade-in-up delay-200">
+                    <p class="max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg animate-fade-in-up delay-200">
                         Platform Perpustakaan Digital Yang Inovatif Untuk Mengakses Koleksi, Jurnal, Dan Sumber Akademik
                         Dengan Mudah Dan Efisien
                     </p>
                 </div>
 
-                <div class="flex flex-col sm:flex-row gap-4 animate-fade-in-up delay-300">
+                <div class="flex flex-col gap-3 sm:flex-row sm:gap-4 animate-fade-in-up delay-300">
                     <a href="{{ route('katalog') }}"
-                        class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/50 transition-all hover:-translate-y-0.5 w-full sm:w-auto">
+                        class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 px-5 py-3 font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-500/50 sm:w-auto sm:px-6">
                         <span>Jelajahi Sekarang</span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -257,7 +257,7 @@
                         </svg>
                     </a>
                     <a href="{{ route('peminjaman.riwayat') }}"
-                        class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-blue-400/50 bg-blue-500/10 backdrop-blur text-blue-100 font-semibold hover:bg-blue-500/20 hover:border-blue-300 transition-all hover:-translate-y-0.5 w-full sm:w-auto">
+                        class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-blue-400/50 bg-blue-500/10 px-5 py-3 font-semibold text-blue-100 backdrop-blur transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-500/20 sm:w-auto sm:px-6">
                         <span>📊 Lihat Riwayat</span>
                     </a>
                 </div>
@@ -265,37 +265,37 @@
         </div>
     </section>
 
-    <section class="relative bg-gradient-to-b from-slate-50 via-white to-slate-50 py-24 overflow-hidden">
+    <section class="relative overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 py-16 sm:py-24">
         <div class="absolute inset-0 overflow-hidden">
             <div class="absolute top-0 right-0 h-96 w-96 rounded-full bg-blue-100/40 blur-3xl"></div>
             <div class="absolute bottom-0 left-0 h-96 w-96 rounded-full bg-indigo-100/30 blur-3xl"></div>
             <div class="absolute top-1/2 left-1/4 h-80 w-80 rounded-full bg-purple-100/20 blur-3xl"></div>
         </div>
 
-        <div class="relative mx-auto max-w-6xl px-6">
-            <div class="mb-20 text-center space-y-4 animate-fade-in-up">
+        <div class="relative mx-auto max-w-6xl px-4 sm:px-6">
+            <div class="mb-12 space-y-4 text-center animate-fade-in-up sm:mb-20">
                 <div
-                    class="inline-flex items-center justify-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2">
+                    class="inline-flex items-center justify-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-2 sm:px-4">
                     <span class="h-2 w-2 rounded-full bg-blue-500"></span>
-                    <span class="text-sm font-semibold text-blue-700">Fitur Utama</span>
+                    <span class="text-xs font-semibold text-blue-700 sm:text-sm">Fitur Utama</span>
                 </div>
-                <h2 class="text-4xl md:text-5xl font-bold text-slate-900">
+                <h2 class="text-3xl font-bold text-slate-900 sm:text-4xl md:text-5xl">
                     Layanan Unggulan Kami
                 </h2>
-                <p class="max-w-2xl mx-auto text-lg text-slate-600">
+                <p class="mx-auto max-w-2xl text-sm text-slate-600 sm:text-lg">
                     Fitur-fitur inovatif yang dirancang khusus untuk memberikan Kemudahan Dalam Mengakses Perpustakaan
                     Digital
                 </p>
             </div>
 
-            <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4">
                 <!-- Card 1 -->
                 <a href="{{ route('katalog') }}"
-                    class="group relative h-full overflow-hidden rounded-2xl border border-blue-200/60 bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-8 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 animate-fade-in-up delay-100">
+                    class="group relative flex h-full min-h-[230px] flex-col overflow-hidden rounded-2xl border border-blue-200/60 bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-4 shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl sm:min-h-[320px] sm:p-8 animate-fade-in-up delay-100">
 
                     <!-- Badge -->
                     <div
-                        class="absolute top-0 right-0 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs font-bold rounded-bl-lg">
+                        class="absolute top-0 right-0 rounded-bl-lg bg-gradient-to-r from-blue-500 to-cyan-500 px-3 py-1 text-[10px] font-bold text-white sm:px-4 sm:py-2 sm:text-xs">
                         Populer
                     </div>
 
@@ -304,21 +304,21 @@
                         class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-blue-500/5 to-cyan-500/5">
                     </div>
 
-                    <div class="relative space-y-4">
+                    <div class="relative space-y-3 sm:space-y-4">
                         <div
-                            class="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-3xl shadow-lg group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
+                            class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-2xl shadow-lg transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 sm:mb-6 sm:h-16 sm:w-16 sm:text-3xl">
                             📚
                         </div>
-                        <h3 class="text-2xl font-bold text-slate-900 leading-tight">Katalog Digital</h3>
-                        <p class="leading-relaxed text-slate-600">Koleksi Digital dengan metadata lengkap dan pencarian
+                        <h3 class="text-lg font-bold leading-tight text-slate-900 sm:text-2xl">Katalog Digital</h3>
+                        <p class="text-sm leading-relaxed text-slate-600 sm:text-base">Koleksi Digital dengan metadata lengkap dan pencarian
                             cerdas.</p>
                     </div>
 
-                    <div class="relative mt-8 pt-6 border-t border-blue-200/50">
+                    <div class="relative mt-auto pt-4 border-t border-blue-200/50 sm:mt-8 sm:pt-6">
                         <span
-                            class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:text-blue-700 transition">
+                            class="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 transition group-hover:text-blue-700 sm:text-sm">
                             Jelajahi katalog
-                            <svg class="w-4 h-4 group-hover:translate-x-2 transition" fill="none" stroke="currentColor"
+                            <svg class="w-3.5 h-3.5 transition group-hover:translate-x-2 sm:w-4 sm:h-4" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                                 </path>
@@ -329,11 +329,11 @@
 
                 <!-- Card 2 -->
                 <a href="{{ route('admin.books.library.index') }}"
-                    class="group relative h-full overflow-hidden rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-8 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 animate-fade-in-up delay-200">
+                    class="group relative flex h-full min-h-[230px] flex-col overflow-hidden rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-4 shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl sm:min-h-[320px] sm:p-8 animate-fade-in-up delay-200">
 
                     <!-- Badge -->
                     <div
-                        class="absolute top-0 right-0 px-4 py-2 bg-gradient-to-r from-indigo-500 to-blue-500 text-white text-xs font-bold rounded-bl-lg">
+                        class="absolute top-0 right-0 rounded-bl-lg bg-gradient-to-r from-indigo-500 to-blue-500 px-3 py-1 text-[10px] font-bold text-white sm:px-4 sm:py-2 sm:text-xs">
                         Pro
                     </div>
 
@@ -341,21 +341,21 @@
                         class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-indigo-500/5 to-blue-500/5">
                     </div>
 
-                    <div class="relative space-y-4">
+                    <div class="relative space-y-3 sm:space-y-4">
                         <div
-                            class="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-blue-500 text-3xl shadow-lg group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
+                            class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-blue-500 text-2xl shadow-lg transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 sm:mb-6 sm:h-16 sm:w-16 sm:text-3xl">
                             🗂️
                         </div>
-                        <h3 class="text-2xl font-bold text-slate-900 leading-tight">Koleksi Perpustakaan</h3>
-                        <p class="leading-relaxed text-slate-600">daftar buku, koleksi baru, dan pe ketersediaan dengan
+                        <h3 class="text-lg font-bold leading-tight text-slate-900 sm:text-2xl">Koleksi Perpustakaan</h3>
+                        <p class="text-sm leading-relaxed text-slate-600 sm:text-base">Daftar buku, koleksi baru, dan ketersediaan dengan
                             mudah.</p>
                     </div>
 
-                    <div class="relative mt-8 pt-6 border-t border-indigo-200/50">
+                    <div class="relative mt-auto pt-4 border-t border-indigo-200/50 sm:mt-8 sm:pt-6">
                         <span
-                            class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 group-hover:text-indigo-700 transition">
+                            class="inline-flex items-center gap-2 text-xs font-semibold text-indigo-600 transition group-hover:text-indigo-700 sm:text-sm">
                             Kelola koleksi
-                            <svg class="w-4 h-4 group-hover:translate-x-2 transition" fill="none" stroke="currentColor"
+                            <svg class="w-3.5 h-3.5 transition group-hover:translate-x-2 sm:w-4 sm:h-4" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                                 </path>
@@ -366,11 +366,11 @@
 
                 <!-- Card 3 -->
                 <a href="{{ route('ktm.index') }}"
-                    class="group relative h-full overflow-hidden rounded-2xl border border-purple-200/60 bg-gradient-to-br from-purple-50 via-white to-indigo-50 p-8 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 animate-fade-in-up delay-300">
+                    class="group relative flex h-full min-h-[230px] flex-col overflow-hidden rounded-2xl border border-purple-200/60 bg-gradient-to-br from-purple-50 via-white to-indigo-50 p-4 shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl sm:min-h-[320px] sm:p-8 animate-fade-in-up delay-300">
 
                     <!-- Badge -->
                     <div
-                        class="absolute top-0 right-0 px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white text-xs font-bold rounded-bl-lg">
+                        class="absolute top-0 right-0 rounded-bl-lg bg-gradient-to-r from-purple-500 to-indigo-500 px-3 py-1 text-[10px] font-bold text-white sm:px-4 sm:py-2 sm:text-xs">
                         Baru
                     </div>
 
@@ -378,21 +378,21 @@
                         class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-purple-500/5 to-indigo-500/5">
                     </div>
 
-                    <div class="relative space-y-4">
+                    <div class="relative space-y-3 sm:space-y-4">
                         <div
-                            class="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 text-3xl shadow-lg group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
+                            class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 text-2xl shadow-lg transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 sm:mb-6 sm:h-16 sm:w-16 sm:text-3xl">
                             👥
                         </div>
-                        <h3 class="text-2xl font-bold text-slate-900 leading-tight">Kartu Anggota</h3>
-                        <p class="leading-relaxed text-slate-600">Member Perpustakaan Metamedia, status keanggotaan digital
+                        <h3 class="text-lg font-bold leading-tight text-slate-900 sm:text-2xl">Kartu Anggota</h3>
+                        <p class="text-sm leading-relaxed text-slate-600 sm:text-base">Member Perpustakaan Metamedia, status keanggotaan digital
                         </p>
                     </div>
 
-                    <div class="relative mt-8 pt-6 border-t border-purple-200/50">
+                    <div class="relative mt-auto pt-4 border-t border-purple-200/50 sm:mt-8 sm:pt-6">
                         <span
-                            class="inline-flex items-center gap-2 text-sm font-semibold text-purple-600 group-hover:text-purple-700 transition">
+                            class="inline-flex items-center gap-2 text-xs font-semibold text-purple-600 transition group-hover:text-purple-700 sm:text-sm">
                             Kelola anggota
-                            <svg class="w-4 h-4 group-hover:translate-x-2 transition" fill="none" stroke="currentColor"
+                            <svg class="w-3.5 h-3.5 transition group-hover:translate-x-2 sm:w-4 sm:h-4" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                                 </path>
@@ -403,11 +403,11 @@
 
                 <!-- Card 4 -->
                 <a href="{{ route('peminjaman.riwayat') }}"
-                    class="group relative h-full overflow-hidden rounded-2xl border border-orange-200/60 bg-gradient-to-br from-orange-50 via-white to-red-50 p-8 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 animate-fade-in-up delay-400">
+                    class="group relative flex h-full min-h-[230px] flex-col overflow-hidden rounded-2xl border border-orange-200/60 bg-gradient-to-br from-orange-50 via-white to-red-50 p-4 shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl sm:min-h-[320px] sm:p-8 animate-fade-in-up delay-400">
 
                     <!-- Badge -->
                     <div
-                        class="absolute top-0 right-0 px-4 py-2 text-xs font-bold rounded-bl-lg {{ $fineStatusClass ?? 'bg-emerald-100 text-emerald-700' }}">
+                        class="absolute top-0 right-0 rounded-bl-lg px-3 py-1 text-[10px] font-bold sm:px-4 sm:py-2 sm:text-xs {{ $fineStatusClass ?? 'bg-emerald-100 text-emerald-700' }}">
                         {{ $fineStatusLabel ?? 'Aman' }}
                     </div>
 
@@ -415,13 +415,13 @@
                         class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-orange-500/5 to-red-500/5">
                     </div>
 
-                    <div class="relative space-y-4">
+                    <div class="relative space-y-3 sm:space-y-4">
                         <div
-                            class="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-red-500 text-3xl shadow-lg group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
+                            class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-red-500 text-2xl shadow-lg transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 sm:mb-6 sm:h-16 sm:w-16 sm:text-3xl">
                             📈
                         </div>
-                        <h3 class="text-2xl font-bold text-slate-900 leading-tight">Ringkasan Peminjaman</h3>
-                        <p class="leading-relaxed text-slate-600">
+                        <h3 class="text-lg font-bold leading-tight text-slate-900 sm:text-2xl">Ringkasan Peminjaman</h3>
+                        <p class="text-sm leading-relaxed text-slate-600 sm:text-base">
                             @if($member)
                                 {{ $activeLoans->count() }} pinjaman aktif, {{ $dueSoonLoans->count() }} buku mendekati jatuh
                                 tempo, dan estimasi denda
@@ -432,11 +432,11 @@
                         </p>
                     </div>
 
-                    <div class="relative mt-8 pt-6 border-t border-orange-200/50">
+                    <div class="relative mt-auto pt-4 border-t border-orange-200/50 sm:mt-8 sm:pt-6">
                         <span
-                            class="inline-flex items-center gap-2 text-sm font-semibold text-orange-600 group-hover:text-orange-700 transition">
+                            class="inline-flex items-center gap-2 text-xs font-semibold text-orange-600 transition group-hover:text-orange-700 sm:text-sm">
                             Lihat riwayat
-                            <svg class="w-4 h-4 group-hover:translate-x-2 transition" fill="none" stroke="currentColor"
+                            <svg class="w-3.5 h-3.5 transition group-hover:translate-x-2 sm:w-4 sm:h-4" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                                 </path>
@@ -447,11 +447,11 @@
 
                 <!-- Card 5 -->
                 <a href="{{ route('pengunjung.form') }}"
-                    class="group relative h-full overflow-hidden rounded-2xl border border-green-200/60 bg-gradient-to-br from-green-50 via-white to-emerald-50 p-8 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 animate-fade-in-up delay-500">
+                    class="group relative flex h-full min-h-[230px] flex-col overflow-hidden rounded-2xl border border-green-200/60 bg-gradient-to-br from-green-50 via-white to-emerald-50 p-4 shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl sm:min-h-[320px] sm:p-8 animate-fade-in-up delay-500">
 
                     <!-- Badge -->
                     <div
-                        class="absolute top-0 right-0 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold rounded-bl-lg">
+                        class="absolute top-0 right-0 rounded-bl-lg bg-gradient-to-r from-green-500 to-emerald-500 px-3 py-1 text-[10px] font-bold text-white sm:px-4 sm:py-2 sm:text-xs">
                         Pro
                     </div>
 
@@ -459,21 +459,21 @@
                         class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-green-500/5 to-emerald-500/5">
                     </div>
 
-                    <div class="relative space-y-4">
+                    <div class="relative space-y-3 sm:space-y-4">
                         <div
-                            class="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 text-3xl shadow-lg group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
+                            class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 text-2xl shadow-lg transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 sm:mb-6 sm:h-16 sm:w-16 sm:text-3xl">
                             📋
                         </div>
-                        <h3 class="text-2xl font-bold text-slate-900 leading-tight">Isi Pengunjung</h3>
-                        <p class="leading-relaxed text-slate-600">Catat Kunjungan Anda ke Perpustakaan Universitas
+                        <h3 class="text-lg font-bold leading-tight text-slate-900 sm:text-2xl">Isi Pengunjung</h3>
+                        <p class="text-sm leading-relaxed text-slate-600 sm:text-base">Catat Kunjungan Anda ke Perpustakaan Universitas
                             Metamedia.</p>
                     </div>
 
-                    <div class="relative mt-8 pt-6 border-t border-green-200/50">
+                    <div class="relative mt-auto pt-4 border-t border-green-200/50 sm:mt-8 sm:pt-6">
                         <span
-                            class="inline-flex items-center gap-2 text-sm font-semibold text-green-600 group-hover:text-green-700 transition">
+                            class="inline-flex items-center gap-2 text-xs font-semibold text-green-600 transition group-hover:text-green-700 sm:text-sm">
                             Isi data pengunjung
-                            <svg class="w-4 h-4 group-hover:translate-x-2 transition" fill="none" stroke="currentColor"
+                            <svg class="w-3.5 h-3.5 transition group-hover:translate-x-2 sm:w-4 sm:h-4" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                                 </path>
