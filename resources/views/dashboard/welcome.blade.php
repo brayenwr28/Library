@@ -214,6 +214,12 @@
                 style="animation-direction: reverse;"></div>
         </div>
 
+        @php
+            $adminUser = Auth::guard('admin')->user();
+            $memberUser = Auth::user();
+            $currentUser = $adminUser ?? $memberUser;
+        @endphp
+
         <div class="relative z-20 mx-auto max-w-4xl px-4 py-16 sm:px-6 sm:py-20">
             <div class="space-y-7 sm:space-y-8">
                 <div
@@ -226,6 +232,34 @@
                         ✨ Perpustakaan Digital Universitas Metamedia
                     </span>
                 </div>
+
+                @if($currentUser)
+                    <!-- USER PROFILE CARD IN HERO SECTION -->
+                    <div class="flex items-center gap-4 rounded-2xl border border-white/15 bg-white/10 p-4 sm:p-5 backdrop-blur-md animate-fade-in-up max-w-xl shadow-xl">
+                        @if($memberUser && $memberUser->photo && file_exists(public_path('storage/' . $memberUser->photo)))
+                            <img src="{{ asset('storage/' . $memberUser->photo) }}" alt="{{ $currentUser->name }}" class="h-14 w-14 rounded-xl object-cover border-2 border-cyan-400/60 shadow-md shrink-0">
+                        @else
+                            <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 via-cyan-600 to-teal-500 text-white font-bold text-xl shadow-md shrink-0">
+                                {{ strtoupper(substr($currentUser->name, 0, 1)) }}
+                            </div>
+                        @endif
+                        <div class="flex flex-col text-left overflow-hidden">
+                            <div class="flex items-center gap-2.5 flex-wrap">
+                                <span class="text-base sm:text-lg font-bold text-white truncate">Halo, {{ $currentUser->name }} 👋</span>
+                                <span class="rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase {{ $adminUser ? 'bg-purple-500/30 text-purple-200 border border-purple-400/40' : 'bg-cyan-500/30 text-cyan-200 border border-cyan-400/40' }}">
+                                    {{ $adminUser ? 'Administrator' : 'Anggota' }}
+                                </span>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-300 truncate mt-0.5">
+                                @if($adminUser)
+                                    Email: {{ $currentUser->email }} | Akses Penuh Sistem
+                                @else
+                                    NIM/ID: {{ $memberUser->nim ?? $memberUser->member_id ?? '-' }} • {{ $memberUser->prodi ?? 'Anggota Perpustakaan' }}
+                                @endif
+                            </p>
+                        </div>
+                    </div>
+                @endif
 
                 <div class="space-y-5 sm:space-y-6">
                     <h1
@@ -256,10 +290,17 @@
                                 d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                         </svg>
                     </a>
-                    <a href="{{ route('peminjaman.riwayat') }}"
-                        class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-blue-400/50 bg-blue-500/10 px-5 py-3 font-semibold text-blue-100 backdrop-blur transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-500/20 sm:w-auto sm:px-6">
-                        <span>📊 Lihat Riwayat</span>
-                    </a>
+                    @if($adminUser)
+                        <a href="{{ route('admin.dashboard') }}"
+                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-purple-400/50 bg-purple-500/20 px-5 py-3 font-semibold text-purple-100 backdrop-blur transition-all hover:-translate-y-0.5 hover:border-purple-300 hover:bg-purple-500/30 sm:w-auto sm:px-6">
+                            <span>⚙️ Dashboard Admin</span>
+                        </a>
+                    @else
+                        <a href="{{ route('peminjaman.riwayat') }}"
+                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-blue-400/50 bg-blue-500/10 px-5 py-3 font-semibold text-blue-100 backdrop-blur transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-500/20 sm:w-auto sm:px-6">
+                            <span>📊 Lihat Riwayat</span>
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

@@ -41,13 +41,27 @@
         </div>
 
         <div class="p-6 md:p-8 pt-2">
+            @if (session('status'))
+                <div class="mb-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold rounded-lg flex items-center gap-2">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                    <span>{{ session('status') }}</span>
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="mb-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold rounded-lg flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600 shrink-0"></i>
+                    <span>{{ $errors->first() }}</span>
+                </div>
+            @endif
+
             <form method="POST" action="{{ route('login.store') }}" class="space-y-4">
                 @csrf
 
                 <div class="p-5 bg-slate-50/60 rounded-xl border border-slate-100 space-y-4">
-                    <p class="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200/60 pb-2 mb-2 flex items-center gap-1.5">
-                        <i data-lucide="user-check" class="w-4 h-4 text-sky-500"></i>
-                        Area Akses Anggota
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200/60 pb-2 mb-2 flex items-center gap-1.5">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-sky-500"></i>
+                        Masuk Sistem (Admin / Anggota)
                     </p>
                     
                     <div>
@@ -56,7 +70,7 @@
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                                 <i data-lucide="mail" class="w-4 h-4"></i>
                             </span>
-                            <input type="email" name="email" value="{{ old('email') }}" required placeholder="nim@student.metamedia.ac.id"
+                            <input type="email" name="email" value="{{ old('email') }}" required placeholder="email@metamedia.ac.id"
                                 class="w-full pl-9 pr-3.5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm transition placeholder:text-slate-400/80 focus:border-sky-500 focus:outline-none focus:ring-4 focus:ring-sky-100">
                         </div>
                     </div>
@@ -81,8 +95,12 @@
 
             <div class="mt-6 border-t border-slate-100 pt-4 text-center space-y-3.5 text-xs md:text-sm">
                 <div class="text-slate-500 font-medium">
-                    Belum Punya Akun? 
-                    <a href="{{ route('register') }}" class="text-sky-600 font-bold hover:text-sky-700 hover:underline transition-colors ml-0.5">Daftar Anggota</a>
+                    Belum punya akun?
+                    <div class="mt-1 flex items-center justify-center gap-2">
+                        <a href="{{ route('register') }}" class="text-sky-600 font-bold hover:text-sky-700 hover:underline transition-colors">Daftar Anggota</a>
+                        <span class="text-slate-300">•</span>
+                        <a href="{{ route('admin.register') }}" class="text-indigo-600 font-bold hover:text-indigo-700 hover:underline transition-colors">Daftar Admin</a>
+                    </div>
                 </div>
                 
                 <div class="pt-1">

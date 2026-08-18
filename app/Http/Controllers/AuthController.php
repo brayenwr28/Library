@@ -24,25 +24,43 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
         
-        $member = Member::where('email', $credentials['email'])->first();
+        $remember = $request->boolean('remember');
 
-        $passwordMatches = false;
-        if ($member) {
-            if (\Illuminate\Support\Facades\Hash::check($credentials['password'], $member->password)) {
-                $passwordMatches = true;
-            } elseif ($member->password === $credentials['password']) {
-                $passwordMatches = true;
-                // Upgrade password to hash
-                $member->update(['password' => \Illuminate\Support\Facades\Hash::make($credentials['password'])]);
+        // 1. Cek Kredensial Admin
+        $admin = \App\Models\Admin::where('email', $credentials['email'])->first();
+        if ($admin) {
+            $adminPasswordMatches = \Illuminate\Support\Facades\Hash::check($credentials['password'], $admin->password) ||
+                hash_equals((string) $admin->password, (string) $credentials['password']);
+
+            if ($adminPasswordMatches) {
+                if (! \Illuminate\Support\Facades\Hash::check($credentials['password'], $admin->password)) {
+                    $admin->forceFill([
+                        'password' => \Illuminate\Support\Facades\Hash::make($credentials['password']),
+                    ])->save();
+                }
+                Auth::guard('admin')->login($admin, $remember);
+                $request->session()->regenerate();
+                return redirect()->intended(route('admin.dashboard'));
             }
         }
 
-        if ($passwordMatches) {
-            Auth::login($member, $request->boolean('remember'));
-            $request->session()->regenerate();
-            return redirect()->route('dashboard');
+        // 2. Cek Kredensial Member/User
+        $member = Member::where('email', $credentials['email'])->first();
+        if ($member) {
+            $memberPasswordMatches = \Illuminate\Support\Facades\Hash::check($credentials['password'], $member->password) ||
+                ($member->password === $credentials['password']);
+
+            if ($memberPasswordMatches) {
+                if (! \Illuminate\Support\Facades\Hash::check($credentials['password'], $member->password)) {
+                    $member->update(['password' => \Illuminate\Support\Facades\Hash::make($credentials['password'])]);
+                }
+                Auth::login($member, $remember);
+                $request->session()->regenerate();
+                return redirect()->intended(route('dashboard'));
+            }
         }
 
+        // 3. Gagal jika tidak cocok
         return back()
             ->withErrors([
                 'email' => 'Email atau kata sandi tidak cocok.',

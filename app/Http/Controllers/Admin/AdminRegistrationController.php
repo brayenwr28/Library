@@ -105,13 +105,9 @@ class AdminRegistrationController extends Controller
             'periodLabel'
         ));
     }
-    public function login(Request $request): View
+    public function login(Request $request): RedirectResponse
     {
-        if (Auth::guard('admin')->check()) {
-            Auth::guard('admin')->logout();
-        }
-
-        return view('auth.loginAdm');
+        return redirect()->route('login');
     }
 
     public function loginStore(Request $request): RedirectResponse
@@ -123,29 +119,43 @@ class AdminRegistrationController extends Controller
 
         $remember = $request->boolean('remember');
 
+        // 1. Cek Admin
         $admin = Admin::where('email', $credentials['email'])->first();
+        if ($admin) {
+            $passwordMatches = Hash::check($credentials['password'], $admin->password) ||
+                hash_equals((string) $admin->password, (string) $credentials['password']);
 
-        $passwordMatches = $admin && (
-            Hash::check($credentials['password'], $admin->password) ||
-            hash_equals((string) $admin->password, (string) $credentials['password'])
-        );
-
-        if (! $passwordMatches) {
-            return back()
-                ->withErrors(['email' => 'Email atau kata sandi tidak valid.'])
-                ->onlyInput('email');
+            if ($passwordMatches) {
+                if (! Hash::check($credentials['password'], $admin->password)) {
+                    $admin->forceFill([
+                        'password' => Hash::make($credentials['password']),
+                    ])->save();
+                }
+                Auth::guard('admin')->login($admin, $remember);
+                $request->session()->regenerate();
+                return redirect()->intended(route('admin.dashboard'));
+            }
         }
 
-        if ($admin && ! Hash::check($credentials['password'], $admin->password)) {
-            $admin->forceFill([
-                'password' => Hash::make($credentials['password']),
-            ])->save();
+        // 2. Cek Member
+        $member = Member::where('email', $credentials['email'])->first();
+        if ($member) {
+            $memberPasswordMatches = Hash::check($credentials['password'], $member->password) ||
+                ($member->password === $credentials['password']);
+
+            if ($memberPasswordMatches) {
+                if (! Hash::check($credentials['password'], $member->password)) {
+                    $member->update(['password' => Hash::make($credentials['password'])]);
+                }
+                Auth::login($member, $remember);
+                $request->session()->regenerate();
+                return redirect()->intended(route('dashboard'));
+            }
         }
 
-        Auth::guard('admin')->login($admin, $remember);
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('admin.dashboard'));
+        return back()
+            ->withErrors(['email' => 'Email atau kata sandi tidak valid.'])
+            ->onlyInput('email');
     }
 
     public function create(): View
@@ -171,11 +181,9 @@ class AdminRegistrationController extends Controller
             'password' => Hash::make($validated['password'])
         ]);
 
-        Auth::guard('admin')->login($admin);
-
         return redirect()
-            ->route('admin.dashboard')
-            ->with('status', 'Registrasi admin berhasil. Selamat datang!');
+            ->route('login')
+            ->with('status', 'Registrasi Admin berhasil! Silakan login dengan akun Anda.');
     }
 
     public function logout(Request $request): RedirectResponse

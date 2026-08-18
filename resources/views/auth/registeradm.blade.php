@@ -182,7 +182,7 @@
                 <div class="mt-8 space-y-3 text-center">
                     <div class="text-xs text-slate-500">
                         Sudah memiliki akun admin? 
-                        <a href="{{ route('admin.login') }}" class="font-bold text-blue-600 hover:text-blue-700 hover:underline">Masuk di sini</a>
+                        <a href="{{ route('login') }}" class="font-bold text-blue-600 hover:text-blue-700 hover:underline">Masuk di sini</a>
                     </div>
                     <div class="text-[11px] text-slate-400">
                         <a href="{{ url('/') }}" class="inline-flex items-center gap-1 hover:text-slate-600 hover:underline transition">
