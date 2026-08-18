@@ -34,7 +34,7 @@
         
         <div class="flex flex-col items-center pt-8 pb-4 px-6 text-center">
             <div class="p-2 bg-gradient-to-b from-slate-50 to-white rounded-full shadow-sm mb-3 shrink-0 border border-slate-100">
-                <img src="/logo/logo-univ.png" alt="Logo Universitas Metamedia" class="w-16 h-16 object-contain">
+                <img src="{{ asset('logo/logo.png') }}" alt="Logo Universitas Metamedia" class="w-16 h-16 object-contain">
             </div>
             <h1 class="text-xl font-extrabold tracking-tight text-slate-900">Perpustakaan Digital</h1>
             <p class="text-xs font-semibold uppercase tracking-widest text-sky-600 mt-1">Universitas Metamedia</p>

@@ -21,7 +21,7 @@
         
         <div class="flex items-center gap-5 p-6 md:p-8 bg-slate-50/50 border-b-2 border-slate-200">
             <div class="p-1.5 bg-white rounded-xl border border-slate-300 shadow-sm shrink-0">
-                <img src="/logo/logo-univ.png" class="w-16 h-16 object-contain" alt="Logo Universitas Metamedia">
+                <img src="{{ asset('logo/logo.png') }}" class="w-16 h-16 object-contain" alt="Logo Universitas Metamedia">
             </div>
             <div>
                 <h1 class="text-2xl font-bold tracking-tight text-slate-900">Formulir Registrasi Anggota</h1>

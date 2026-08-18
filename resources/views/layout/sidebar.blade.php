@@ -3,7 +3,7 @@
     style="display: flex; justify-content: center; align-items: center; padding: 18px 0; border-bottom: 1px solid rgba(195, 213, 226, 0.15);">
     <a href="{{ route('admin.dashboard') }}"
       class="brand-link text-decoration-none d-flex align-items-center justify-content-center w-100">
-      <img src="{{ asset('logo/univmetamedia.png') }}" alt="Logo" class="brand-image"
+      <img src="{{ asset('logo/logo.png') }}" alt="Logo" class="brand-image"
         style="max-height: 55px; width: auto; filter: drop-shadow(0px 4px 8px rgba(40, 144, 255, 0.25)); transition: transform 0.3s ease;"
         onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
     </a>
