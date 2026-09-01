@@ -170,14 +170,16 @@
 
 					<div class="grid gap-6 md:grid-cols-2">
 						<div>
-							<label for="cover_url" class="block text-sm font-semibold text-slate-700 mb-2">🖼️ URL Sampul Buku <span class="text-slate-400 font-normal">(opsional)</span></label>
-							<input type="url" name="cover_url" id="cover_url" value="{{ old('cover_url') }}"
-								   class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm transition placeholder:text-slate-400 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-200"
-								   placeholder="https://images.example.com/cover.jpg">
-							@error('cover_url')
-								<p class="mt-2 text-xs text-rose-600">{{ $message }}</p>
+							<label for="cover_image" class="block text-sm font-semibold text-slate-700 mb-2">🖼️ Upload Sampul Buku <span class="text-slate-400 font-normal">(opsional)</span></label>
+							<input type="file" name="cover_image" id="cover_image" accept="image/jpeg,image/png,image/jpg,image/webp"
+								   class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm transition file:mr-4 file:rounded-lg file:border-0 file:bg-cyan-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-cyan-700 hover:file:bg-cyan-200 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-200 {{ $errors->has('cover_image') ? 'border-rose-500 ring-2 ring-rose-200' : '' }}">
+							@error('cover_image')
+								<p class="mt-2 text-xs text-rose-600 flex items-center gap-1">
+									<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+									{{ $message }}
+								</p>
 							@enderror
-							<p class="mt-2 text-xs text-slate-500">URL lengkap dengan protokol https://</p>
+							<p class="mt-2 text-xs text-slate-500">Format: JPG, JPEG, PNG, WEBP. Maksimal 5MB.</p>
 						</div>
 						<div>
 							<label for="stock" class="block text-sm font-semibold text-slate-700 mb-2">📦 Jumlah Eksemplar <span class="text-slate-400 font-normal">(opsional)</span></label>
@@ -210,7 +212,7 @@
 							</div>
 							<div class="flex items-start gap-2">
 								<svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-								<span>Max: 20MB</span>
+								<span>Max: 100MB</span>
 							</div>
 							<div class="flex items-start gap-2">
 								<svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
@@ -222,13 +224,16 @@
 					<!-- Reference URL -->
 					<div class="mt-6">
 						<label for="reference_url" class="block text-sm font-semibold text-slate-700 mb-2">🔗 Link Referensi / Sumber <span class="text-slate-400 font-normal">(opsional)</span></label>
-						<input type="url" name="reference_url" id="reference_url" value="{{ old('reference_url') }}"
-							   class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm transition placeholder:text-slate-400 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-200"
-							   placeholder="https://example.com/buku atau sumber eksternal lainnya">
+						<input type="text" name="reference_url" id="reference_url" value="{{ old('reference_url') }}"
+							   class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm transition placeholder:text-slate-400 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-200 {{ $errors->has('reference_url') ? 'border-rose-500 ring-2 ring-rose-200' : '' }}"
+							   placeholder="https://example.com/buku atau www.example.com">
 						@error('reference_url')
-							<p class="mt-2 text-xs text-rose-600">{{ $message }}</p>
+							<p class="mt-2 text-xs text-rose-600 flex items-center gap-1">
+								<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+								{{ $message }}
+							</p>
 						@enderror
-						<p class="mt-2 text-xs text-slate-500">Link ke sumber asli, publisher, atau referensi eksternal. User dapat mengklik link ini saat membaca PDF di katalog.</p>
+						<p class="mt-2 text-xs text-slate-500">Link ke sumber asli, publisher, atau referensi eksternal. (Sistem otomatis menambahkan https:// jika tanpa protokol)</p>
 					</div>
 
 					<!-- Summary Textarea -->

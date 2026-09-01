@@ -102,11 +102,20 @@
 
 				<div class="grid gap-6 md:grid-cols-2">
 					<div>
-						<label for="cover_url" class="text-sm font-medium text-slate-600">URL Sampul (opsional)</label>
-						<input type="url" name="cover_url" id="cover_url" value="{{ old('cover_url', $book->cover_url) }}"
-							   class="mt-2 w-full rounded-lg border border-slate-300 px-4 py-3 text-sm focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
-							   placeholder="https://...">
-						@error('cover_url')
+						<label for="cover_image" class="text-sm font-medium text-slate-600">Upload Sampul Buku (opsional)</label>
+						<input type="file" name="cover_image" id="cover_image" accept="image/jpeg,image/png,image/jpg,image/webp"
+							   class="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-slate-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-slate-700 hover:file:bg-slate-200 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
+						<p class="mt-1 text-xs text-slate-500">Format JPG, PNG, WEBP. Maksimal 5MB.</p>
+						@if ($book->cover_url)
+							<div class="mt-3 flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 p-2.5">
+								<img src="{{ $book->cover_url }}" alt="Sampul saat ini" class="h-12 w-10 object-cover rounded shadow-sm">
+								<div class="text-xs text-slate-600">
+									<p class="font-medium text-slate-800">Sampul saat ini tersedia</p>
+									<p>Upload gambar baru untuk mengganti</p>
+								</div>
+							</div>
+						@endif
+						@error('cover_image')
 							<p class="mt-1 text-xs text-red-600">{{ $message }}</p>
 						@enderror
 					</div>
@@ -124,7 +133,7 @@
 					<label for="pdf_file" class="text-sm font-medium text-slate-600">File PDF Buku <span class="text-slate-500">(opsional - untuk mengganti PDF)</span></label>
 					<input type="file" name="pdf_file" id="pdf_file" accept="application/pdf"
 						   class="mt-2 w-full rounded-lg border border-dashed border-slate-300 px-4 py-3 text-sm focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
-					<p class="mt-2 text-xs text-slate-500">Format PDF, maksimal 20MB.</p>
+					<p class="mt-2 text-xs text-slate-500">Format PDF, maksimal 100MB.</p>
 					@if ($book->pdf_path)
 						<div class="mt-3 flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3">
 							<svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,9 +152,9 @@
 
 				<div>
 					<label for="reference_url" class="text-sm font-medium text-slate-600">Link Referensi / Sumber (opsional)</label>
-					<input type="url" name="reference_url" id="reference_url" value="{{ old('reference_url', $book->reference_url) }}"
+					<input type="text" name="reference_url" id="reference_url" value="{{ old('reference_url', $book->reference_url) }}"
 						   class="mt-2 w-full rounded-lg border border-slate-300 px-4 py-3 text-sm focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
-						   placeholder="https://example.com/buku">
+						   placeholder="https://example.com/buku atau www.example.com">
 					<p class="mt-2 text-xs text-slate-500">Link ke sumber asli, publisher, atau referensi eksternal yang dapat diakses user.</p>
 					@error('reference_url')
 						<p class="mt-1 text-xs text-red-600">{{ $message }}</p>

@@ -23,4 +23,20 @@ class Book extends Model
         'status',
         'summary',
     ];
+
+    /**
+     * Get full URL for book cover (supports HTTP URLs and uploaded local storage paths)
+     */
+    public function getCoverUrlAttribute($value): ?string
+    {
+        if (empty($value)) {
+            return null;
+        }
+
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+
+        return asset('storage/' . $value);
+    }
 }

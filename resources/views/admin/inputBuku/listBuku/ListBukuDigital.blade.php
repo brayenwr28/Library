@@ -161,7 +161,7 @@
                         <article class="p-5 space-y-4">
                             <div class="flex items-start gap-4">
                                 @php
-                                    $cover = $book->cover_path ? asset('storage/' . $book->cover_path) : null;
+                                    $cover = $book->cover_url;
                                 @endphp
                                 <div class="flex h-20 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-md border border-slate-200 bg-slate-50 shadow-inner">
                                     @if($cover)

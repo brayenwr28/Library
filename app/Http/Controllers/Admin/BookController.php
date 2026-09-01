@@ -13,6 +13,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Str;
 use League\Csv\Reader;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class BookController extends Controller
 {
@@ -60,6 +61,15 @@ class BookController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // Pre-process reference_url to prepend scheme if missing
+        if ($request->filled('reference_url')) {
+            $refUrl = trim((string) $request->input('reference_url'));
+            if (!preg_match('~^https?://~i', $refUrl)) {
+                $refUrl = 'https://' . $refUrl;
+                $request->merge(['reference_url' => $refUrl]);
+            }
+        }
+
         try {
             // Validate input with custom messages
             $validated = $request->validate([
@@ -71,10 +81,11 @@ class BookController extends Controller
                 'summary' => ['nullable', 'string', 'max:5000'],
                 'isbn' => ['nullable', 'string', 'max:100', 'unique:books,isbn'],
                 'stock' => ['nullable', 'integer', 'min:0', 'max:9999'],
-                'cover_url' => ['nullable', 'url', 'max:255'],
-                'reference_url' => ['nullable', 'url', 'max:255'],
+                'cover_url' => ['nullable', 'string', 'max:500'],
+                'cover_image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
+                'reference_url' => ['nullable', 'url', 'max:500'],
                 'status' => ['required', 'in:available,unavailable'],
-                'pdf_file' => ['nullable', 'file', 'mimes:pdf', 'max:20480'],
+                'pdf_file' => ['nullable', 'file', 'mimes:pdf', 'max:102400'],
             ], [
                 'title.required' => 'Judul buku tidak boleh kosong',
                 'title.min' => 'Judul buku minimal 3 karakter',
@@ -82,7 +93,10 @@ class BookController extends Controller
                 'author.min' => 'Nama penulis minimal 3 karakter',
                 'publisher.required' => 'Penerbit tidak boleh kosong',
                 'isbn.unique' => 'ISBN ini sudah terdaftar dalam sistem',
-                'pdf_file.max' => 'Ukuran file PDF terlalu besar (maksimal 20MB)',
+                'cover_image.image' => 'File sampul harus berupa gambar (JPG, PNG, WEBP)',
+                'cover_image.max' => 'Ukuran file sampul maksimal 5MB',
+                'reference_url.url' => 'Format Link Referensi tidak valid (contoh: https://example.com)',
+                'pdf_file.max' => 'Ukuran file PDF terlalu besar (maksimal 100MB)',
                 'pdf_file.mimes' => 'File harus berformat PDF',
                 'publication_year.between' => 'Tahun publikasi harus antara 1900 dan 2100',
             ]);
@@ -91,19 +105,29 @@ class BookController extends Controller
             $validated['stock'] = $validated['stock'] ?? 1;
             $validated['publication_year'] = $validated['publication_year'] ?? (int) now()->format('Y');
 
-            // Handle PDF file upload
+            // Handle cover image upload
+            if ($request->hasFile('cover_image')) {
+                $coverFile = $request->file('cover_image');
+                if ($coverFile->isValid()) {
+                    $validated['cover_url'] = $coverFile->store('books/covers', 'public');
+                }
+            }
+
+            // Handle PDF file upload (100MB limit = 104857600 bytes)
             if ($request->hasFile('pdf_file')) {
                 $file = $request->file('pdf_file');
                 
-                // Validate file size in bytes (20MB = 20971520 bytes)
-                if ($file->getSize() > 20971520) {
+                if ($file->getSize() > 104857600) {
                     return back()
                         ->withInput()
-                        ->withErrors(['pdf_file' => 'Ukuran file PDF melebihi batas maksimal 20MB']);
+                        ->withErrors(['pdf_file' => 'Ukuran file PDF melebihi batas maksimal 100MB']);
                 }
 
                 $validated['pdf_path'] = $file->store('books/pdfs', 'public');
             }
+
+            // Remove cover_image from array before create
+            unset($validated['cover_image']);
 
             // Create book record
             $book = Book::create($validated);
@@ -119,6 +143,8 @@ class BookController extends Controller
             return redirect()
                 ->route('admin.books.show')
                 ->with('success', "✅ Buku '{$validated['title']}' berhasil ditambahkan ke katalog. Buku dapat langsung diakses oleh pengguna.");
+        } catch (ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             Log::error('Error creating book', [
                 'error' => $e->getMessage(),
@@ -128,7 +154,7 @@ class BookController extends Controller
 
             return back()
                 ->withInput()
-                ->withErrors(['general' => 'Terjadi kesalahan saat menyimpan buku. Silakan coba lagi.']);
+                ->withErrors(['general' => 'Terjadi kesalahan saat menyimpan buku: ' . $e->getMessage()]);
         }
     }
 
@@ -150,6 +176,15 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book): RedirectResponse
     {
+        // Pre-process reference_url to prepend scheme if missing
+        if ($request->filled('reference_url')) {
+            $refUrl = trim((string) $request->input('reference_url'));
+            if (!preg_match('~^https?://~i', $refUrl)) {
+                $refUrl = 'https://' . $refUrl;
+                $request->merge(['reference_url' => $refUrl]);
+            }
+        }
+
         try {
             // Validate input with unique rule excluding current book
             $validated = $request->validate([
@@ -159,27 +194,45 @@ class BookController extends Controller
                 'publication_year' => ['nullable', 'integer', 'between:1900,2100'],
                 'category' => ['nullable', 'string', 'max:100'],
                 'summary' => ['nullable', 'string', 'max:5000'],
-                'isbn' => ['nullable', 'string', 'max:30', "unique:books,isbn,{$book->id}", 'regex:/^[0-9\-]{10,}$/'],
+                'isbn' => ['nullable', 'string', 'max:100', "unique:books,isbn,{$book->id}"],
                 'stock' => ['nullable', 'integer', 'min:0', 'max:9999'],
-                'cover_url' => ['nullable', 'url', 'max:255'],
-                'reference_url' => ['nullable', 'url', 'max:255'],
+                'cover_url' => ['nullable', 'string', 'max:500'],
+                'cover_image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
+                'reference_url' => ['nullable', 'url', 'max:500'],
                 'status' => ['required', 'in:available,unavailable'],
-                'pdf_file' => ['nullable', 'file', 'mimes:pdf', 'max:20480'],
+                'pdf_file' => ['nullable', 'file', 'mimes:pdf', 'max:102400'],
             ], [
                 'title.required' => 'Judul buku tidak boleh kosong',
                 'title.min' => 'Judul buku minimal 3 karakter',
                 'author.required' => 'Penulis tidak boleh kosong',
                 'author.min' => 'Nama penulis minimal 3 karakter',
                 'publisher.required' => 'Penerbit tidak boleh kosong',
-                'isbn.regex' => 'Format ISBN tidak valid',
                 'isbn.unique' => 'ISBN ini sudah terdaftar (ID: ' . $book->id . ')',
-                'pdf_file.max' => 'Ukuran file PDF terlalu besar (maksimal 20MB)',
+                'cover_image.image' => 'File sampul harus berupa gambar (JPG, PNG, WEBP)',
+                'cover_image.max' => 'Ukuran file sampul maksimal 5MB',
+                'reference_url.url' => 'Format Link Referensi tidak valid (contoh: https://example.com)',
+                'pdf_file.max' => 'Ukuran file PDF terlalu besar (maksimal 100MB)',
                 'pdf_file.mimes' => 'File harus berformat PDF',
             ]);
 
             // Set default values
             $validated['stock'] = $validated['stock'] ?? 1;
             $validated['publication_year'] = $validated['publication_year'] ?? (int) now()->format('Y');
+
+            // Handle cover image upload
+            if ($request->hasFile('cover_image')) {
+                $coverFile = $request->file('cover_image');
+                if ($coverFile->isValid()) {
+                    // Get raw cover_url attribute without Accessor transformations
+                    $rawCover = $book->getRawOriginal('cover_url');
+                    if ($rawCover && !str_starts_with($rawCover, 'http://') && !str_starts_with($rawCover, 'https://')) {
+                        if (Storage::disk('public')->exists($rawCover)) {
+                            Storage::disk('public')->delete($rawCover);
+                        }
+                    }
+                    $validated['cover_url'] = $coverFile->store('books/covers', 'public');
+                }
+            }
 
             // Store old PDF path for cleanup
             $oldPdfPath = $book->pdf_path;
@@ -188,10 +241,10 @@ class BookController extends Controller
             if ($request->hasFile('pdf_file')) {
                 $file = $request->file('pdf_file');
                 
-                if ($file->getSize() > 20971520) {
+                if ($file->getSize() > 104857600) {
                     return back()
                         ->withInput()
-                        ->withErrors(['pdf_file' => 'Ukuran file PDF melebihi batas maksimal 20MB']);
+                        ->withErrors(['pdf_file' => 'Ukuran file PDF melebihi batas maksimal 100MB']);
                 }
 
                 // Delete old PDF if exists
@@ -202,6 +255,9 @@ class BookController extends Controller
 
                 $validated['pdf_path'] = $file->store('books/pdfs', 'public');
             }
+
+            // Remove cover_image from array before update
+            unset($validated['cover_image']);
 
             // Update book record
             $book->update($validated);
@@ -216,6 +272,8 @@ class BookController extends Controller
             return redirect()
                 ->route('admin.books.show')
                 ->with('success', "✅ Data buku '{$validated['title']}' berhasil diperbarui.");
+        } catch (ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             Log::error('Error updating book', [
                 'book_id' => $book->id,
@@ -226,7 +284,7 @@ class BookController extends Controller
 
             return back()
                 ->withInput()
-                ->withErrors(['general' => 'Terjadi kesalahan saat memperbarui buku. Silakan coba lagi.']);
+                ->withErrors(['general' => 'Terjadi kesalahan saat memperbarui buku: ' . $e->getMessage()]);
         }
     }
 
