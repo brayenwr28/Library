@@ -376,6 +376,11 @@ class MemberController extends Controller
      */
     public function update(Request $request, Member $member): RedirectResponse
     {
+        $request->merge([
+            'nim' => $request->input('nim') !== null ? preg_replace('/^["\']+|["\']+$/', '', trim((string) $request->input('nim'))) : null,
+            'nik' => $request->input('nik') !== null ? preg_replace('/^["\']+|["\']+$/', '', trim((string) $request->input('nik'))) : null,
+        ]);
+
         $validated = $request->validate([
             'name'          => ['required', 'string', 'max:255'],
             'email'         => ['required', 'email', 'max:255', 'unique:members,email,' . $member->id],

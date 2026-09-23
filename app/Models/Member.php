@@ -37,6 +37,28 @@ class Member extends Model implements AuthenticatableContract
         'tanggal_lahir' => 'date',
     ];
 
+    public function setNimAttribute($value): void
+    {
+        $this->attributes['nim'] = $this->normalizeIdentifier($value);
+    }
+
+    public function setNikAttribute($value): void
+    {
+        $this->attributes['nik'] = $this->normalizeIdentifier($value);
+    }
+
+    protected function normalizeIdentifier($value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        $cleaned = trim((string) $value);
+        $cleaned = preg_replace('/^["\']+|["\']+$/', '', $cleaned);
+
+        return $cleaned === '' ? null : $cleaned;
+    }
+
     public function getJenisAnggotaLabelAttribute(): string
     {
         return match ($this->jenis_anggota ?? 'mahasiswa') {
