@@ -92,7 +92,23 @@ class DashboardController extends Controller
     }
     public function katalog(Request $request)
     {
-        $books = Book::orderByDesc('created_at')->get();
+        $search = trim((string) $request->query('q', $request->query('search', '')));
+
+        $books = Book::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $like = "%{$search}%";
+                $query->where(function ($inner) use ($like) {
+                    $inner->where('title', 'like', $like)
+                        ->orWhere('author', 'like', $like)
+                        ->orWhere('publisher', 'like', $like)
+                        ->orWhere('isbn', 'like', $like)
+                        ->orWhere('category', 'like', $like)
+                        ->orWhere('publication_year', 'like', $like)
+                        ->orWhere('summary', 'like', $like);
+                });
+            })
+            ->orderByDesc('created_at')
+            ->get();
 
         $borrowedBookIds = [];
 
@@ -112,6 +128,7 @@ class DashboardController extends Controller
 
         return view('dashboard.katalog', [
             'books' => $books,
+            'search' => $search,
             'borrowedBookIds' => $borrowedBookIds,
         ]);
     }

@@ -24,6 +24,48 @@
             <p class="text-slate-600 text-lg max-w-3xl relative z-10">Temukan bacaan rekomendasi yang dikurasi oleh tim pustakawan. Setiap kartu menampilkan ringkasan singkat agar Anda bisa menentukan buku yang tepat sebelum mengajukan peminjaman.</p>
         </div>
 
+        <!-- Form & Tombol Pencarian -->
+        <div class="mb-8">
+            <form action="{{ route('katalog') }}" method="GET" class="flex flex-col sm:flex-row gap-3">
+                <div class="flex-1 relative group">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-slate-400 group-focus-within:text-blue-600 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" />
+                        </svg>
+                    </div>
+                    <input type="search" name="q" value="{{ $search ?? '' }}" placeholder="Cari judul buku, penulis, penerbit, kategori, atau ISBN..." 
+                           class="w-full pl-12 pr-4 py-3.5 rounded-xl border-2 border-blue-100 bg-white text-slate-800 placeholder:text-slate-400 transition focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/20 hover:border-blue-200 shadow-md shadow-blue-100/50" />
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="submit" 
+                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-3.5 text-sm font-bold text-white shadow-[0_5px_15px_rgba(37,99,235,0.35)] transition duration-300 hover:from-blue-700 hover:to-blue-600 hover:shadow-[0_8px_20px_rgba(37,99,235,0.5)] active:scale-95">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" />
+                        </svg>
+                        <span>Cari</span>
+                    </button>
+                    @if(!empty($search))
+                        <a href="{{ route('katalog') }}" 
+                           class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-3.5 rounded-xl bg-slate-200 text-slate-700 font-semibold text-sm transition hover:bg-slate-300 hover:text-slate-800">
+                            ✕ Reset
+                        </a>
+                    @endif
+                </div>
+            </form>
+
+            @if(!empty($search))
+                <div class="mt-4 flex flex-wrap items-center justify-between gap-3 bg-blue-50/80 border border-blue-200 rounded-xl px-4 py-3 text-sm text-slate-600">
+                    <div class="flex items-center gap-2">
+                        <span class="text-blue-600 font-bold">🔍 Hasil Pencarian:</span>
+                        <span>Menampilkan hasil untuk "<strong class="text-slate-900 font-semibold">{{ $search }}</strong>" ({{ $books->count() }} buku ditemukan)</span>
+                    </div>
+                    <a href="{{ route('katalog') }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1">
+                        ✕ Hapus filter pencarian
+                    </a>
+                </div>
+            @endif
+        </div>
+
         @forelse ($books as $book)
             @php
                 $isDigital = (bool) $book->pdf_path;
@@ -158,16 +200,27 @@
                 </div>
             @endif
         @empty
-            <div class="rounded-3xl border-2 border-dashed border-blue-300 bg-white/80 backdrop-blur p-16 text-center shadow-xl">
-                <div class="text-7xl mb-4 animate-bounce filter drop-shadow-[0_10px_10px_rgba(59,130,246,0.2)]">📚</div>
-                <h2 class="text-2xl font-bold text-slate-800 mb-2">Katalog Kosong</h2>
-                <p class="text-slate-600 max-w-md mx-auto mb-6">Belum ada data buku dalam katalog. Tambahkan melalui halaman input buku untuk menampilkannya di sini.</p>
-                @auth('admin')
-                <a href="{{ route('admin.books.index') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-3.5 text-sm font-bold text-white shadow-[0_5px_15px_rgba(37,99,235,0.35)] transition duration-300 hover:from-blue-700 hover:to-blue-600 hover:shadow-[0_8px_20px_rgba(37,99,235,0.5)] active:scale-95">
-                    ➕ Tambah Buku Baru
-                </a>
-                @endauth
-            </div>
+            @if(!empty($search))
+                <div class="rounded-3xl border-2 border-dashed border-blue-300 bg-white/80 backdrop-blur p-16 text-center shadow-xl">
+                    <div class="text-7xl mb-4 animate-bounce filter drop-shadow-[0_10px_10px_rgba(59,130,246,0.2)]">🔍</div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Buku Tidak Ditemukan</h2>
+                    <p class="text-slate-600 max-w-md mx-auto mb-6">Tidak ada buku di katalog yang cocok dengan kata kunci "<span class="font-semibold text-slate-900">{{ $search }}</span>". Coba gunakan kata kunci lain atau periksa ejaan.</p>
+                    <a href="{{ route('katalog') }}" class="inline-flex items-center gap-2 rounded-xl bg-slate-200 text-slate-700 px-6 py-3.5 text-sm font-bold transition hover:bg-slate-300 hover:text-slate-900 active:scale-95">
+                        ✕ Reset Pencarian
+                    </a>
+                </div>
+            @else
+                <div class="rounded-3xl border-2 border-dashed border-blue-300 bg-white/80 backdrop-blur p-16 text-center shadow-xl">
+                    <div class="text-7xl mb-4 animate-bounce filter drop-shadow-[0_10px_10px_rgba(59,130,246,0.2)]">📚</div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Katalog Kosong</h2>
+                    <p class="text-slate-600 max-w-md mx-auto mb-6">Belum ada data buku dalam katalog. Tambahkan melalui halaman input buku untuk menampilkannya di sini.</p>
+                    @auth('admin')
+                    <a href="{{ route('admin.books.index') }}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-3.5 text-sm font-bold text-white shadow-[0_5px_15px_rgba(37,99,235,0.35)] transition duration-300 hover:from-blue-700 hover:to-blue-600 hover:shadow-[0_8px_20px_rgba(37,99,235,0.5)] active:scale-95">
+                        ➕ Tambah Buku Baru
+                    </a>
+                    @endauth
+                </div>
+            @endif
         @endforelse
     </div>
 </section>
