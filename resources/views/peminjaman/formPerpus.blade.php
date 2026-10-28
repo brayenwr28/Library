@@ -64,7 +64,6 @@
                         @endif
 
                         <input type="hidden" name="book_id" value="{{ $selectedBook->id }}">
-                        <input type="hidden" name="book_type" value="fisik">
                     @else
                         <select
                             id="book_id"
@@ -84,6 +83,7 @@
                         </select>
                         <p class="text-xs text-slate-500 mt-2">Buku yang ditampilkan adalah buku fisik perpustakaan yang berstatus tersedia dan memiliki stok > 0.</p>
                     @endif
+                    <input type="hidden" name="book_type" value="fisik">
                 </div>
 
                 @if($books->isEmpty())

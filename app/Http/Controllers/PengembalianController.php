@@ -101,17 +101,35 @@ class PengembalianController extends Controller
                 'status' => 'dikembalikan',
             ]);
 
-            // Tambah stok buku kembali (baik itu dari books atau perpusses)
-            $book = $peminjaman->book;
-            if ($book) {
-                $book->increment('stock');
-            }
-
-            // Jika buku dari perpusses, tambah stok di perpusses juga
-            if ($book && $book->isbn) {
-                $perpussBook = Perpuss::where('isbn', $book->isbn)->first();
+            // Tambah stok buku kembali
+            $restored = false;
+            if ($peminjaman->perpuss_id) {
+                $perpussBook = Perpuss::find($peminjaman->perpuss_id);
                 if ($perpussBook) {
                     $perpussBook->increment('stock');
+                    if ($perpussBook->status === 'unavailable' && $perpussBook->fresh()->stock > 0) {
+                        $perpussBook->update(['status' => 'available']);
+                    }
+                    $restored = true;
+                }
+            } elseif ($peminjaman->book_type === 'fisik' && $peminjaman->book_id) {
+                $perpussBook = Perpuss::find($peminjaman->book_id);
+                if ($perpussBook) {
+                    $perpussBook->increment('stock');
+                    if ($perpussBook->status === 'unavailable' && $perpussBook->fresh()->stock > 0) {
+                        $perpussBook->update(['status' => 'available']);
+                    }
+                    $restored = true;
+                }
+            }
+
+            if (!$restored && $peminjaman->book_id) {
+                $digitalBook = Book::find($peminjaman->book_id);
+                if ($digitalBook) {
+                    $digitalBook->increment('stock');
+                    if ($digitalBook->status === 'unavailable' && $digitalBook->fresh()->stock > 0) {
+                        $digitalBook->update(['status' => 'available']);
+                    }
                 }
             }
 

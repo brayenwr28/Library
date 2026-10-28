@@ -126,8 +126,8 @@
                         </div>
                     @endif
 
-                    <div class="flex gap-2">
-                        @if($book->status === 'available')
+                    <div class="flex items-center gap-2 flex-wrap">
+                        @if($book->stock > 0 && $book->status === 'available')
                             <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-[0_4px_10px_rgba(37,99,235,0.4)]">
                                 <span class="inline-block h-2 w-2 rounded-full bg-white animate-pulse"></span>
                                 ✓ Tersedia
@@ -135,9 +135,13 @@
                         @else
                             <span class="inline-flex items-center gap-1.5 rounded-full bg-red-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-[0_4px_10px_rgba(220,38,38,0.4)]">
                                 <span class="inline-block h-2 w-2 rounded-full bg-white"></span>
-                                ✗ Penuh
+                                ✗ Stok Habis
                             </span>
                         @endif
+
+                        <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-700">
+                            📦 {{ $book->stock }} Stok
+                        </span>
                     </div>
 
                     <div class="mt-auto pt-4 border-t border-slate-100 space-y-3">
@@ -147,6 +151,11 @@
                                    class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-600 to-orange-500 px-4 py-3 text-sm font-bold text-white shadow-[0_5px_15px_rgba(220,38,38,0.35)] transition duration-300 hover:from-red-700 hover:to-orange-600 hover:shadow-[0_8px_20px_rgba(220,38,38,0.5)] active:scale-95">
                                     👁️ Baca Buku
                                 </a>
+                            @elseif($book->stock <= 0)
+                                <button disabled
+                                   class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 border border-slate-200 px-4 py-3 text-sm font-bold text-slate-400 cursor-not-allowed">
+                                    🚫 Stok Habis
+                                </button>
                             @else
                                 <a href="{{ route('peminjaman.katalog', ['book_id' => $book->id]) }}" 
                                    class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-3 text-sm font-bold text-white shadow-[0_5px_15px_rgba(37,99,235,0.35)] transition duration-300 hover:from-blue-700 hover:to-blue-600 hover:shadow-[0_8px_20px_rgba(37,99,235,0.5)] active:scale-95">

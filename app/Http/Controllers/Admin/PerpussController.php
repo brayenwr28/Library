@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Peminjaman;
 use App\Models\Perpuss;
 use Exception;
 use Illuminate\Http\RedirectResponse;
@@ -44,9 +45,17 @@ class PerpussController extends Controller
             });
 
         $totalCount = $query->count();
-        $availableCount = (clone $query)->where('status', 'available')->count();
-        $unavailableCount = (clone $query)->where('status', 'unavailable')->count();
-        $totalStock = $query->sum('stock');
+        $availableCount = (clone $query)->where('stock', '>', 0)->count();
+
+        // Hitung total eksemplar fisik yang sedang dipinjam (status 'diambil')
+        $unavailableCount = Peminjaman::where('status', 'diambil')
+            ->where(function ($q) {
+                $q->where('book_type', 'fisik')
+                    ->orWhereNotNull('perpuss_id');
+            })
+            ->count();
+
+        $totalStock = (int) $query->sum('stock');
 
         $collections = $query->orderByDesc('created_at')
             ->paginate(30)

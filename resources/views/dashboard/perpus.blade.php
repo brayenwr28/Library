@@ -105,14 +105,14 @@
                             
                             <!-- Badges Overlays -->
                             <div class="absolute top-3.5 right-3.5">
-                                @if($book->status === 'available')
+                                @if($book->stock > 0 && $book->status === 'available')
                                     <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/95 backdrop-blur px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
                                         <span class="h-1.5 w-1.5 rounded-full bg-white animate-pulse"></span>
                                         Tersedia
                                     </span>
                                 @else
                                     <span class="inline-flex items-center gap-1.5 rounded-full bg-rose-500/95 backdrop-blur px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
-                                        Dipinjam
+                                        Stok Habis
                                     </span>
                                 @endif
                             </div>
@@ -167,7 +167,12 @@
                                     $canRead = auth()->check() && isset($borrowedBookIds) && in_array($book->id, $borrowedBookIds, true);
                                 @endphp
 
-                                @if(!$canRead)
+                                @if($book->stock <= 0)
+                                    <button disabled 
+                                       class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-400 cursor-not-allowed">
+                                        🚫 Stok Habis
+                                    </button>
+                                @elseif(!$canRead)
                                     <a href="{{ route('peminjaman.perpus', ['book_id' => $book->id]) }}" 
                                        class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition duration-200 active:scale-98">
                                         📌 Pinjam Buku

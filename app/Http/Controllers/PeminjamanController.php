@@ -221,8 +221,13 @@ class PeminjamanController extends Controller
         }
 
         $duplicateLoan = Peminjaman::where('member_id', $member->id)
-            ->where('book_id', $book->id)
-            ->where('book_type', $bookType)
+            ->where(function ($q) use ($book, $bookType) {
+                if ($bookType === 'fisik') {
+                    $q->where('perpuss_id', $book->id);
+                } else {
+                    $q->where('book_id', $book->id);
+                }
+            })
             ->where('status', 'diambil')
             ->exists();
 
@@ -432,18 +437,48 @@ class PeminjamanController extends Controller
                 'status' => 'diambil',
             ]);
 
-            // Kurangi stok buku berdasarkan tipe
-            if ($peminjaman->book_type === 'fisik') {
-                // Buku fisik dari Perpuss table
+            // Kurangi stok buku berdasarkan tipe atau relasi yang ada
+            $reduced = false;
+
+            if ($peminjaman->perpuss_id) {
                 $book = Perpuss::find($peminjaman->perpuss_id);
                 if ($book && $book->stock > 0) {
                     $book->decrement('stock');
+                    if ($book->fresh()->stock <= 0) {
+                        $book->update(['status' => 'unavailable']);
+                    }
+                    $reduced = true;
                 }
-            } else {
-                // Buku digital dari Books table
+            } elseif ($peminjaman->book_type === 'fisik' && $peminjaman->book_id) {
+                $book = Perpuss::find($peminjaman->book_id);
+                if ($book && $book->stock > 0) {
+                    $book->decrement('stock');
+                    if ($book->fresh()->stock <= 0) {
+                        $book->update(['status' => 'unavailable']);
+                    }
+                    $peminjaman->update(['perpuss_id' => $book->id]);
+                    $reduced = true;
+                }
+            }
+
+            if (!$reduced && $peminjaman->book_id) {
                 $book = Book::find($peminjaman->book_id);
                 if ($book && $book->stock > 0) {
                     $book->decrement('stock');
+                    if ($book->fresh()->stock <= 0) {
+                        $book->update(['status' => 'unavailable']);
+                    }
+                    $reduced = true;
+                } elseif (!$book) {
+                    // Fallback jika ID yang tersimpan adalah ID perpuss
+                    $fallbackPerpuss = Perpuss::find($peminjaman->book_id);
+                    if ($fallbackPerpuss && $fallbackPerpuss->stock > 0) {
+                        $fallbackPerpuss->decrement('stock');
+                        if ($fallbackPerpuss->fresh()->stock <= 0) {
+                            $fallbackPerpuss->update(['status' => 'unavailable']);
+                        }
+                        $peminjaman->update(['perpuss_id' => $fallbackPerpuss->id, 'book_type' => 'fisik']);
+                    }
                 }
             }
 

@@ -68,7 +68,6 @@
                         @endif
 
                         <input type="hidden" name="book_id" value="{{ $selectedBook->id }}">
-                        <input type="hidden" name="book_type" value="digital">
                     @else
                         <select
                             id="book_id"
@@ -88,6 +87,7 @@
                         </select>
                         <p class="text-xs text-slate-500 mt-2">Buku yang ditampilkan adalah yang berstatus tersedia dan memiliki stok > 0. Terdiri dari Katalog Digital dan Buku Perpustakaan Fisik.</p>
                     @endif
+                    <input type="hidden" name="book_type" value="digital">
                 </div>
 
                 @if($books->isEmpty())
